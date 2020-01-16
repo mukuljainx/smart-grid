@@ -2,7 +2,20 @@
   "name": "@crafts/smart-grid",
   "version": "0.0.1",
   "private": true,
+  "main": "dist/cjs/index.js",
+  "typings": "dist/cjs/index.d.ts",
+  "module": "dist/esm/index.js",
+  "files": [
+    "cjs",
+    "esm"
+  ],
   "dependencies": {
+    "fast-memoize": "^2.5.1"
+  },
+  "devDependencies": {
+    "autoprefixer": "^9.7.4",
+    "postcss-cli": "^7.1.0",
+    "serve": "^11.3.0",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
@@ -11,16 +24,22 @@
     "@types/node": "^12.0.0",
     "@types/react": "^16.9.0",
     "@types/react-dom": "^16.9.0",
-    "fast-memoize": "^2.5.1",
     "lodash": "^4.17.15",
-    "react": "^16.12.0",
-    "react-dom": "^16.12.0",
     "react-scripts": "3.3.0",
     "typescript": "~3.7.2"
   },
+  "peerDependencies": {
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0"
+  },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "doc": "react-scripts build",
+    "serve": "serve -s build",
+    "build": "rm -rf dist && npm run build:cjs && npm run build:esnext",
+    "css": "postcss src/Table/*.css --use autoprefixer -d",
+    "build:cjs": "tsc -m commonjs --outDir dist/cjs -p tsconfig.build.json && npm run css dist/cjs",
+    "build:esnext": "tsc -m esnext --outDir dist/esm -p tsconfig.build.json && npm run css dist/esm",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

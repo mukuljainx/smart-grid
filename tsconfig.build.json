@@ -1,21 +1,20 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": ["es6", "es7", "es2017", "dom"],
     "declaration": true,
-    "allowJs": true,
     "skipLibCheck": true,
-    "esModuleInterop": true,
+    "jsx": "react",
+    "module": "esnext",
+    "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
-    "module": "esnext",
-    "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": false,
-    "noEmit": true,
-    "jsx": "react",
-    "outDir": "dist"
+    "noEmit": false,
+    "outDir": "dist",
+    "esModuleInterop": true
   },
-  "include": ["src"]
+  "files": ["src/Table/index.tsx"]
 }
