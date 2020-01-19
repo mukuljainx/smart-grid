@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "module": "esNext",
+    "allowSyntheticDefaultImports": true,
+    "outDir": "./dist/",
+    "noImplicitAny": true,
+    "sourceMap": true,
+    "target": "es5",
+    "jsx": "react",
+    "allowJs": true,
+    "moduleResolution": "node"
+  },
+  "include": ["src/Table/**/*.tsx"]
+}
