@@ -12,6 +12,9 @@ export const Placeholder = ({
   style,
   shimmerWidth,
 }: {
+  /**
+   *  Column width is mandatory for proper rendering
+   */
   style: React.CSSProperties;
   shimmerWidth: React.CSSProperties['width'];
 }) => (

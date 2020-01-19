@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { range } from 'lodash-es';
-import Table, { ISchema } from '../Table';
+import Table, { ISchema } from '../Grid';
 
 type SimpleObject = Record<string, string>;
 
@@ -54,19 +54,22 @@ const getData = (limit: number) =>
       'https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/Sketch_Logo.svg/1133px-Sketch_Logo.svg.png',
   }));
 
-let limit = 100;
+let limit = 0;
 
 export default class App extends React.Component {
   state = {
-    data: getData(limit),
-    loading: false,
+    data: [] as any,
+    loading: true,
   };
 
+  componentDidMount() {
+    this.loadMoreData();
+  }
+
   loadMoreData = () => {
-    console.log('LOAD MORE DATA');
     this.setState({ loading: true });
     setTimeout(() => {
-      if (limit < 100) {
+      if (limit < 1000) {
         limit = limit + 50;
         this.setState({
           laoding: false,
@@ -89,11 +92,12 @@ export default class App extends React.Component {
             maxWidth: 600,
           }}
           loadMore={this.loadMoreData}
+          loadingMoreData={this.state.data.length > 0 && this.state.loading}
           buffer={10}
           rowHeight={40}
           schema={schema}
           data={this.state.data}
-          loading={this.state.loading}
+          loading={this.state.data.length === 0 && this.state.loading}
         />
       </div>
     );

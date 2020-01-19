@@ -3,7 +3,7 @@ import memoize from 'fast-memoize';
 
 import './grid.scss';
 import Cell from './Cell';
-import Loader from './Loader';
+import Loader, { PartialLoader } from './Loader';
 
 export interface ISchema {
   width: number;
@@ -29,6 +29,10 @@ export interface IProps {
    * parent element will gird's first div
    */
   loader?: React.ReactChild;
+  /**
+   * Will show loader in last two rows
+   */
+  loadingMoreData?: boolean;
   /**
    * Will show overlay in place of grid
    */
@@ -100,7 +104,34 @@ class Grid extends React.PureComponent<IProps, IState> {
       visibleCount,
     });
   }
+  componentDidUpdate(prevProps: IProps) {
+    // If data length changes at any point, ideally it will
+    // be after getting more data
+    // calculate start, end and re-render
+    // so if user is at the bottom of table and waiting for more
+    // data, rows after previous data.length will render
+    if (
+      prevProps.data.length !== this.props.data.length &&
+      this.gridRef.current
+    ) {
+      const { rowHeight, buffer, data } = this.props;
+      const { visibleCount } = this.state;
 
+      const currentPosition = Math.round(
+        this.gridRef.current.scrollTop / rowHeight
+      );
+
+      this.handleCurrentBuffer({
+        currentPosition,
+        buffer: buffer,
+        position: -visibleCount,
+        visibleCount: visibleCount,
+        dataLength: data.length,
+      });
+    }
+  }
+
+  // TODO: add proper types for scroll events
   syncHorizontalScroll = (event: any) => {
     const scrollLeft = event.target.scrollLeft;
     if (this.centerGridRef.current) {
@@ -119,69 +150,95 @@ class Grid extends React.PureComponent<IProps, IState> {
     const { rowHeight, buffer, data } = this.props;
     const { position, visibleCount } = this.state;
     const currentPosition = Math.round(scrollTop / rowHeight);
+
+    this.handleCurrentBuffer({
+      currentPosition,
+      buffer,
+      position,
+      visibleCount,
+      dataLength: data.length,
+    });
+
+    this.loadMoreData(currentPosition, visibleCount, data.length);
+  };
+
+  handleCurrentBuffer = ({
+    currentPosition,
+    visibleCount,
+    position,
+    buffer,
+    dataLength,
+  }: {
+    currentPosition: number;
+    visibleCount: number;
+    position: number;
+    buffer: number;
+    dataLength: number;
+  }) => {
     if (Math.abs(currentPosition - position) >= visibleCount) {
       this.setState(({ visibleCount }) => ({
         start: Math.max(currentPosition - visibleCount - buffer!, 0),
-        end: Math.min(
-          currentPosition + visibleCount + buffer!,
-          data.length - 1
-        ),
+        end: Math.min(currentPosition + visibleCount + buffer!, dataLength - 1),
         position: currentPosition,
       }));
     }
-
-    this.loadMoreData(currentPosition, visibleCount, data.length);
   };
 
   loadMoreData = (
     currentPosition: number,
     visibleCount: number,
-    rows: number
+    dataLength: number
   ) => {
     if (
       currentPosition > this.loadMoreDataPosition.position &&
-      rows > this.loadMoreDataPosition.end &&
-      currentPosition > rows - 1.5 * visibleCount
+      dataLength > this.loadMoreDataPosition.end &&
+      currentPosition > dataLength - 1.5 * visibleCount
     ) {
       if (this.props.loadMore) {
         this.props.loadMore();
       }
       this.loadMoreDataPosition = {
         position: currentPosition,
-        end: rows,
+        end: dataLength,
       };
     }
   };
 
-  getVirtualList = (start: number, end: number, schema: IProps['schema']) => {
-    const { data, rowHeight } = this.props;
-    const rows = [];
-    for (let index = start; index <= end; index++) {
-      if (index === data.length) {
-        break;
+  memoizedGetVirtualList = memoize(
+    (
+      start: number,
+      end: number,
+      schema: IProps['schema'],
+      data: IProps['data'],
+      rowHeight: IProps['rowHeight']
+    ) => {
+      console.log('memoizedGetVirtualList', start, end);
+      const rows = [];
+      for (let index = start; index <= end; index++) {
+        if (index === data.length) {
+          break;
+        }
+        const row = data[index];
+        rows.push(
+          <div
+            data-row={index}
+            style={{
+              height: rowHeight,
+              transform: `translateY(${index * rowHeight}px)`,
+            }}
+            className="row"
+            key={index}
+          >
+            {schema.map(({ width, template, get }, j) => (
+              <Cell key={j} width={width} template={template} {...get(row)} />
+            ))}
+          </div>
+        );
       }
-      const row = data[index];
-      rows.push(
-        <div
-          data-row={index}
-          style={{
-            height: rowHeight,
-            transform: `translateY(${index * rowHeight}px)`,
-          }}
-          className="row"
-          key={index}
-        >
-          {schema.map(({ width, template, get }, j) => (
-            <Cell key={j} width={width} template={template} {...get(row)} />
-          ))}
-        </div>
-      );
+
+      return rows;
     }
-
-    return rows;
-  };
-
-  memoizedGetVirtualList = memoize(this.getVirtualList);
+  );
 
   render() {
     const {
@@ -192,21 +249,16 @@ class Grid extends React.PureComponent<IProps, IState> {
       loader,
       overlay,
       showOverlay,
+      loadingMoreData,
     } = this.props;
     const { start, end, visibleCount } = this.state;
+    console.log(loadingMoreData);
+    console.log('render');
 
     if (visibleCount === -1) {
       return (
         <div ref={this.gridRef} style={this.props.style}>
           Loading No Mounted yet
-        </div>
-      );
-    }
-
-    if (visibleCount > -1 && data.length === 0) {
-      return (
-        <div style={{ height: 100 }} ref={this.gridRef}>
-          Loading No Data yet
         </div>
       );
     }
@@ -233,11 +285,19 @@ class Grid extends React.PureComponent<IProps, IState> {
       );
     }
 
-    const leftGrid = this.memoizedGetVirtualList(start, end, this.leftSchema);
+    const leftGrid = this.memoizedGetVirtualList(
+      start,
+      end,
+      this.leftSchema,
+      data,
+      rowHeight
+    );
     const centerGrid = this.memoizedGetVirtualList(
       start,
       end,
-      this.centerSchema
+      this.centerSchema,
+      data,
+      rowHeight
     );
 
     return (
@@ -248,11 +308,26 @@ class Grid extends React.PureComponent<IProps, IState> {
           onScroll={this.handleGridScroll}
         >
           <div
-            style={{ height: data.length * rowHeight }}
+            style={{
+              height:
+                data.length * rowHeight + (loadingMoreData ? rowHeight * 2 : 0),
+            }}
             className="grid-body"
           >
             <div style={{ width: this.leftWidth }} className="grid-left">
-              <div className="grid-left-body">{leftGrid}</div>
+              <div className="grid-left-body">
+                {leftGrid}
+                {loadingMoreData && (
+                  <PartialLoader
+                    style={{
+                      transform: `translateY(${data.length * rowHeight}px)`,
+                    }}
+                    schema={this.leftSchema}
+                    className="partial-loader"
+                    rowStyle={{ height: rowHeight }}
+                  />
+                )}
+              </div>
             </div>
             <div
               style={{ width: `calc(100% - ${this.leftWidth}px)` }}
@@ -268,6 +343,18 @@ class Grid extends React.PureComponent<IProps, IState> {
                   className="grid-center-body-inner"
                 >
                   {centerGrid}
+                  {loadingMoreData && (
+                    <PartialLoader
+                      schema={this.centerSchema}
+                      style={{
+                        transform: `translateY(${data.length * rowHeight}px)`,
+                      }}
+                      className="partial-loader"
+                      rowStyle={{
+                        height: rowHeight,
+                      }}
+                    />
+                  )}
                 </div>
               </div>
             </div>

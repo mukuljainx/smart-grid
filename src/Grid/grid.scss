@@ -99,4 +99,14 @@
     cursor: move;
     border: none;
   }
+
+  .partial-loader {
+    position: absolute;
+    border-right: 1px solid #efefef;
+    .loader-column {
+      &:not(:last-child) {
+        border-right: 1px solid #efefef;
+      }
+    }
+  }
 }
