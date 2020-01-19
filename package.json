@@ -12,7 +12,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "webpack-dev-server",
-    "doc": "webpack --config webpack.config.ts",
+    "doc": "webpack --config webpack.config.js",
     "build": "rm -rf dist && npm run build:cjs && npm run build:esnext",
     "css": "postcss src/Table/*.scss --use autoprefixer -d",
     "build:cjs": "tsc -m commonjs --outDir dist/cjs -p tsconfig.build.json && npm run css dist/cjs",
