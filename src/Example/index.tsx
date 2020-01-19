@@ -12,34 +12,40 @@ const schema: ISchema[] = [
     get: ({ a }: SimpleObject) => ({
       x: a,
     }),
+    header: 'A',
   },
   {
     width: 150,
     template: ({ x }: SimpleObject) => <div>{x}</div>,
     pinned: 'LEFT',
     get: ({ b, c }: SimpleObject) => ({ x: b + c }),
+    header: 'B',
   },
   {
     width: 100,
     template: ({ x }: SimpleObject) => <div>{x}</div>,
     get: ({ c }: SimpleObject) => ({ x: c }),
+    header: <div style={{ height: 200 }}>C</div>,
   },
   {
     width: 200,
     template: ({ x }: SimpleObject) => <div>{x}</div>,
     get: ({ d }: SimpleObject) => ({ x: d }),
+    header: 'D',
   },
   {
     width: 200,
     template: ({ x }: SimpleObject) => <div>{x}</div>,
     get: ({ e }: SimpleObject) => ({ x: e }),
+    header: 'E',
   },
   {
     width: 100,
     template: ({ x }: SimpleObject) => (
-      <img src={x} style={{ height: 50 }} alt="lol" />
+      <img src={x} style={{ height: 35 }} alt="lol" />
     ),
     get: ({ logo }: SimpleObject) => ({ x: logo }),
+    header: 'Image',
   },
 ];
 
@@ -95,6 +101,7 @@ export default class App extends React.Component {
           loadingMoreData={this.state.data.length > 0 && this.state.loading}
           buffer={10}
           rowHeight={40}
+          headerHeight={40}
           schema={schema}
           data={this.state.data}
           loading={this.state.data.length === 0 && this.state.loading}

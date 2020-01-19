@@ -2,7 +2,7 @@ import * as React from 'react';
 import memoize from 'fast-memoize';
 
 import './grid.scss';
-import Cell from './Cell';
+import Cell from './Atoms/Cell';
 import Loader, { PartialLoader } from './Loader';
 
 export interface ISchema {
@@ -10,6 +10,7 @@ export interface ISchema {
   template: React.ElementType;
   pinned?: 'LEFT';
   get: (props: ObjectLiteral) => ObjectLiteral;
+  header: React.ReactChild;
 }
 
 export interface ObjectLiteral {
@@ -20,6 +21,7 @@ export interface IProps {
   data: ObjectLiteral[];
   schema: ISchema[];
   rowHeight: number;
+  headerHeight: number;
   style: React.CSSProperties;
   loadMore?: () => void;
   buffer?: number;
@@ -51,6 +53,7 @@ class Grid extends React.PureComponent<IProps, IState> {
   // Refs
   centerGridRef: React.RefObject<HTMLDivElement> = React.createRef();
   centerScrollRef: React.RefObject<HTMLDivElement> = React.createRef();
+  centerHeaderRef: React.RefObject<HTMLDivElement> = React.createRef();
   gridRef: React.RefObject<HTMLDivElement> = React.createRef();
 
   // Grid metadata
@@ -140,6 +143,9 @@ class Grid extends React.PureComponent<IProps, IState> {
     if (this.centerScrollRef.current) {
       this.centerScrollRef.current.scrollLeft = scrollLeft;
     }
+    if (this.centerHeaderRef.current) {
+      this.centerHeaderRef.current.scrollLeft = scrollLeft;
+    }
   };
 
   handleGridScroll = (event: any) => {
@@ -212,7 +218,6 @@ class Grid extends React.PureComponent<IProps, IState> {
       data: IProps['data'],
       rowHeight: IProps['rowHeight']
     ) => {
-      console.log('memoizedGetVirtualList', start, end);
       const rows = [];
       for (let index = start; index <= end; index++) {
         if (index === data.length) {
@@ -223,8 +228,9 @@ class Grid extends React.PureComponent<IProps, IState> {
           <div
             data-row={index}
             style={{
+              width: '100%',
               height: rowHeight,
-              transform: `translateY(${index * rowHeight}px)`,
+              transform: `translateY(${this.getTopPosition(index)}px)`,
             }}
             className="row"
             key={index}
@@ -240,6 +246,27 @@ class Grid extends React.PureComponent<IProps, IState> {
     }
   );
 
+  getTopPosition = (index: number) => this.props.rowHeight * index;
+
+  getHeader = memoize((schema: IProps['schema']) => {
+    const { headerHeight } = this.props;
+    return (
+      <div
+        data-row="header"
+        style={{
+          height: headerHeight,
+        }}
+        className="row header"
+      >
+        {schema.map(({ width, header }, j) => (
+          <div className="cell" key={j} style={{ width }}>
+            {header}
+          </div>
+        ))}
+      </div>
+    );
+  });
+
   render() {
     const {
       data,
@@ -252,8 +279,6 @@ class Grid extends React.PureComponent<IProps, IState> {
       loadingMoreData,
     } = this.props;
     const { start, end, visibleCount } = this.state;
-    console.log(loadingMoreData);
-    console.log('render');
 
     if (visibleCount === -1) {
       return (
@@ -300,8 +325,28 @@ class Grid extends React.PureComponent<IProps, IState> {
       rowHeight
     );
 
+    const gridHeight =
+      data.length * rowHeight + (loadingMoreData ? rowHeight * 2 : 0);
+
     return (
       <div className="craft-smart-grid" style={this.props.style}>
+        <div className="grid-header">
+          <div className="grid-header-left" style={{ width: this.leftWidth }}>
+            {this.getHeader(this.leftSchema)}
+          </div>
+          <div
+            ref={this.centerHeaderRef}
+            onScroll={this.syncHorizontalScroll}
+            className="grid-header-center hide-scroll-bar"
+            style={{ width: `calc(100% - ${this.leftWidth}px)` }}
+          >
+            <div style={{ width: this.centerWidth }}>
+              {this.getHeader(this.centerSchema)}
+            </div>
+          </div>
+        </div>
+
+        {/* Grid Body */}
         <div
           className="grid"
           ref={this.gridRef}
@@ -309,18 +354,22 @@ class Grid extends React.PureComponent<IProps, IState> {
         >
           <div
             style={{
-              height:
-                data.length * rowHeight + (loadingMoreData ? rowHeight * 2 : 0),
+              height: gridHeight,
             }}
             className="grid-body"
           >
+            {/*
+             * Left Pinned Grid
+             */}
             <div style={{ width: this.leftWidth }} className="grid-left">
               <div className="grid-left-body">
                 {leftGrid}
                 {loadingMoreData && (
                   <PartialLoader
                     style={{
-                      transform: `translateY(${data.length * rowHeight}px)`,
+                      transform: `translateY(${this.getTopPosition(
+                        data.length
+                      )}px)`,
                     }}
                     schema={this.leftSchema}
                     className="partial-loader"
@@ -329,13 +378,16 @@ class Grid extends React.PureComponent<IProps, IState> {
                 )}
               </div>
             </div>
+            {/*
+             * Center Grid
+             */}
             <div
               style={{ width: `calc(100% - ${this.leftWidth}px)` }}
               className="grid-center"
             >
               <div
                 ref={this.centerGridRef}
-                className="grid-center-body"
+                className="grid-center-body hide-scroll-bar"
                 onScroll={this.syncHorizontalScroll}
               >
                 <div
@@ -347,7 +399,9 @@ class Grid extends React.PureComponent<IProps, IState> {
                     <PartialLoader
                       schema={this.centerSchema}
                       style={{
-                        transform: `translateY(${data.length * rowHeight}px)`,
+                        transform: `translateY(${this.getTopPosition(
+                          data.length
+                        )}px)`,
                       }}
                       className="partial-loader"
                       rowStyle={{

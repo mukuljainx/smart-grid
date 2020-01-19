@@ -1,10 +1,10 @@
-import * as React from "react";
+import * as React from 'react';
 
-type IDivIntrinsicProps = JSX.IntrinsicElements["div"];
+type IDivIntrinsicProps = JSX.IntrinsicElements['div'];
 
 interface IProps extends IDivIntrinsicProps {
   template: React.ElementType;
-  width: React.CSSProperties["width"];
+  width: React.CSSProperties['width'];
 }
 
 class Cell extends React.PureComponent<IProps> {

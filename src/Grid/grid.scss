@@ -28,12 +28,15 @@
     height: 100%;
     width: 100%;
     overflow-x: auto;
-    -ms-overflow-style: none;
   }
 
-  .grid-center-body::-webkit-scrollbar {
+  .hide-scroll-bar::-webkit-scrollbar {
     height: 0px; /* Remove scrollbar space */
     background: transparent; /* Optional: just make scrollbar invisible */
+  }
+
+  .hide-scroll-bar {
+    -ms-overflow-style: none;
   }
 
   .grid-left-body {
@@ -47,7 +50,12 @@
   }
 
   .row {
+    z-index: -1;
     position: absolute;
+  }
+
+  .row.header {
+    position: initial;
   }
 
   .grid-center .row {
@@ -90,6 +98,7 @@
 
   .grid-scroll-center {
     overflow-x: scroll;
+    height: 12px;
   }
 
   .grid-scroll-center::-webkit-scrollbar-thumb {
@@ -108,5 +117,24 @@
         border-right: 1px solid #efefef;
       }
     }
+  }
+
+  // Header
+  .grid-header {
+    display: flex;
+    border-bottom: 1px solid #efefef;
+  }
+
+  .grid-header-left {
+    border-right: 1px solid #efefef;
+  }
+
+  .grid-header-left,
+  .grid-header-center {
+    flex-shrink: 0;
+  }
+
+  .grid-header-center {
+    overflow-x: auto;
   }
 }
