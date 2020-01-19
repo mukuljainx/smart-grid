@@ -1,5 +1,5 @@
-import React from "react";
-import { range } from "lodash";
+import * as React from "react";
+import { range } from "lodash-es";
 import Table, { ISchema } from "../Table";
 
 type SimpleObject = Record<string, string>;
@@ -66,11 +66,15 @@ export default class App extends React.Component {
     console.log("LOAD MORE DATA");
     this.setState({ loading: true });
     setTimeout(() => {
-      limit = limit + 50;
-      this.setState({
-        laoding: false,
-        data: getData(limit)
-      });
+      if (limit < 100) {
+        limit = limit + 50;
+        this.setState({
+          laoding: false,
+          data: getData(limit)
+        });
+      } else {
+        this.setState({ loading: false });
+      }
     }, 2500);
   };
 
