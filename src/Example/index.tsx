@@ -1,6 +1,6 @@
-import * as React from "react";
-import { range } from "lodash-es";
-import Table, { ISchema } from "../Table";
+import * as React from 'react';
+import { range } from 'lodash-es';
+import Table, { ISchema } from '../Table';
 
 type SimpleObject = Record<string, string>;
 
@@ -8,39 +8,39 @@ const schema: ISchema[] = [
   {
     width: 200,
     template: ({ x }: SimpleObject) => <div>{x}</div>,
-    pinned: "LEFT",
+    pinned: 'LEFT',
     get: ({ a }: SimpleObject) => ({
-      x: a
-    })
+      x: a,
+    }),
   },
   {
     width: 150,
     template: ({ x }: SimpleObject) => <div>{x}</div>,
-    pinned: "LEFT",
-    get: ({ b, c }: SimpleObject) => ({ x: b + c })
+    pinned: 'LEFT',
+    get: ({ b, c }: SimpleObject) => ({ x: b + c }),
   },
   {
     width: 100,
     template: ({ x }: SimpleObject) => <div>{x}</div>,
-    get: ({ c }: SimpleObject) => ({ x: c })
+    get: ({ c }: SimpleObject) => ({ x: c }),
   },
   {
     width: 200,
     template: ({ x }: SimpleObject) => <div>{x}</div>,
-    get: ({ d }: SimpleObject) => ({ x: d })
+    get: ({ d }: SimpleObject) => ({ x: d }),
   },
   {
     width: 200,
     template: ({ x }: SimpleObject) => <div>{x}</div>,
-    get: ({ e }: SimpleObject) => ({ x: e })
+    get: ({ e }: SimpleObject) => ({ x: e }),
   },
   {
     width: 100,
     template: ({ x }: SimpleObject) => (
       <img src={x} style={{ height: 50 }} alt="lol" />
     ),
-    get: ({ logo }: SimpleObject) => ({ x: logo })
-  }
+    get: ({ logo }: SimpleObject) => ({ x: logo }),
+  },
 ];
 
 const getData = (limit: number) =>
@@ -51,7 +51,7 @@ const getData = (limit: number) =>
     d: `d ${i + 1}`,
     e: `e ${i + 1}`,
     logo:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/Sketch_Logo.svg/1133px-Sketch_Logo.svg.png"
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/Sketch_Logo.svg/1133px-Sketch_Logo.svg.png',
   }));
 
 let limit = 100;
@@ -59,18 +59,18 @@ let limit = 100;
 export default class App extends React.Component {
   state = {
     data: getData(limit),
-    loading: false
+    loading: false,
   };
 
   loadMoreData = () => {
-    console.log("LOAD MORE DATA");
+    console.log('LOAD MORE DATA');
     this.setState({ loading: true });
     setTimeout(() => {
       if (limit < 100) {
         limit = limit + 50;
         this.setState({
           laoding: false,
-          data: getData(limit)
+          data: getData(limit),
         });
       } else {
         this.setState({ loading: false });
@@ -85,8 +85,8 @@ export default class App extends React.Component {
         <Table
           style={{
             flexGrow: 2,
-            maxHeight: "calc(100% - 150px)",
-            maxWidth: 600
+            maxHeight: 'calc(100% - 150px)',
+            maxWidth: 600,
           }}
           loadMore={this.loadMoreData}
           buffer={10}

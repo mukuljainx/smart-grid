@@ -1,41 +1,62 @@
-const path = require("path");
+const path = require('path');
+var HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-  entry: "./src/index.tsx",
+  entry: ['./src'],
+  plugins: [new HtmlWebpackPlugin({ template: './src/index.html' })],
   module: {
     rules: [
       {
         test: /\.tsx?$/,
-        use: ["ts-loader"],
-        exclude: /node_modules/
+        use: ['ts-loader'],
+        exclude: /node_modules/,
       },
       {
         test: /\.s[ac]ss$/i,
         use: [
           // Creates `style` nodes from JS strings
-          "style-loader",
+          'style-loader',
           // Translates CSS into CommonJS
-          "css-loader",
+          'css-loader',
           // Compiles Sass to CSS
-          "sass-loader"
-        ]
-      }
-    ]
+          'sass-loader',
+        ],
+      },
+      { test: /\.html$/, use: 'html-loader' },
+    ],
   },
-  target: "web",
+  target: 'web',
   resolve: {
-    extensions: [".tsx", ".ts", ".js"]
+    extensions: ['.tsx', '.ts', '.js'],
   },
-  devtool: "inline-source-map",
+  devtool: 'inline-source-map',
   output: {
-    filename: "main.js",
-    path: path.resolve(__dirname, "dist")
+    filename: 'main.js',
+    path: path.resolve(__dirname, 'dist'),
+  },
+  optimization: {
+    splitChunks: {
+      name: true,
+      cacheGroups: {
+        commons: {
+          chunks: 'initial',
+        },
+        vendors: {
+          test: /[\\/]node_modules[\\/]/,
+          chunks: 'all',
+          priority: -10,
+        },
+      },
+    },
+    runtimeChunk: true,
   },
   devServer: {
-    contentBase: path.join(__dirname, "dist"),
-    compress: true,
+    contentBase: path.join(__dirname, 'src'),
+    compress: false,
+    stats: 'minimal',
+    historyApiFallback: true,
     port: 9000,
-    hot: true
+    hot: true,
   },
-  mode: "production"
+  mode: 'development',
 };

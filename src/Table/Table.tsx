@@ -1,14 +1,12 @@
-import * as React from "react";
-import "./table.scss";
-import Cell from "./Cell";
-import memoize from "fast-memoize";
-
-debugger;
+import * as React from 'react';
+import './table.scss';
+import Cell from './Cell';
+import memoize from 'fast-memoize';
 
 export interface ISchema {
   width: number;
   template: React.ElementType;
-  pinned?: "LEFT";
+  pinned?: 'LEFT';
   get: (props: ObjectLiteral) => ObjectLiteral;
 }
 
@@ -59,11 +57,11 @@ class Table extends React.PureComponent<IProps, IState> {
   // Load more metadata
   loadMoreDataPosition = {
     position: -1,
-    end: -1
+    end: -1,
   };
 
   public static defaultProps = {
-    buffer: 25
+    buffer: 25,
   };
 
   constructor(props: IProps) {
@@ -72,10 +70,10 @@ class Table extends React.PureComponent<IProps, IState> {
       start: 0,
       end: -1,
       position: 0,
-      visibleCount: -1
+      visibleCount: -1,
     };
 
-    this.leftSchema = props.schema.filter(({ pinned }) => pinned === "LEFT");
+    this.leftSchema = props.schema.filter(({ pinned }) => pinned === 'LEFT');
     this.centerSchema = props.schema.filter(({ pinned }) => !pinned);
 
     this.leftWidth = this.leftSchema.reduce(
@@ -98,7 +96,7 @@ class Table extends React.PureComponent<IProps, IState> {
 
     this.setState({
       end: visibleCount + buffer!,
-      visibleCount
+      visibleCount,
     });
   }
 
@@ -127,7 +125,7 @@ class Table extends React.PureComponent<IProps, IState> {
           currentPosition + visibleCount + buffer!,
           data.length - 1
         ),
-        position: currentPosition
+        position: currentPosition,
       }));
     }
 
@@ -149,12 +147,12 @@ class Table extends React.PureComponent<IProps, IState> {
       }
       this.loadMoreDataPosition = {
         position: currentPosition,
-        end: rows
+        end: rows,
       };
     }
   };
 
-  getVirtualList = (start: number, end: number, schema: IProps["schema"]) => {
+  getVirtualList = (start: number, end: number, schema: IProps['schema']) => {
     const { data, rowHeight } = this.props;
     const table = [];
     for (let index = start; index <= end; index++) {
@@ -167,7 +165,7 @@ class Table extends React.PureComponent<IProps, IState> {
           data-row={index}
           style={{
             height: rowHeight,
-            transform: `translateY(${index * rowHeight}px)`
+            transform: `translateY(${index * rowHeight}px)`,
           }}
           className="row"
           key={index}
@@ -202,7 +200,7 @@ class Table extends React.PureComponent<IProps, IState> {
     }
 
     if (this.props.loading) {
-      console.log("Loading");
+      console.log('Loading');
     }
 
     const { data, rowHeight } = this.props;
@@ -254,7 +252,7 @@ class Table extends React.PureComponent<IProps, IState> {
           />
           <div
             style={{
-              width: `calc(100% - ${this.leftWidth}px)`
+              width: `calc(100% - ${this.leftWidth}px)`,
             }}
             className="table-scroll-center"
             ref={this.centerScrollRef}
