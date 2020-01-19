@@ -81,7 +81,7 @@ export default class App extends React.Component {
   render() {
     return (
       <div className="App">
-        <h1>React Table</h1>
+        <h1>Smart Grid</h1>
         <Table
           style={{
             flexGrow: 2,
@@ -90,7 +90,7 @@ export default class App extends React.Component {
           }}
           loadMore={this.loadMoreData}
           buffer={10}
-          rowHeight={50}
+          rowHeight={40}
           schema={schema}
           data={this.state.data}
           loading={this.state.loading}

@@ -1,0 +1,102 @@
+.craft-smart-grid {
+  border: 1px solid #eee;
+  display: flex;
+  flex-direction: column;
+
+  .grid {
+    max-height: 100%;
+    overflow-y: auto;
+  }
+
+  .grid-body {
+    display: flex;
+    width: auto;
+  }
+
+  .grid-left,
+  .grid-center {
+    flex-shrink: 0;
+    height: 100%;
+  }
+
+  .grid-center {
+    width: 100%;
+  }
+
+  .grid-center-body {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    overflow-x: auto;
+    -ms-overflow-style: none;
+  }
+
+  .grid-center-body::-webkit-scrollbar {
+    height: 0px; /* Remove scrollbar space */
+    background: transparent; /* Optional: just make scrollbar invisible */
+  }
+
+  .grid-left-body {
+    position: relative;
+  }
+
+  .grid-center-body-inner {
+    height: 100%;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .row {
+    position: absolute;
+  }
+
+  .grid-center .row {
+    flex-shrink: 0;
+    border-bottom: 1px solid #efefef;
+    display: flex;
+  }
+
+  .cell {
+    flex-shrink: 0;
+  }
+
+  .cell:not(:last-child) {
+    border-right: 1px solid #efefef;
+  }
+
+  .grid-left .row {
+    border-bottom: 1px solid #efefef;
+    border-right: 1px solid #efefef;
+  }
+
+  .row {
+    display: flex;
+  }
+
+  .grid-scroll {
+    border-top: 1px solid #efefef;
+    display: flex;
+    background: #efefef;
+  }
+
+  img {
+    height: 30px;
+  }
+
+  .grid-scroll,
+  .grid-scroll-center > div {
+    height: 12px;
+  }
+
+  .grid-scroll-center {
+    overflow-x: scroll;
+  }
+
+  .grid-scroll-center::-webkit-scrollbar-thumb {
+    -webkit-border-radius: 8px;
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.18);
+    cursor: move;
+    border: none;
+  }
+}

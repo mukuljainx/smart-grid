@@ -1,7 +1,9 @@
 import * as React from 'react';
-import './table.scss';
-import Cell from './Cell';
 import memoize from 'fast-memoize';
+
+import './grid.scss';
+import Cell from './Cell';
+import Loader from './Loader';
 
 export interface ISchema {
   width: number;
@@ -22,17 +24,16 @@ export interface IProps {
   loadMore?: () => void;
   buffer?: number;
   loading?: boolean;
-  partialLoading?: boolean;
   /**
    * This will render if loading is true
    * parent element will gird's first div
    */
   loader?: React.ReactChild;
   /**
-   * This will render if partialLoading is true
-   * at the end of the table with given height
+   * Will show overlay in place of grid
    */
-  partialLoader?: React.ReactChild;
+  showOverlay?: boolean;
+  overlay?: React.ReactChild;
 }
 
 interface IState {
@@ -42,13 +43,13 @@ interface IState {
   visibleCount: number;
 }
 
-class Table extends React.PureComponent<IProps, IState> {
+class Grid extends React.PureComponent<IProps, IState> {
   // Refs
-  centerTableRef: React.RefObject<HTMLDivElement> = React.createRef();
+  centerGridRef: React.RefObject<HTMLDivElement> = React.createRef();
   centerScrollRef: React.RefObject<HTMLDivElement> = React.createRef();
-  tableRef: React.RefObject<HTMLDivElement> = React.createRef();
+  gridRef: React.RefObject<HTMLDivElement> = React.createRef();
 
-  // Table metadata
+  // Grid metadata
   leftSchema: ISchema[];
   centerSchema: ISchema[];
   leftWidth: number;
@@ -90,8 +91,8 @@ class Table extends React.PureComponent<IProps, IState> {
   componentDidMount() {
     const { rowHeight, buffer } = this.props;
 
-    const visibleCount = this.tableRef.current
-      ? Math.round(this.tableRef.current.offsetHeight / rowHeight)
+    const visibleCount = this.gridRef.current
+      ? Math.round(this.gridRef.current.offsetHeight / rowHeight)
       : 0;
 
     this.setState({
@@ -102,16 +103,16 @@ class Table extends React.PureComponent<IProps, IState> {
 
   syncHorizontalScroll = (event: any) => {
     const scrollLeft = event.target.scrollLeft;
-    if (this.centerTableRef.current) {
-      this.centerTableRef.current.scrollLeft = scrollLeft;
+    if (this.centerGridRef.current) {
+      this.centerGridRef.current.scrollLeft = scrollLeft;
     }
     if (this.centerScrollRef.current) {
       this.centerScrollRef.current.scrollLeft = scrollLeft;
     }
   };
 
-  handleTableScroll = (event: any) => {
-    if (event.target !== this.tableRef.current) {
+  handleGridScroll = (event: any) => {
+    if (event.target !== this.gridRef.current) {
       return;
     }
     const scrollTop = event.target.scrollTop;
@@ -154,13 +155,13 @@ class Table extends React.PureComponent<IProps, IState> {
 
   getVirtualList = (start: number, end: number, schema: IProps['schema']) => {
     const { data, rowHeight } = this.props;
-    const table = [];
+    const rows = [];
     for (let index = start; index <= end; index++) {
       if (index === data.length) {
         break;
       }
       const row = data[index];
-      table.push(
+      rows.push(
         <div
           data-row={index}
           style={{
@@ -177,84 +178,108 @@ class Table extends React.PureComponent<IProps, IState> {
       );
     }
 
-    return table;
+    return rows;
   };
 
   memoizedGetVirtualList = memoize(this.getVirtualList);
 
   render() {
-    if (this.state.visibleCount === -1) {
+    const {
+      data,
+      rowHeight,
+      loading,
+      style,
+      loader,
+      overlay,
+      showOverlay,
+    } = this.props;
+    const { start, end, visibleCount } = this.state;
+
+    if (visibleCount === -1) {
       return (
-        <div ref={this.tableRef} style={this.props.style}>
+        <div ref={this.gridRef} style={this.props.style}>
           Loading No Mounted yet
         </div>
       );
     }
 
-    if (this.state.visibleCount > -1 && this.props.data.length === 0) {
+    if (visibleCount > -1 && data.length === 0) {
       return (
-        <div style={{ height: 100 }} ref={this.tableRef}>
+        <div style={{ height: 100 }} ref={this.gridRef}>
           Loading No Data yet
         </div>
       );
     }
 
-    if (this.props.loading) {
-      console.log('Loading');
+    if (loading) {
+      if (loader) {
+        return loader;
+      }
+      return (
+        <div className="craft-smart-grid" style={style}>
+          <Loader
+            rows={visibleCount > 0 ? visibleCount + 1 : undefined}
+            rowHeight={rowHeight}
+          />
+        </div>
+      );
     }
 
-    const { data, rowHeight } = this.props;
-    const { start, end } = this.state;
-    const leftTable = this.memoizedGetVirtualList(start, end, this.leftSchema);
-    const centerTable = this.memoizedGetVirtualList(
+    if (showOverlay) {
+      return (
+        <div className="craft-smart-grid" style={style}>
+          {overlay}
+        </div>
+      );
+    }
+
+    const leftGrid = this.memoizedGetVirtualList(start, end, this.leftSchema);
+    const centerGrid = this.memoizedGetVirtualList(
       start,
       end,
       this.centerSchema
     );
 
     return (
-      <div className="table-wrapper" style={this.props.style}>
+      <div className="craft-smart-grid" style={this.props.style}>
         <div
-          className="table"
-          ref={this.tableRef}
-          onScroll={this.handleTableScroll}
+          className="grid"
+          ref={this.gridRef}
+          onScroll={this.handleGridScroll}
         >
           <div
             style={{ height: data.length * rowHeight }}
-            className="table-body"
+            className="grid-body"
           >
-            <div style={{ width: this.leftWidth }} className="table-left">
-              <div className="table-left-body">{leftTable}</div>
+            <div style={{ width: this.leftWidth }} className="grid-left">
+              <div className="grid-left-body">{leftGrid}</div>
             </div>
             <div
               style={{ width: `calc(100% - ${this.leftWidth}px)` }}
-              className="table-center"
+              className="grid-center"
             >
               <div
-                ref={this.centerTableRef}
-                className="table-center-body"
+                ref={this.centerGridRef}
+                className="grid-center-body"
                 onScroll={this.syncHorizontalScroll}
               >
                 <div
                   style={{ width: this.centerWidth }}
-                  className="table-center-body-inner"
+                  className="grid-center-body-inner"
                 >
-                  {centerTable}
+                  {centerGrid}
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <div className="table-scroll">
-          <div
-            className="table-scroll-left"
-            style={{ width: this.leftWidth }}
-          />
+        <div className="grid-scroll">
+          <div className="grid-scroll-left" style={{ width: this.leftWidth }} />
           <div
             style={{
               width: `calc(100% - ${this.leftWidth}px)`,
             }}
-            className="table-scroll-center"
+            className="grid-scroll-center"
             ref={this.centerScrollRef}
             onScroll={this.syncHorizontalScroll}
           >
@@ -266,4 +291,4 @@ class Table extends React.PureComponent<IProps, IState> {
   }
 }
 
-export default Table;
+export default Grid;
