@@ -17,7 +17,7 @@
     "css": "npm run css:compile && npm run css:prefix && npm run css:end",
     "css:compile": "sass src/Grid:dist/cjs && sass src/Grid:dist/esm",
     "css:prefix": "postcss dist/cjs/**/*.css dist/esm/**/*.css --use autoprefixer --replace",
-    "css:end": "replace-in-file .scss .css dist/**/*.js",
+    "css:end": "replace-in-file .scss .css 'dist/**/*'",
     "build:cjs": "tsc -m commonjs --outDir dist/cjs -p tsconfig.build.json",
     "build:esnext": "tsc -m esnext --outDir dist/esm -p tsconfig.build.json"
   },
