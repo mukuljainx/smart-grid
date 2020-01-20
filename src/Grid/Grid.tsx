@@ -9,7 +9,7 @@ export interface ISchema {
   width: number;
   template: React.ElementType;
   pinned?: 'LEFT';
-  get: (props: ObjectLiteral) => ObjectLiteral;
+  get: (props: any) => any;
   header: React.ReactChild;
 }
 
@@ -248,7 +248,8 @@ class Grid extends React.PureComponent<IProps, IState> {
 
   getTopPosition = (index: number) => this.props.rowHeight * index;
 
-  getHeader = memoize((schema: IProps['schema']) => {
+  getHeader = (schema: IProps['schema']) => {
+    console.log('123 123');
     const { headerHeight } = this.props;
     return (
       <div
@@ -265,7 +266,7 @@ class Grid extends React.PureComponent<IProps, IState> {
         ))}
       </div>
     );
-  });
+  };
 
   render() {
     const {

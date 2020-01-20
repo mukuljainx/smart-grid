@@ -1,5 +1,7 @@
 {
   "compilerOptions": {
+    "esModuleInterop": true,
+    "skipLibCheck": true,
     "module": "esNext",
     "allowSyntheticDefaultImports": true,
     "outDir": "./dist/",
