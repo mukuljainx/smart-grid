@@ -3,6 +3,10 @@
   display: flex;
   flex-direction: column;
 
+  * {
+    box-sizing: border-box;
+  }
+
   .grid {
     max-height: 100%;
     overflow-y: auto;

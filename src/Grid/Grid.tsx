@@ -6,6 +6,8 @@ import Cell from './Atoms/Cell';
 import Header from './Header';
 import Loader, { PartialLoader } from './Loader';
 
+type IDivProps = JSX.IntrinsicElements['div'];
+
 export interface ISchema {
   width: number;
   template: React.ElementType;
@@ -18,12 +20,11 @@ export interface ObjectLiteral {
   [k: string]: any;
 }
 
-export interface IProps {
+export interface IProps extends IDivProps {
   data: ObjectLiteral[];
   schema: ISchema[];
   rowHeight: number;
   headerHeight: number;
-  style: React.CSSProperties;
   loadMore?: () => void;
   buffer?: number;
   loading?: boolean;
@@ -262,18 +263,25 @@ class Grid extends React.PureComponent<IProps, IState> {
   render() {
     const {
       data,
+      schema: __,
+      loadMore: __1,
+      buffer: __2,
       rowHeight,
       loading,
-      style,
       loader,
       overlay,
       showOverlay,
       loadingMoreData,
       headerHeight,
+      className,
+      ...rest
     } = this.props;
     const { start, end, visibleCount } = this.state;
 
-    console.log('RENDER: grid');
+    const girdRestProps = {
+      className: `craft-smart-grid ${className}`,
+      ...rest,
+    };
 
     if (visibleCount === -1) {
       return (
@@ -288,7 +296,7 @@ class Grid extends React.PureComponent<IProps, IState> {
         return loader;
       }
       return (
-        <div className="craft-smart-grid" style={style}>
+        <div {...girdRestProps}>
           <Loader
             rows={visibleCount > 0 ? visibleCount + 1 : undefined}
             rowHeight={rowHeight}
@@ -298,11 +306,7 @@ class Grid extends React.PureComponent<IProps, IState> {
     }
 
     if (showOverlay) {
-      return (
-        <div className="craft-smart-grid" style={style}>
-          {overlay}
-        </div>
-      );
+      return <div {...girdRestProps}>{overlay}</div>;
     }
 
     const leftGrid = this.memoizedGetVirtualList(
@@ -324,7 +328,7 @@ class Grid extends React.PureComponent<IProps, IState> {
       data.length * rowHeight + (loadingMoreData ? rowHeight * 2 : 0);
 
     return (
-      <div className="craft-smart-grid" style={this.props.style}>
+      <div {...girdRestProps}>
         <Header
           getRef={this.getHeaderRef}
           centerSchema={this.centerSchema}
