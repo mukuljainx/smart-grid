@@ -1,53 +1,10 @@
 import * as React from 'react';
-import { range } from 'lodash-es';
+import { range, pick } from 'lodash-es';
+import produce from 'immer';
+
 import Table, { ISchema } from '../Grid';
 
-type SimpleObject = Record<string, string>;
-
-const schema: ISchema[] = [
-  {
-    width: 200,
-    template: ({ x }: SimpleObject) => <div>{x}</div>,
-    pinned: 'LEFT',
-    get: ({ a }: SimpleObject) => ({
-      x: a,
-    }),
-    header: 'A',
-  },
-  {
-    width: 150,
-    template: ({ x }: SimpleObject) => <div>{x}</div>,
-    pinned: 'LEFT',
-    get: ({ b, c }: SimpleObject) => ({ x: b + c }),
-    header: 'B',
-  },
-  {
-    width: 100,
-    template: ({ x }: SimpleObject) => <div>{x}</div>,
-    get: ({ c }: SimpleObject) => ({ x: c }),
-    header: <div style={{ height: 200 }}>C</div>,
-  },
-  {
-    width: 200,
-    template: ({ x }: SimpleObject) => <div>{x}</div>,
-    get: ({ d }: SimpleObject) => ({ x: d }),
-    header: 'D',
-  },
-  {
-    width: 200,
-    template: ({ x }: SimpleObject) => <div>{x}</div>,
-    get: ({ e }: SimpleObject) => ({ x: e }),
-    header: 'E',
-  },
-  {
-    width: 100,
-    template: ({ x }: SimpleObject) => (
-      <img src={x} style={{ height: 35 }} alt="lol" />
-    ),
-    get: ({ logo }: SimpleObject) => ({ x: logo }),
-    header: 'Image',
-  },
-];
+type SimpleObject = Record<string, any>;
 
 const getData = (limit: number) =>
   range(limit).map(i => ({
@@ -58,15 +15,105 @@ const getData = (limit: number) =>
     e: `e ${i + 1}`,
     logo:
       'https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/Sketch_Logo.svg/1133px-Sketch_Logo.svg.png',
+    checked: false,
   }));
 
 let limit = 0;
 
-export default class App extends React.Component {
-  state = {
+interface IState {
+  loading: boolean;
+  data: ReturnType<typeof getData>;
+  allChecked: boolean;
+}
+
+export default class App extends React.Component<{}, IState> {
+  state: IState = {
     data: [] as any,
     loading: true,
+    allChecked: false,
   };
+
+  handleCheckboxClick = (__: any, rowIndex: number) => {
+    this.setState(state => {
+      return produce(state, draft => {
+        draft.data[rowIndex].checked = !draft.data[rowIndex].checked;
+      });
+    });
+  };
+
+  handleHeaderCheckboxClick = (__: any) => {
+    this.setState(state => {
+      return produce(state, draft => {
+        draft.allChecked = !state.allChecked;
+        draft.data.forEach(row => {
+          row.checked = !state.allChecked;
+        });
+      });
+    });
+  };
+
+  schema: ISchema[] = [
+    {
+      width: 200,
+      template: ({ checked, rowIndex }: SimpleObject) => {
+        return (
+          <div>
+            <input
+              type="checkbox"
+              onChange={event => this.handleCheckboxClick(event, rowIndex)}
+              checked={checked}
+            />
+          </div>
+        );
+      },
+      pinned: 'LEFT',
+      get: ({ checked }: SimpleObject) => ({
+        checked,
+      }),
+      header: () => {
+        return (
+          <input
+            type="checkbox"
+            onChange={this.handleHeaderCheckboxClick}
+            checked={this.state.allChecked}
+          />
+        );
+      },
+    },
+    {
+      width: 150,
+      template: ({ x }: SimpleObject) => <div>{x}</div>,
+      pinned: 'LEFT',
+      get: ({ b, c }: SimpleObject) => ({ x: b + c }),
+      header: () => <>B</>,
+    },
+    {
+      width: 100,
+      template: ({ x }: SimpleObject) => <div>{x}</div>,
+      get: ({ c }: SimpleObject) => ({ x: c }),
+      header: () => <div style={{ height: 200 }}>C</div>,
+    },
+    {
+      width: 200,
+      template: ({ x }: SimpleObject) => <div>{x}</div>,
+      get: ({ d }: SimpleObject) => ({ x: d }),
+      header: () => <>D</>,
+    },
+    {
+      width: 200,
+      template: ({ x }: SimpleObject) => <div>{x}</div>,
+      get: ({ e }: SimpleObject) => ({ x: e }),
+      header: () => <>E</>,
+    },
+    {
+      width: 100,
+      template: ({ x }: SimpleObject) => (
+        <img src={x} style={{ height: 35 }} alt="lol" />
+      ),
+      get: ({ logo }: SimpleObject) => ({ x: logo }),
+      header: () => <>Image</>,
+    },
+  ];
 
   componentDidMount() {
     this.loadMoreData();
@@ -78,7 +125,7 @@ export default class App extends React.Component {
       if (limit < 1000) {
         limit = limit + 50;
         this.setState({
-          laoding: false,
+          loading: false,
           data: getData(limit),
         });
       } else {
@@ -102,7 +149,7 @@ export default class App extends React.Component {
           buffer={10}
           rowHeight={40}
           headerHeight={40}
-          schema={schema}
+          schema={this.schema}
           data={this.state.data}
           loading={this.state.data.length === 0 && this.state.loading}
         />

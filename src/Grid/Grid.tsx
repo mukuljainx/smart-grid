@@ -3,6 +3,7 @@ import memoize from 'fast-memoize';
 
 import './grid.scss';
 import Cell from './Atoms/Cell';
+import Header from './Header';
 import Loader, { PartialLoader } from './Loader';
 
 export interface ISchema {
@@ -10,7 +11,7 @@ export interface ISchema {
   template: React.ElementType;
   pinned?: 'LEFT';
   get: (props: any) => any;
-  header: React.ReactChild;
+  header: React.ElementType;
 }
 
 export interface ObjectLiteral {
@@ -236,7 +237,13 @@ class Grid extends React.PureComponent<IProps, IState> {
             key={index}
           >
             {schema.map(({ width, template, get }, j) => (
-              <Cell key={j} width={width} template={template} {...get(row)} />
+              <Cell
+                rowIndex={index}
+                key={j}
+                width={width}
+                template={template}
+                {...get(row)}
+              />
             ))}
           </div>
         );
@@ -248,24 +255,8 @@ class Grid extends React.PureComponent<IProps, IState> {
 
   getTopPosition = (index: number) => this.props.rowHeight * index;
 
-  getHeader = (schema: IProps['schema']) => {
-    console.log('123 123');
-    const { headerHeight } = this.props;
-    return (
-      <div
-        data-row="header"
-        style={{
-          height: headerHeight,
-        }}
-        className="row header"
-      >
-        {schema.map(({ width, header }, j) => (
-          <div className="cell" key={j} style={{ width }}>
-            {header}
-          </div>
-        ))}
-      </div>
-    );
+  getHeaderRef = (ref: React.RefObject<HTMLDivElement>) => {
+    this.centerHeaderRef = ref;
   };
 
   render() {
@@ -278,8 +269,11 @@ class Grid extends React.PureComponent<IProps, IState> {
       overlay,
       showOverlay,
       loadingMoreData,
+      headerHeight,
     } = this.props;
     const { start, end, visibleCount } = this.state;
+
+    console.log('RENDER: grid');
 
     if (visibleCount === -1) {
       return (
@@ -331,21 +325,15 @@ class Grid extends React.PureComponent<IProps, IState> {
 
     return (
       <div className="craft-smart-grid" style={this.props.style}>
-        <div className="grid-header">
-          <div className="grid-header-left" style={{ width: this.leftWidth }}>
-            {this.getHeader(this.leftSchema)}
-          </div>
-          <div
-            ref={this.centerHeaderRef}
-            onScroll={this.syncHorizontalScroll}
-            className="grid-header-center hide-scroll-bar"
-            style={{ width: `calc(100% - ${this.leftWidth}px)` }}
-          >
-            <div style={{ width: this.centerWidth }}>
-              {this.getHeader(this.centerSchema)}
-            </div>
-          </div>
-        </div>
+        <Header
+          getRef={this.getHeaderRef}
+          centerSchema={this.centerSchema}
+          leftSchema={this.leftSchema}
+          centerWidth={this.centerWidth}
+          leftWidth={this.leftWidth}
+          headerHeight={headerHeight}
+          syncHorizontalScroll={this.syncHorizontalScroll}
+        />
 
         {/* Grid Body */}
         <div
