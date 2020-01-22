@@ -10,7 +10,6 @@ interface IProps extends IDivIntrinsicProps {
 
 class Cell extends React.PureComponent<IProps> {
   render() {
-    console.log('RENDER: cell');
     const { template, rowIndex, width, ...rest } = this.props;
     const Template = template;
 

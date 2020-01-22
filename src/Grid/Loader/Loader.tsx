@@ -61,7 +61,7 @@ class Loader extends React.PureComponent<IProps> {
 
     return (
       <div className="loader-wrapper">
-        {this.getLoaderRows(rows, rowHeight)}
+        {this.getLoaderRows(rows!, rowHeight!)}
       </div>
     );
   }

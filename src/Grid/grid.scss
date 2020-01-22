@@ -2,14 +2,15 @@
   border: 1px solid #eee;
   display: flex;
   flex-direction: column;
+  height: 100%;
 
   * {
     box-sizing: border-box;
   }
 
   .grid {
-    max-height: 100%;
     overflow-y: auto;
+    position: initial;
   }
 
   .grid-body {
@@ -104,15 +105,8 @@
     height: 12px;
   }
 
-  .grid-scroll-center::-webkit-scrollbar-thumb {
-    -webkit-border-radius: 8px;
-    border-radius: 8px;
-    background: rgba(0, 0, 0, 0.18);
-    cursor: move;
-    border: none;
-  }
-
   .partial-loader {
+    width: 100%;
     position: absolute;
     border-right: 1px solid #efefef;
     .loader-column {
@@ -124,6 +118,7 @@
 
   // Header
   .grid-header {
+    flex-shrink: 0;
     display: flex;
     border-bottom: 1px solid #efefef;
   }

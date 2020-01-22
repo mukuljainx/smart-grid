@@ -48,7 +48,12 @@ interface IState {
   start: number;
   end: number;
   position: number;
-  visibleCount: number;
+  gridMeta: {
+    leftSchema: ISchema[];
+    centerSchema: ISchema[];
+    leftWidth: number;
+    centerWidth: number;
+  };
 }
 
 class Grid extends React.PureComponent<IProps, IState> {
@@ -57,12 +62,6 @@ class Grid extends React.PureComponent<IProps, IState> {
   centerScrollRef: React.RefObject<HTMLDivElement> = React.createRef();
   centerHeaderRef: React.RefObject<HTMLDivElement> = React.createRef();
   gridRef: React.RefObject<HTMLDivElement> = React.createRef();
-
-  // Grid metadata
-  leftSchema: ISchema[];
-  centerSchema: ISchema[];
-  leftWidth: number;
-  centerWidth: number;
 
   // Load more metadata
   loadMoreDataPosition = {
@@ -80,33 +79,15 @@ class Grid extends React.PureComponent<IProps, IState> {
       start: 0,
       end: -1,
       position: 0,
-      visibleCount: -1,
+      gridMeta: this.updateSchema(this.props.schema),
     };
-
-    this.leftSchema = props.schema.filter(({ pinned }) => pinned === 'LEFT');
-    this.centerSchema = props.schema.filter(({ pinned }) => !pinned);
-
-    this.leftWidth = this.leftSchema.reduce(
-      (total, current) => (total = total + current.width),
-      0
-    );
-
-    this.centerWidth = this.centerSchema.reduce(
-      (total, current) => (total = total + current.width),
-      0
-    );
   }
 
   componentDidMount() {
-    const { rowHeight, buffer } = this.props;
-
-    const visibleCount = this.gridRef.current
-      ? Math.round(this.gridRef.current.offsetHeight / rowHeight)
-      : 0;
+    const { buffer } = this.props;
 
     this.setState({
-      end: visibleCount + buffer!,
-      visibleCount,
+      end: this.getVisibleRowsCount() + buffer!,
     });
   }
   componentDidUpdate(prevProps: IProps) {
@@ -120,21 +101,31 @@ class Grid extends React.PureComponent<IProps, IState> {
       this.gridRef.current
     ) {
       const { rowHeight, buffer, data } = this.props;
-      const { visibleCount } = this.state;
 
       const currentPosition = Math.round(
         this.gridRef.current.scrollTop / rowHeight
       );
 
+      const visibleCount = this.getVisibleRowsCount();
+
       this.handleCurrentBuffer({
         currentPosition,
-        buffer: buffer,
+        buffer: buffer!,
         position: -visibleCount,
         visibleCount: visibleCount,
         dataLength: data.length,
       });
     }
+
+    if (prevProps.schema !== this.props.schema) {
+      this.setState({ gridMeta: this.updateSchema(this.props.schema) });
+    }
   }
+
+  getVisibleRowsCount = () =>
+    this.gridRef.current
+      ? Math.round(this.gridRef.current.offsetHeight / this.props.rowHeight)
+      : 0;
 
   // TODO: add proper types for scroll events
   syncHorizontalScroll = (event: any) => {
@@ -150,18 +141,42 @@ class Grid extends React.PureComponent<IProps, IState> {
     }
   };
 
+  updateSchema = (schema: ISchema[]) => {
+    const leftSchema = schema.filter(({ pinned }) => pinned === 'LEFT');
+    const centerSchema = schema.filter(({ pinned }) => !pinned);
+
+    const leftWidth = leftSchema.reduce(
+      (total, current) => (total = total + current.width),
+      0
+    );
+
+    const centerWidth = centerSchema.reduce(
+      (total, current) => (total = total + current.width),
+      0
+    );
+
+    return {
+      leftSchema,
+      centerSchema,
+      leftWidth,
+      centerWidth,
+    };
+  };
+
   handleGridScroll = (event: any) => {
     if (event.target !== this.gridRef.current) {
       return;
     }
     const scrollTop = event.target.scrollTop;
     const { rowHeight, buffer, data } = this.props;
-    const { position, visibleCount } = this.state;
+    const { position } = this.state;
     const currentPosition = Math.round(scrollTop / rowHeight);
+
+    const visibleCount = this.getVisibleRowsCount();
 
     this.handleCurrentBuffer({
       currentPosition,
-      buffer,
+      buffer: buffer!,
       position,
       visibleCount,
       dataLength: data.length,
@@ -184,7 +199,8 @@ class Grid extends React.PureComponent<IProps, IState> {
     dataLength: number;
   }) => {
     if (Math.abs(currentPosition - position) >= visibleCount) {
-      this.setState(({ visibleCount }) => ({
+      const visibleCount = this.getVisibleRowsCount();
+      this.setState(() => ({
         start: Math.max(currentPosition - visibleCount - buffer!, 0),
         end: Math.min(currentPosition + visibleCount + buffer!, dataLength - 1),
         position: currentPosition,
@@ -276,7 +292,8 @@ class Grid extends React.PureComponent<IProps, IState> {
       className,
       ...rest
     } = this.props;
-    const { start, end, visibleCount } = this.state;
+    const { start, end, gridMeta } = this.state;
+    const visibleCount = this.getVisibleRowsCount();
 
     const girdRestProps = {
       className: `craft-smart-grid ${className}`,
@@ -312,14 +329,14 @@ class Grid extends React.PureComponent<IProps, IState> {
     const leftGrid = this.memoizedGetVirtualList(
       start,
       end,
-      this.leftSchema,
+      gridMeta.leftSchema,
       data,
       rowHeight
     );
     const centerGrid = this.memoizedGetVirtualList(
       start,
       end,
-      this.centerSchema,
+      gridMeta.centerSchema,
       data,
       rowHeight
     );
@@ -331,10 +348,10 @@ class Grid extends React.PureComponent<IProps, IState> {
       <div {...girdRestProps}>
         <Header
           getRef={this.getHeaderRef}
-          centerSchema={this.centerSchema}
-          leftSchema={this.leftSchema}
-          centerWidth={this.centerWidth}
-          leftWidth={this.leftWidth}
+          centerSchema={gridMeta.centerSchema}
+          leftSchema={gridMeta.leftSchema}
+          centerWidth={gridMeta.centerWidth}
+          leftWidth={gridMeta.leftWidth}
           headerHeight={headerHeight}
           syncHorizontalScroll={this.syncHorizontalScroll}
         />
@@ -354,7 +371,7 @@ class Grid extends React.PureComponent<IProps, IState> {
             {/*
              * Left Pinned Grid
              */}
-            <div style={{ width: this.leftWidth }} className="grid-left">
+            <div style={{ width: gridMeta.leftWidth }} className="grid-left">
               <div className="grid-left-body">
                 {leftGrid}
                 {loadingMoreData && (
@@ -364,7 +381,7 @@ class Grid extends React.PureComponent<IProps, IState> {
                         data.length
                       )}px)`,
                     }}
-                    schema={this.leftSchema}
+                    schema={gridMeta.leftSchema}
                     className="partial-loader"
                     rowStyle={{ height: rowHeight }}
                   />
@@ -375,7 +392,7 @@ class Grid extends React.PureComponent<IProps, IState> {
              * Center Grid
              */}
             <div
-              style={{ width: `calc(100% - ${this.leftWidth}px)` }}
+              style={{ width: `calc(100% - ${gridMeta.leftWidth}px)` }}
               className="grid-center"
             >
               <div
@@ -384,13 +401,13 @@ class Grid extends React.PureComponent<IProps, IState> {
                 onScroll={this.syncHorizontalScroll}
               >
                 <div
-                  style={{ width: this.centerWidth }}
+                  style={{ minWidth: gridMeta.centerWidth }}
                   className="grid-center-body-inner"
                 >
                   {centerGrid}
                   {loadingMoreData && (
                     <PartialLoader
-                      schema={this.centerSchema}
+                      schema={gridMeta.centerSchema}
                       style={{
                         transform: `translateY(${this.getTopPosition(
                           data.length
@@ -408,16 +425,19 @@ class Grid extends React.PureComponent<IProps, IState> {
           </div>
         </div>
         <div className="grid-scroll">
-          <div className="grid-scroll-left" style={{ width: this.leftWidth }} />
+          <div
+            className="grid-scroll-left"
+            style={{ width: gridMeta.leftWidth }}
+          />
           <div
             style={{
-              width: `calc(100% - ${this.leftWidth}px)`,
+              width: `calc(100% - ${gridMeta.leftWidth}px)`,
             }}
             className="grid-scroll-center"
             ref={this.centerScrollRef}
             onScroll={this.syncHorizontalScroll}
           >
-            <div style={{ width: this.centerWidth }} />
+            <div style={{ width: gridMeta.centerWidth }} />
           </div>
         </div>
       </div>
