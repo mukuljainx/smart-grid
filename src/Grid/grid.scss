@@ -89,6 +89,7 @@
     border-top: 1px solid #efefef;
     display: flex;
     background: #efefef;
+    flex-shrink: 0;
   }
 
   img {
@@ -102,6 +103,7 @@
 
   .grid-scroll-center {
     overflow-x: scroll;
+    -ms-overflow-style: scrollbar;
     height: 12px;
   }
 
