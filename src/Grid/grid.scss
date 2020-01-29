@@ -59,7 +59,7 @@
   }
 
   .row.header {
-    position: initial;
+    position: relative;
   }
 
   .grid-center .row {
@@ -132,6 +132,7 @@
   .grid-header-left,
   .grid-header-center {
     flex-shrink: 0;
+    overflow-y: hidden;
   }
 
   .grid-header-center {

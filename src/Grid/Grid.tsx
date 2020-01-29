@@ -1,5 +1,5 @@
 import * as React from 'react';
-import memoize from 'fast-memoize';
+import { throttle, debounce } from 'throttle-debounce';
 
 import './grid.scss';
 import Cell from './Atoms/Cell';
@@ -45,8 +45,7 @@ export interface IProps extends IDivProps {
 }
 
 interface IState {
-  start: number;
-  end: number;
+  isScrolling: Boolean;
   position: number;
   gridMeta: {
     leftSchema: ISchema[];
@@ -69,6 +68,16 @@ class Grid extends React.PureComponent<IProps, IState> {
     end: -1,
   };
 
+  // Cache row with there index
+  cache: {
+    row: Record<
+      string,
+      { left: React.ReactElement; center: React.ReactElement }
+    >;
+  } = {
+    row: {},
+  };
+
   public static defaultProps = {
     buffer: 25,
   };
@@ -76,45 +85,20 @@ class Grid extends React.PureComponent<IProps, IState> {
   constructor(props: IProps) {
     super(props);
     this.state = {
-      start: 0,
-      end: -1,
       position: 0,
+      isScrolling: false,
       gridMeta: this.updateSchema(this.props.schema),
     };
   }
 
-  componentDidMount() {
-    const { buffer } = this.props;
-
-    this.setState({
-      end: this.getVisibleRowsCount() + buffer!,
-    });
-  }
   componentDidUpdate(prevProps: IProps) {
     // If data length changes at any point, ideally it will
     // be after getting more data
     // calculate start, end and re-render
     // so if user is at the bottom of table and waiting for more
     // data, rows after previous data.length will render
-    if (
-      prevProps.data.length !== this.props.data.length &&
-      this.gridRef.current
-    ) {
-      const { rowHeight, buffer, data } = this.props;
-
-      const currentPosition = Math.round(
-        this.gridRef.current.scrollTop / rowHeight
-      );
-
-      const visibleCount = this.getVisibleRowsCount();
-
-      this.handleCurrentBuffer({
-        currentPosition,
-        buffer: buffer!,
-        position: -visibleCount,
-        visibleCount: visibleCount,
-        dataLength: data.length,
-      });
+    if (prevProps.data !== this.props.data && this.gridRef.current) {
+      this.forceUpdate();
     }
 
     if (prevProps.schema !== this.props.schema) {
@@ -127,18 +111,38 @@ class Grid extends React.PureComponent<IProps, IState> {
       ? Math.round(this.gridRef.current.offsetHeight / this.props.rowHeight)
       : 0;
 
+  getCurrentPosition = () =>
+    this.gridRef.current
+      ? Math.round(this.gridRef.current.scrollTop / this.props.rowHeight)
+      : 0;
+
+  sync = throttle(75, false, (scrollLeft: number, scrollTarget: any) => {
+    if (
+      this.centerGridRef.current &&
+      scrollTarget !== this.centerGridRef.current
+    ) {
+      this.centerGridRef.current.scrollLeft = scrollLeft;
+    }
+    if (
+      this.centerScrollRef.current &&
+      scrollTarget !== this.centerScrollRef.current
+    ) {
+      this.centerScrollRef.current.scrollLeft = scrollLeft;
+    }
+    if (
+      this.centerHeaderRef.current &&
+      scrollTarget !== this.centerHeaderRef.current
+    ) {
+      this.centerHeaderRef.current.scrollLeft = scrollLeft;
+    }
+  });
+
   // TODO: add proper types for scroll events
   syncHorizontalScroll = (event: any) => {
     const scrollLeft = event.target.scrollLeft;
-    if (this.centerGridRef.current) {
-      this.centerGridRef.current.scrollLeft = scrollLeft;
-    }
-    if (this.centerScrollRef.current) {
-      this.centerScrollRef.current.scrollLeft = scrollLeft;
-    }
-    if (this.centerHeaderRef.current) {
-      this.centerHeaderRef.current.scrollLeft = scrollLeft;
-    }
+    const scrollTarget = event.target;
+
+    this.sync(scrollLeft, scrollTarget);
   };
 
   updateSchema = (schema: ISchema[]) => {
@@ -167,46 +171,32 @@ class Grid extends React.PureComponent<IProps, IState> {
     if (event.target !== this.gridRef.current) {
       return;
     }
+
     const scrollTop = event.target.scrollTop;
-    const { rowHeight, buffer, data } = this.props;
-    const { position } = this.state;
-    const currentPosition = Math.round(scrollTop / rowHeight);
+    if (scrollTop < 0) {
+      return;
+    }
+
+    const { rowHeight, data } = this.props;
+    const position = Math.round(scrollTop / rowHeight);
+
+    if (Math.abs(position - this.state.position) < 1) {
+      return;
+    }
 
     const visibleCount = this.getVisibleRowsCount();
 
-    this.handleCurrentBuffer({
-      currentPosition,
-      buffer: buffer!,
-      position,
-      visibleCount,
-      dataLength: data.length,
-    });
+    this.setState({ isScrolling: true, position });
 
-    this.loadMoreData(currentPosition, visibleCount, data.length);
+    // set scrolling to false once scroll is paused for a definite time
+    this.debouncedSetScroll(false);
+
+    this.loadMoreData(position, visibleCount, data.length);
   };
 
-  handleCurrentBuffer = ({
-    currentPosition,
-    visibleCount,
-    position,
-    buffer,
-    dataLength,
-  }: {
-    currentPosition: number;
-    visibleCount: number;
-    position: number;
-    buffer: number;
-    dataLength: number;
-  }) => {
-    if (Math.abs(currentPosition - position) >= visibleCount) {
-      const visibleCount = this.getVisibleRowsCount();
-      this.setState(() => ({
-        start: Math.max(currentPosition - visibleCount - buffer!, 0),
-        end: Math.min(currentPosition + visibleCount + buffer!, dataLength - 1),
-        position: currentPosition,
-      }));
-    }
-  };
+  debouncedSetScroll = debounce(300, false, (isScrolling: boolean) => {
+    this.setState({ isScrolling });
+  });
 
   loadMoreData = (
     currentPosition: number,
@@ -228,21 +218,35 @@ class Grid extends React.PureComponent<IProps, IState> {
     }
   };
 
-  memoizedGetVirtualList = memoize(
-    (
-      start: number,
-      end: number,
-      schema: IProps['schema'],
-      data: IProps['data'],
-      rowHeight: IProps['rowHeight']
-    ) => {
-      const rows = [];
-      for (let index = start; index <= end; index++) {
-        if (index === data.length) {
-          break;
-        }
+  getVirtualList = (state: IState, props: IProps) => {
+    const leftRows = [];
+    const centerRows = [];
+
+    const {
+      position,
+      gridMeta: { leftSchema, centerSchema },
+    } = state;
+    const { buffer, data, rowHeight } = props;
+
+    const visibleCount = this.getVisibleRowsCount();
+    const start = Math.max(position - visibleCount - buffer!, 0);
+    const end = Math.min(position + visibleCount + buffer!, data.length - 1);
+    const rowCache = this.cache.row;
+
+    for (let index = start; index <= end; index++) {
+      if (index === data.length) {
+        break;
+      }
+
+      if (rowCache[index]) {
+        leftRows.push(rowCache[index].left);
+        centerRows.push(rowCache[index].center);
+      } else {
         const row = data[index];
-        rows.push(
+
+        rowCache[index] = { left: null, center: null };
+        // Left grid
+        rowCache[index].left = (
           <div
             data-row={index}
             style={{
@@ -253,7 +257,7 @@ class Grid extends React.PureComponent<IProps, IState> {
             className="row"
             key={index}
           >
-            {schema.map(({ width, template, get }, j) => (
+            {leftSchema.map(({ width, template, get }, j) => (
               <Cell
                 rowIndex={index}
                 key={j}
@@ -264,11 +268,37 @@ class Grid extends React.PureComponent<IProps, IState> {
             ))}
           </div>
         );
-      }
+        leftRows.push(rowCache[index].left);
 
-      return rows;
+        // Center grid
+        rowCache[index].center = (
+          <div
+            data-row={index}
+            style={{
+              width: '100%',
+              height: rowHeight,
+              transform: `translateY(${this.getTopPosition(index)}px)`,
+            }}
+            className="row"
+            key={index}
+          >
+            {centerSchema.map(({ width, template, get }, j) => (
+              <Cell
+                rowIndex={index}
+                key={j}
+                width={width}
+                template={template}
+                {...get(row)}
+              />
+            ))}
+          </div>
+        );
+        centerRows.push(rowCache[index].center);
+      }
     }
-  );
+
+    return { leftGrid: leftRows, centerGrid: centerRows };
+  };
 
   getTopPosition = (index: number) => this.props.rowHeight * index;
 
@@ -292,7 +322,8 @@ class Grid extends React.PureComponent<IProps, IState> {
       className,
       ...rest
     } = this.props;
-    const { start, end, gridMeta } = this.state;
+
+    const { gridMeta } = this.state;
     const visibleCount = this.getVisibleRowsCount();
 
     const girdRestProps = {
@@ -326,20 +357,17 @@ class Grid extends React.PureComponent<IProps, IState> {
       return <div {...girdRestProps}>{overlay}</div>;
     }
 
-    const leftGrid = this.memoizedGetVirtualList(
-      start,
-      end,
-      gridMeta.leftSchema,
-      data,
-      rowHeight
+    const { leftGrid, centerGrid } = this.getVirtualList(
+      this.state,
+      this.props
     );
-    const centerGrid = this.memoizedGetVirtualList(
-      start,
-      end,
-      gridMeta.centerSchema,
-      data,
-      rowHeight
-    );
+
+    // Clear cache to save memory or it can lead to page crash
+    if (!this.state.isScrolling) {
+      this.cache = {
+        row: {},
+      };
+    }
 
     const gridHeight =
       data.length * rowHeight + (loadingMoreData ? rowHeight * 2 : 0);

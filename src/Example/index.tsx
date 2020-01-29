@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { range, pick } from 'lodash-es';
+import { range } from 'lodash-es';
 import produce from 'immer';
 
 import Table, { ISchema } from '../Grid';
@@ -122,8 +122,8 @@ export default class App extends React.Component<{}, IState> {
   loadMoreData = () => {
     this.setState({ loading: true });
     setTimeout(() => {
-      if (limit < 1000) {
-        limit = limit + 50;
+      if (limit < 2000) {
+        limit = limit + 100;
         this.setState({
           loading: false,
           data: getData(limit),

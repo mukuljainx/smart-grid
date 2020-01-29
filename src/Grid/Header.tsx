@@ -47,10 +47,14 @@ class Header extends React.Component<IProps> {
       leftWidth,
       centerWidth,
       syncHorizontalScroll,
+      headerHeight,
     } = this.props;
     return (
-      <div className="grid-header">
-        <div className="grid-header-left" style={{ width: leftWidth }}>
+      <div className="grid-header" style={{ height: headerHeight }}>
+        <div
+          className="grid-header-left hide-scroll-bar"
+          style={{ width: leftWidth }}
+        >
           {this.getHeader(leftSchema)}
         </div>
         <div

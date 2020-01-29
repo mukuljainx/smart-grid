@@ -1,5 +1,4 @@
 import * as React from 'react';
-import memomize from 'fast-memoize';
 
 import './loader.scss';
 
@@ -37,7 +36,7 @@ class Loader extends React.PureComponent<IProps> {
     '13%',
   ];
 
-  getLoaderRows = memomize((rows: number, height: number) => {
+  getLoaderRows = (rows: number, height: number) => {
     const list = new Array(rows).fill(0);
     return list.map((_, i) => (
       <div className="loader-row" key={i} style={{ height }}>
@@ -54,7 +53,7 @@ class Loader extends React.PureComponent<IProps> {
         })}
       </div>
     ));
-  });
+  };
 
   render() {
     const { rows, rowHeight } = this.props;
