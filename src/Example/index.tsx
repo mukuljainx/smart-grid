@@ -2,7 +2,7 @@ import * as React from 'react';
 import { range } from 'lodash-es';
 import produce from 'immer';
 
-import Table, { ISchema } from '../Grid';
+import Grid, { ISchema } from '../Grid';
 
 type SimpleObject = Record<string, any>;
 
@@ -138,7 +138,7 @@ export default class App extends React.Component<{}, IState> {
     return (
       <div className="App">
         <h1>Smart Grid</h1>
-        <Table
+        <Grid
           style={{
             flexGrow: 2,
             maxHeight: 'calc(100% - 150px)',

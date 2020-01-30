@@ -92,15 +92,6 @@ class Grid extends React.PureComponent<IProps, IState> {
   }
 
   componentDidUpdate(prevProps: IProps) {
-    // If data length changes at any point, ideally it will
-    // be after getting more data
-    // calculate start, end and re-render
-    // so if user is at the bottom of table and waiting for more
-    // data, rows after previous data.length will render
-    if (prevProps.data !== this.props.data && this.gridRef.current) {
-      this.forceUpdate();
-    }
-
     if (prevProps.schema !== this.props.schema) {
       this.setState({ gridMeta: this.updateSchema(this.props.schema) });
     }
@@ -254,7 +245,7 @@ class Grid extends React.PureComponent<IProps, IState> {
               height: rowHeight,
               transform: `translateY(${this.getTopPosition(index)}px)`,
             }}
-            className="row"
+            className={`row ${row.className}`}
             key={index}
           >
             {leftSchema.map(({ width, template, get }, j) => (
@@ -279,7 +270,7 @@ class Grid extends React.PureComponent<IProps, IState> {
               height: rowHeight,
               transform: `translateY(${this.getTopPosition(index)}px)`,
             }}
-            className="row"
+            className={`row ${row.className}`}
             key={index}
           >
             {centerSchema.map(({ width, template, get }, j) => (
