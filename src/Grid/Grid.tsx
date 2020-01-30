@@ -335,7 +335,7 @@ class Grid extends React.PureComponent<IProps, IState> {
         return loader;
       }
       return (
-        <div {...girdRestProps}>
+        <div {...girdRestProps} ref={this.gridRef}>
           <Loader
             rows={visibleCount > 0 ? visibleCount + 1 : undefined}
             rowHeight={rowHeight}
@@ -345,7 +345,11 @@ class Grid extends React.PureComponent<IProps, IState> {
     }
 
     if (showOverlay) {
-      return <div {...girdRestProps}>{overlay}</div>;
+      return (
+        <div ref={this.gridRef} {...girdRestProps}>
+          {overlay}
+        </div>
+      );
     }
 
     const { leftGrid, centerGrid } = this.getVirtualList(
