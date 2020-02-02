@@ -138,6 +138,11 @@ export default class App extends React.Component<{}, IState> {
     return (
       <div className="App">
         <h1>Smart Grid</h1>
+        <h3>
+          <a href="https://github.com/mukuljainx/smart-grid/blob/master/README.md">
+            Docs
+          </a>
+        </h3>
         <Grid
           style={{
             flexGrow: 2,
