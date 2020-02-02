@@ -245,7 +245,7 @@ class Grid extends React.PureComponent<IProps, IState> {
               height: rowHeight,
               transform: `translateY(${this.getTopPosition(index)}px)`,
             }}
-            className={`row ${row.className}`}
+            className={`row ${row.className || ''}`}
             key={index}
           >
             {leftSchema.map(({ width, template, get }, j) => (
@@ -270,7 +270,7 @@ class Grid extends React.PureComponent<IProps, IState> {
               height: rowHeight,
               transform: `translateY(${this.getTopPosition(index)}px)`,
             }}
-            className={`row ${row.className}`}
+            className={`row ${row.className || ''}`}
             key={index}
           >
             {centerSchema.map(({ width, template, get }, j) => (
@@ -318,7 +318,7 @@ class Grid extends React.PureComponent<IProps, IState> {
     const visibleCount = this.getVisibleRowsCount();
 
     const girdRestProps = {
-      className: `craft-smart-grid ${className}`,
+      className: `craft-smart-grid ${className || ''}`,
       ...rest,
     };
 

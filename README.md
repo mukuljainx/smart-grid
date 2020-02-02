@@ -6,7 +6,7 @@ A light ( < 1kb) weight alternate to ag-grid.
 
 1. Pinning
 2. Virtualization
-3. 826 Bytes (gzipped)
+3. 826 bytes (gzipped)
 4. styled-components friendly
 5. Add className key to any row data to add an extra class to that row for custom styling
 
