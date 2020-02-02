@@ -4,6 +4,11 @@
   "private": false,
   "main": "dist/cjs/index.js",
   "typings": "dist/cjs/index.d.ts",
+  "homepage": "https://mukuljainx.github.io/smart-grid/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mukuljainx/smart-grid"
+  },
   "module": "dist/esm/index.js",
   "files": [
     "dist/cjs",
@@ -21,7 +26,11 @@
     "build:cjs": "tsc -m commonjs --outDir dist/cjs -p tsconfig.build.json",
     "build:esnext": "tsc -m esnext --outDir dist/esm -p tsconfig.build.json"
   },
-  "author": "",
+  "author": {
+    "name": "Mukul Jain",
+    "email": "jainmukul1996@gmail.com",
+    "url": "https://mukuljain.me"
+  },
   "license": "ISC",
   "devDependencies": {
     "@types/lodash-es": "^4.17.3",
