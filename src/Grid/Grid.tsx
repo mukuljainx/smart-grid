@@ -214,10 +214,11 @@ class Grid extends React.PureComponent<IProps, IState> {
     const centerRows = [];
 
     const {
-      position,
       gridMeta: { leftSchema, centerSchema },
     } = state;
     const { buffer, data, rowHeight } = props;
+
+    const position = this.getCurrentPosition();
 
     const visibleCount = this.getVisibleRowsCount();
     const start = Math.max(position - visibleCount - buffer!, 0);
@@ -298,6 +299,8 @@ class Grid extends React.PureComponent<IProps, IState> {
   };
 
   render() {
+    console.log('RENDER');
+
     const {
       data,
       schema: __,
