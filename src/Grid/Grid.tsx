@@ -394,57 +394,61 @@ class Grid extends React.PureComponent<IProps, IState> {
             {/*
              * Left Pinned Grid
              */}
-            <div style={{ width: gridMeta.leftWidth }} className="grid-left">
-              <div className="grid-left-body">
-                {leftGrid}
-                {loadingMoreData && (
-                  <PartialLoader
-                    style={{
-                      transform: `translateY(${this.getTopPosition(
-                        data.length
-                      )}px)`,
-                    }}
-                    schema={gridMeta.leftSchema}
-                    className="partial-loader"
-                    rowStyle={{ height: rowHeight }}
-                  />
-                )}
-              </div>
-            </div>
-            {/*
-             * Center Grid
-             */}
-            <div
-              style={{ width: `calc(100% - ${gridMeta.leftWidth}px)` }}
-              className="grid-center"
-            >
-              <div
-                ref={this.centerGridRef}
-                className="grid-center-body hide-scroll-bar"
-                onScroll={this.syncHorizontalScroll}
-              >
-                <div
-                  style={{ minWidth: gridMeta.centerWidth }}
-                  className="grid-center-body-inner"
-                >
-                  {centerGrid}
+            {gridMeta.leftWidth > 0 && (
+              <div style={{ width: gridMeta.leftWidth }} className="grid-left">
+                <div className="grid-left-body">
+                  {leftGrid}
                   {loadingMoreData && (
                     <PartialLoader
-                      schema={gridMeta.centerSchema}
                       style={{
                         transform: `translateY(${this.getTopPosition(
                           data.length
                         )}px)`,
                       }}
+                      schema={gridMeta.leftSchema}
                       className="partial-loader"
-                      rowStyle={{
-                        height: rowHeight,
-                      }}
+                      rowStyle={{ height: rowHeight }}
                     />
                   )}
                 </div>
               </div>
-            </div>
+            )}
+            {/*
+             * Center Grid
+             */}
+            {gridMeta.centerWidth > 0 && (
+              <div
+                style={{ width: `calc(100% - ${gridMeta.leftWidth}px)` }}
+                className="grid-center"
+              >
+                <div
+                  ref={this.centerGridRef}
+                  className="grid-center-body hide-scroll-bar"
+                  onScroll={this.syncHorizontalScroll}
+                >
+                  <div
+                    style={{ minWidth: gridMeta.centerWidth }}
+                    className="grid-center-body-inner"
+                  >
+                    {centerGrid}
+                    {loadingMoreData && (
+                      <PartialLoader
+                        schema={gridMeta.centerSchema}
+                        style={{
+                          transform: `translateY(${this.getTopPosition(
+                            data.length
+                          )}px)`,
+                        }}
+                        className="partial-loader"
+                        rowStyle={{
+                          height: rowHeight,
+                        }}
+                      />
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
         <div className="grid-scroll">
