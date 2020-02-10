@@ -299,8 +299,6 @@ class Grid extends React.PureComponent<IProps, IState> {
   };
 
   render() {
-    console.log('RENDER');
-
     const {
       data,
       schema: __,
