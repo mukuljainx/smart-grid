@@ -461,7 +461,7 @@ class Grid extends React.PureComponent<IProps, IState> {
             style={{
               width: `calc(100% - ${gridMeta.leftWidth}px)`,
             }}
-            className="grid-scroll-center"
+            className="grid-scroll-center overflow-y-hidden"
             ref={this.centerScrollRef}
             onScroll={this.syncHorizontalScroll}
           >

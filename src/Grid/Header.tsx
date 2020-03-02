@@ -50,7 +50,10 @@ class Header extends React.Component<IProps> {
       headerHeight,
     } = this.props;
     return (
-      <div className="grid-header" style={{ height: headerHeight }}>
+      <div
+        className="grid-header hide-scroll-bar"
+        style={{ height: headerHeight }}
+      >
         {leftWidth > 0 && (
           <div
             className="grid-header-left hide-scroll-bar"
