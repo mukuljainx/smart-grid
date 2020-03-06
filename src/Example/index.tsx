@@ -1,10 +1,17 @@
 import * as React from 'react';
-import { range } from 'lodash-es';
+import { range, random } from 'lodash-es';
 import produce from 'immer';
 
 import Grid, { ISchema } from '../Grid';
 
 type SimpleObject = Record<string, any>;
+
+const note = `Pepper Potts as his oxygen supply starts to dwindle.`;
+
+const notes: Record<number, string> = {};
+range(10000).forEach((index: number) => {
+  notes[index] = note.substr(0, random(20, note.length));
+});
 
 const getData = (limit: number) =>
   range(limit).map(i => ({
@@ -16,6 +23,7 @@ const getData = (limit: number) =>
     logo:
       'https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/Sketch_Logo.svg/1133px-Sketch_Logo.svg.png',
     checked: false,
+    note: notes[i],
   }));
 
 let limit = 0;
@@ -113,6 +121,12 @@ export default class App extends React.Component<{}, IState> {
       get: ({ logo }: SimpleObject) => ({ x: logo }),
       header: () => <>Image</>,
     },
+    {
+      width: 200,
+      template: ({ x }: SimpleObject) => <div>{x}</div>,
+      get: ({ note }: SimpleObject) => ({ x: note }),
+      header: () => <>Note</>,
+    },
   ];
 
   componentDidMount() {
@@ -147,11 +161,12 @@ export default class App extends React.Component<{}, IState> {
           style={{
             flexGrow: 2,
             maxHeight: 'calc(100% - 150px)',
-            maxWidth: 600,
+            maxWidth: 1200,
           }}
           loadMore={this.loadMoreData}
           loadingMoreData={this.state.data.length > 0 && this.state.loading}
-          buffer={10}
+          buffer={5}
+          dynamicRowHeight={false}
           rowHeight={40}
           headerHeight={40}
           schema={this.schema}

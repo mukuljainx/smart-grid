@@ -16,6 +16,11 @@ export interface ISchema {
   header: React.ElementType;
 }
 
+interface ICache {
+  row: Record<string, { left: React.ReactElement; center: React.ReactElement }>;
+  height: number[];
+}
+
 export interface ObjectLiteral {
   [k: string]: any;
 }
@@ -23,10 +28,26 @@ export interface ObjectLiteral {
 export interface IProps extends IDivProps {
   data: ObjectLiteral[];
   schema: ISchema[];
+  /**
+   * In case of dynamic height this will be taken
+   * as minimun height
+   */
   rowHeight: number;
   headerHeight: number;
+  /**
+   * Function which is invoked when user is about to reach
+   * the end
+   */
+
   loadMore?: () => void;
+  /**
+   * extra rows to be rendered
+   * above and below visible table
+   */
   buffer?: number;
+  /**
+   * Shows the loader
+   */
   loading?: boolean;
   /**
    * This will render if loading is true
@@ -42,6 +63,11 @@ export interface IProps extends IDivProps {
    */
   showOverlay?: boolean;
   overlay?: React.ReactChild;
+  /**
+   * Each row height will be calculated dynamically
+   * Given row height will be considered as minimun row height
+   */
+  dynamicRowHeight?: boolean;
 }
 
 interface IState {
@@ -62,6 +88,12 @@ class Grid extends React.PureComponent<IProps, IState> {
   centerHeaderRef: React.RefObject<HTMLDivElement> = React.createRef();
   gridRef: React.RefObject<HTMLDivElement> = React.createRef();
 
+  // rows height map
+  // rows height will be saved here after first calculation until changed
+  calculatedRowHeight: number[] = [];
+  calculatedRowTopPosition: number[] = [];
+  calculateRowHeight = false;
+
   // Load more metadata
   loadMoreDataPosition = {
     position: -1,
@@ -69,13 +101,9 @@ class Grid extends React.PureComponent<IProps, IState> {
   };
 
   // Cache row with there index
-  cache: {
-    row: Record<
-      string,
-      { left: React.ReactElement; center: React.ReactElement }
-    >;
-  } = {
+  cache: ICache = {
     row: {},
+    height: [],
   };
 
   public static defaultProps = {
@@ -91,21 +119,98 @@ class Grid extends React.PureComponent<IProps, IState> {
     };
   }
 
-  componentDidUpdate(prevProps: IProps) {
+  componentDidUpdate(prevProps: IProps, prevState: IState) {
     if (prevProps.schema !== this.props.schema) {
       this.setState({ gridMeta: this.updateSchema(this.props.schema) });
     }
+
+    if (this.props.dynamicRowHeight && this.calculateRowHeight) {
+      this.calculateRowHeight = false;
+      if (this.props.data && prevProps.data !== this.props.data) {
+        this.calulateRowHeightAndRender();
+      }
+
+      if (this.state.position !== prevState.position) {
+        this.calulateRowHeightAndRender();
+      }
+    }
   }
+
+  calulateRowHeightAndRender = () => {
+    const leftRows = document.querySelectorAll(
+      '.grid .grid-body .grid-left-body .row'
+    );
+    const centerRows = document.querySelectorAll(
+      '.grid .grid-body .grid-center-body .row'
+    );
+
+    if (leftRows.length === 0) {
+      return;
+    }
+
+    leftRows.forEach((row, nodeIndex) => {
+      const index = parseInt(row.getAttribute('data-row'), 10);
+      if (this.calculatedRowHeight[index]) {
+        return;
+      }
+
+      const height = Math.max(
+        leftRows[nodeIndex].clientHeight,
+        centerRows[nodeIndex].clientHeight
+      );
+
+      this.calculatedRowHeight[index] = height;
+      if (index !== 0) {
+        if (this.calculatedRowTopPosition[index - 1] !== undefined) {
+          this.calculatedRowTopPosition[index] =
+            this.calculatedRowTopPosition[index - 1] +
+            this.calculatedRowHeight[index - 1];
+        }
+      } else {
+        this.calculatedRowTopPosition[index] = 0;
+      }
+    });
+    this.forceUpdate();
+  };
 
   getVisibleRowsCount = () =>
     this.gridRef.current
       ? Math.round(this.gridRef.current.offsetHeight / this.props.rowHeight)
       : 0;
 
-  getCurrentPosition = () =>
-    this.gridRef.current
-      ? Math.round(this.gridRef.current.scrollTop / this.props.rowHeight)
-      : 0;
+  getScrollPosition = () => {
+    if (!this.gridRef.current) {
+      return 0;
+    }
+
+    const scrollTop = this.gridRef.current.scrollTop;
+    const { dynamicRowHeight, rowHeight } = this.props;
+    if (!dynamicRowHeight) {
+      return Math.round(scrollTop / this.props.rowHeight);
+    }
+
+    const index = this.calculatedRowTopPosition.findIndex(
+      position => position > scrollTop
+    );
+
+    if (index !== -1) {
+      return Math.max(index, 0);
+    }
+
+    if (this.calculatedRowTopPosition.length === 0) {
+      return 0;
+    }
+
+    return (
+      Math.round(
+        (scrollTop -
+          this.calculatedRowTopPosition[
+            this.calculatedRowTopPosition.length - 1
+          ]) /
+          rowHeight
+      ) + this.calculatedRowTopPosition.length
+    );
+  };
 
   sync = throttle(75, false, (scrollLeft: number, scrollTarget: any) => {
     if (
@@ -168,8 +273,8 @@ class Grid extends React.PureComponent<IProps, IState> {
       return;
     }
 
-    const { rowHeight, data } = this.props;
-    const position = Math.round(scrollTop / rowHeight);
+    const { data } = this.props;
+    const position = this.getScrollPosition();
 
     if (Math.abs(position - this.state.position) < 1) {
       return;
@@ -199,6 +304,7 @@ class Grid extends React.PureComponent<IProps, IState> {
       dataLength > this.loadMoreDataPosition.end &&
       currentPosition > dataLength - 1.5 * visibleCount
     ) {
+      debugger;
       if (this.props.loadMore) {
         this.props.loadMore();
       }
@@ -209,6 +315,60 @@ class Grid extends React.PureComponent<IProps, IState> {
     }
   };
 
+  getHiddenRowStyling = (index: number): React.CSSProperties => {
+    const { dynamicRowHeight } = this.props;
+
+    if (
+      !dynamicRowHeight ||
+      this.calculatedRowTopPosition[index] ||
+      index === 0
+    ) {
+      return undefined;
+    }
+
+    return { position: 'fixed', top: -10000, visibility: 'hidden' };
+  };
+
+  createRow = ({
+    index,
+    rowHeight,
+    row,
+    schema,
+    dynamicRowHeight,
+  }: {
+    index: number;
+    rowHeight?: IProps['rowHeight'];
+    row: IProps['data'][0];
+    schema: IProps['schema'];
+    dynamicRowHeight: boolean;
+  }) => {
+    return (
+      <div
+        data-row={index}
+        style={{
+          width: '100%',
+          height: dynamicRowHeight
+            ? this.calculatedRowHeight[index]
+            : rowHeight,
+          transform: `translateY(${this.getTopPosition(index)}px)`,
+          ...this.getHiddenRowStyling(index),
+        }}
+        className={`row ${row.className || ''}`}
+        key={index}
+      >
+        {schema.map(({ width, template, get }, j) => (
+          <Cell
+            rowIndex={index}
+            key={j}
+            width={width}
+            template={template}
+            {...get(row)}
+          />
+        ))}
+      </div>
+    );
+  };
+
   getVirtualList = (state: IState, props: IProps) => {
     const leftRows = [];
     const centerRows = [];
@@ -216,75 +376,73 @@ class Grid extends React.PureComponent<IProps, IState> {
     const {
       gridMeta: { leftSchema, centerSchema },
     } = state;
-    const { buffer, data, rowHeight } = props;
+    const { buffer, data, rowHeight, dynamicRowHeight } = props;
 
-    const position = this.getCurrentPosition();
+    const position = this.getScrollPosition();
 
     const visibleCount = this.getVisibleRowsCount();
-    const start = Math.max(position - visibleCount - buffer!, 0);
+    let start = Math.max(position - visibleCount - buffer!, 0);
     const end = Math.min(position + visibleCount + buffer!, data.length - 1);
     const rowCache = this.cache.row;
+    const heightCache = this.cache.height;
+
+    // We can approximate where the user has landed but we can
+    // show if the correct row there unitl we have redered all the
+    // previous rows once
+    // expect the case when table is first rendered
+    if (
+      dynamicRowHeight &&
+      !this.calculatedRowTopPosition[position] &&
+      position !== 0
+    ) {
+      start = Math.min(this.calculatedRowTopPosition.length - 1, start);
+    }
+    ``;
 
     for (let index = start; index <= end; index++) {
       if (index === data.length) {
         break;
       }
 
-      if (rowCache[index]) {
+      // To stop unnecessary renders
+      this.calculateRowHeight = !this.calculateRowHeight
+        ? this.getTopPosition(index) === undefined
+        : this.calculateRowHeight;
+
+      if (
+        dynamicRowHeight
+          ? heightCache[index] && rowCache[index]
+          : rowCache[index]
+      ) {
         leftRows.push(rowCache[index].left);
         centerRows.push(rowCache[index].center);
       } else {
         const row = data[index];
+        heightCache[index] = this.calculatedRowHeight[index];
 
-        rowCache[index] = { left: null, center: null };
+        rowCache[index] = {
+          left: null,
+          center: null,
+        };
         // Left grid
-        rowCache[index].left = (
-          <div
-            data-row={index}
-            style={{
-              width: '100%',
-              height: rowHeight,
-              transform: `translateY(${this.getTopPosition(index)}px)`,
-            }}
-            className={`row ${row.className || ''}`}
-            key={index}
-          >
-            {leftSchema.map(({ width, template, get }, j) => (
-              <Cell
-                rowIndex={index}
-                key={j}
-                width={width}
-                template={template}
-                {...get(row)}
-              />
-            ))}
-          </div>
-        );
+        rowCache[index].left = this.createRow({
+          schema: leftSchema,
+          index,
+          rowHeight,
+          row,
+          dynamicRowHeight,
+        });
+
         leftRows.push(rowCache[index].left);
 
         // Center grid
-        rowCache[index].center = (
-          <div
-            data-row={index}
-            style={{
-              width: '100%',
-              height: rowHeight,
-              transform: `translateY(${this.getTopPosition(index)}px)`,
-            }}
-            className={`row ${row.className || ''}`}
-            key={index}
-          >
-            {centerSchema.map(({ width, template, get }, j) => (
-              <Cell
-                rowIndex={index}
-                key={j}
-                width={width}
-                template={template}
-                {...get(row)}
-              />
-            ))}
-          </div>
-        );
+        rowCache[index].center = this.createRow({
+          schema: centerSchema,
+          index,
+          rowHeight,
+          row,
+          dynamicRowHeight,
+        });
         centerRows.push(rowCache[index].center);
       }
     }
@@ -292,10 +450,35 @@ class Grid extends React.PureComponent<IProps, IState> {
     return { leftGrid: leftRows, centerGrid: centerRows };
   };
 
-  getTopPosition = (index: number) => this.props.rowHeight * index;
+  getTopPosition = (index: number) => {
+    const { dynamicRowHeight } = this.props;
+    if (!dynamicRowHeight) {
+      return this.props.rowHeight * index;
+    }
+
+    if (dynamicRowHeight) {
+      return this.calculatedRowTopPosition[index];
+    }
+  };
 
   getHeaderRef = (ref: React.RefObject<HTMLDivElement>) => {
     this.centerHeaderRef = ref;
+  };
+
+  getGridHeight = () => {
+    const { dynamicRowHeight, data, rowHeight, loadingMoreData } = this.props;
+
+    if (!dynamicRowHeight) {
+      return data.length * rowHeight + (loadingMoreData ? rowHeight * 2 : 0);
+    }
+
+    let total = 0;
+
+    data.forEach((__, index) => {
+      total += this.calculatedRowHeight[index] || rowHeight;
+    });
+
+    return total;
   };
 
   render() {
@@ -304,6 +487,7 @@ class Grid extends React.PureComponent<IProps, IState> {
       schema: __,
       loadMore: __1,
       buffer: __2,
+      dynamicRowHeight,
       rowHeight,
       loading,
       loader,
@@ -361,12 +545,16 @@ class Grid extends React.PureComponent<IProps, IState> {
     // Clear cache to save memory or it can lead to page crash
     if (!this.state.isScrolling) {
       this.cache = {
+        ...this.cache,
         row: {},
       };
     }
 
-    const gridHeight =
-      data.length * rowHeight + (loadingMoreData ? rowHeight * 2 : 0);
+    let gridHeight = this.getGridHeight();
+
+    if (dynamicRowHeight) {
+      gridHeight += rowHeight * 2;
+    }
 
     return (
       <div {...girdRestProps}>
@@ -402,9 +590,11 @@ class Grid extends React.PureComponent<IProps, IState> {
                   {loadingMoreData && (
                     <PartialLoader
                       style={{
-                        transform: `translateY(${this.getTopPosition(
-                          data.length
-                        )}px)`,
+                        transform: `translateY(${
+                          dynamicRowHeight
+                            ? gridHeight - rowHeight * 2
+                            : this.getTopPosition(data.length)
+                        }px)`,
                       }}
                       schema={gridMeta.leftSchema}
                       className="partial-loader"
@@ -436,9 +626,11 @@ class Grid extends React.PureComponent<IProps, IState> {
                       <PartialLoader
                         schema={gridMeta.centerSchema}
                         style={{
-                          transform: `translateY(${this.getTopPosition(
-                            data.length
-                          )}px)`,
+                          transform: `translateY(${
+                            dynamicRowHeight
+                              ? gridHeight - rowHeight * 2
+                              : this.getTopPosition(data.length)
+                          }px)`,
                         }}
                         className="partial-loader"
                         rowStyle={{
