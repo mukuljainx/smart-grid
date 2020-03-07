@@ -9,7 +9,7 @@ import './index.scss';
 
 class Docs extends React.Component {
   state = {
-    activeKey: 'about',
+    activeKey: 'example-basic',
   };
 
   handleSelect = (activeKey: string) => {

@@ -9,10 +9,12 @@ import {
   FlexboxGrid,
   Checkbox,
   Divider,
+  Avatar,
 } from 'rsuite';
 
 import Grid, { ISchema } from '../Grid';
-import users from './data';
+import users from './users';
+import colors from './colors';
 
 type SimpleObject = Record<string, any>;
 
@@ -26,7 +28,6 @@ range(100).forEach((index: number) => {
 type IUser = typeof users[0];
 interface IRow extends IUser {
   checked: boolean;
-  logo: string;
   note: string;
 }
 
@@ -73,8 +74,6 @@ export default class App extends React.Component<IProps, IState> {
   getData = (limit: number): IRow[] =>
     range(limit).map(i => ({
       ...users[i % users.length],
-      logo:
-        'https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/Sketch_Logo.svg/1133px-Sketch_Logo.svg.png',
       checked: false,
       note: notes[i % 100],
     }));
@@ -167,6 +166,25 @@ export default class App extends React.Component<IProps, IState> {
         },
       },
       {
+        width: 100,
+        pinned: this.props.pinned ? 'LEFT' : undefined,
+        template: ({ x, rowIndex }: SimpleObject) => (
+          <div className="image-wrapper">
+            <Avatar
+              size="sm"
+              circle
+              style={{ background: colors[rowIndex % colors.length] }}
+            >
+              {x}
+            </Avatar>
+          </div>
+        ),
+        get: ({ firstName, lastName }: SimpleObject) => ({
+          x: firstName[0] + lastName[0],
+        }),
+        header: () => <></>,
+      },
+      {
         width: 200,
         template: (row: SimpleObject) => (
           <div className="cell-wrapper">
@@ -195,16 +213,6 @@ export default class App extends React.Component<IProps, IState> {
         ),
         get: ({ email }: SimpleObject) => ({ x: email }),
         header: () => <div className="cell-wrapper">Email</div>,
-      },
-      {
-        width: 100,
-        template: ({ x }: SimpleObject) => (
-          <div className="image-wrapper">
-            <img src={x} alt="Sketch app logo" />
-          </div>
-        ),
-        get: ({ logo }: SimpleObject) => ({ x: logo }),
-        header: () => <div className="cell-wrapper">Fav tool</div>,
       },
       {
         width: 200,

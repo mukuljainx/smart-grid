@@ -1,4 +1,4 @@
-const data = [
+const users = [
   {
     firstName: 'Brooke',
     lastName: 'Heeran',
@@ -601,4 +601,4 @@ const data = [
   },
 ];
 
-export default data;
+export default users;
