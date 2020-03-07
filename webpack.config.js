@@ -2,6 +2,9 @@ const path = require('path');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
+  node: {
+    fs: 'empty',
+  },
   entry: ['./src'],
   plugins: [new HtmlWebpackPlugin({ template: './src/index.html' })],
   module: {
@@ -12,7 +15,7 @@ module.exports = {
         exclude: /node_modules/,
       },
       {
-        test: /\.s[ac]ss$/i,
+        test: /\.(sa|sc|c)ss$/,
         use: [
           // Creates `style` nodes from JS strings
           'style-loader',
@@ -23,6 +26,10 @@ module.exports = {
         ],
       },
       { test: /\.html$/, use: 'html-loader' },
+      {
+        test: /\.mdx?$/,
+        use: ['babel-loader', '@mdx-js/loader'],
+      },
     ],
   },
   target: 'web',
