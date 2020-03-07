@@ -304,7 +304,6 @@ class Grid extends React.PureComponent<IProps, IState> {
       dataLength > this.loadMoreDataPosition.end &&
       currentPosition > dataLength - 1.5 * visibleCount
     ) {
-      debugger;
       if (this.props.loadMore) {
         this.props.loadMore();
       }

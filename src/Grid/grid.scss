@@ -91,7 +91,6 @@
   }
 
   .grid-scroll {
-    border-top: 1px solid #efefef;
     display: flex;
     background: #efefef;
     flex-shrink: 0;
@@ -143,4 +142,13 @@
   .grid-header-center {
     overflow-x: auto;
   }
+}
+
+.grid-scroll .grid-scroll-center::-webkit-scrollbar {
+  -webkit-appearance: none;
+  height: 10px;
+}
+.grid-scroll .grid-scroll-center::-webkit-scrollbar-thumb {
+  border-radius: 8px;
+  background-color: rgba(0, 0, 0, 0.2);
 }

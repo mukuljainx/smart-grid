@@ -3,6 +3,8 @@ import { range, random } from 'lodash-es';
 import produce from 'immer';
 
 import Grid, { ISchema } from '../Grid';
+import users from './data';
+import './index.scss';
 
 type SimpleObject = Record<string, any>;
 
@@ -15,11 +17,7 @@ range(10000).forEach((index: number) => {
 
 const getData = (limit: number) =>
   range(limit).map(i => ({
-    a: `a ${i + 1}`,
-    b: `b ${i + 1}`,
-    c: `c ${i + 1}`,
-    d: `d ${i + 1}`,
-    e: `e ${i + 1}`,
+    ...users[i % users.length],
     logo:
       'https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/Sketch_Logo.svg/1133px-Sketch_Logo.svg.png',
     checked: false,
@@ -34,7 +32,12 @@ interface IState {
   allChecked: boolean;
 }
 
-export default class App extends React.Component<{}, IState> {
+interface IProps {
+  dynamicRowHeight?: boolean;
+  style?: React.CSSProperties;
+}
+
+export default class App extends React.Component<IProps, IState> {
   state: IState = {
     data: [] as any,
     loading: true,
@@ -65,12 +68,15 @@ export default class App extends React.Component<{}, IState> {
       width: 200,
       template: ({ checked, rowIndex }: SimpleObject) => {
         return (
-          <div>
-            <input
-              type="checkbox"
-              onChange={event => this.handleCheckboxClick(event, rowIndex)}
-              checked={checked}
-            />
+          <div className="cell-wrapper">
+            <label className="checkbox-label">
+              <input
+                type="checkbox"
+                onChange={event => this.handleCheckboxClick(event, rowIndex)}
+                checked={checked}
+              />
+              <span className="checkbox-custom rectangular"></span>
+            </label>
           </div>
         );
       },
@@ -80,52 +86,72 @@ export default class App extends React.Component<{}, IState> {
       }),
       header: () => {
         return (
-          <input
-            type="checkbox"
-            onChange={this.handleHeaderCheckboxClick}
-            checked={this.state.allChecked}
-          />
+          <div className="cell-wrapper">
+            <label className="checkbox-label">
+              <input
+                type="checkbox"
+                onChange={this.handleHeaderCheckboxClick}
+                checked={this.state.allChecked}
+              />
+              <span className="checkbox-custom rectangular"></span>
+            </label>
+          </div>
         );
       },
     },
     {
       width: 150,
-      template: ({ x }: SimpleObject) => <div>{x}</div>,
+      template: (row: SimpleObject) => (
+        <div className="cell-wrapper">
+          {row.firstName} {row.lastName}
+        </div>
+      ),
       pinned: 'LEFT',
-      get: ({ b, c }: SimpleObject) => ({ x: b + c }),
-      header: () => <>B</>,
-    },
-    {
-      width: 100,
-      template: ({ x }: SimpleObject) => <div>{x}</div>,
-      get: ({ c }: SimpleObject) => ({ x: c }),
-      header: () => <div style={{ height: 200 }}>C</div>,
+      get: ({ firstName, lastName }: SimpleObject) => ({
+        firstName,
+        lastName,
+      }),
+      header: () => <div className="cell-wrapper">Name</div>,
     },
     {
       width: 200,
-      template: ({ x }: SimpleObject) => <div>{x}</div>,
-      get: ({ d }: SimpleObject) => ({ x: d }),
-      header: () => <>D</>,
+      template: ({ x }: SimpleObject) => (
+        <div className="cell-wrapper">{x}</div>
+      ),
+      get: ({ gender }: SimpleObject) => ({ x: gender }),
+      header: () => <div className="cell-wrapper">Gender</div>,
     },
     {
       width: 200,
-      template: ({ x }: SimpleObject) => <div>{x}</div>,
-      get: ({ e }: SimpleObject) => ({ x: e }),
-      header: () => <>E</>,
+      template: ({ x }: SimpleObject) => (
+        <div className="cell-wrapper ellipsis">{x}</div>
+      ),
+      get: ({ email }: SimpleObject) => ({ x: email }),
+      header: () => <div className="cell-wrapper">Email</div>,
     },
     {
       width: 100,
       template: ({ x }: SimpleObject) => (
-        <img src={x} style={{ height: 35 }} alt="lol" />
+        <div className="image-wrapper">
+          <img src={x} alt="Sketch app logo" />
+        </div>
       ),
       get: ({ logo }: SimpleObject) => ({ x: logo }),
-      header: () => <>Image</>,
+      header: () => <div className="cell-wrapper">Fav tool</div>,
     },
     {
       width: 200,
-      template: ({ x }: SimpleObject) => <div>{x}</div>,
+      template: ({ x }: SimpleObject) => (
+        <div
+          className={`cell-wrapper ${
+            this.props.dynamicRowHeight ? '' : 'ellipsis'
+          }`}
+        >
+          {x}
+        </div>
+      ),
       get: ({ note }: SimpleObject) => ({ x: note }),
-      header: () => <>Note</>,
+      header: () => <div className="cell-wrapper">Note</div>,
     },
   ];
 
@@ -150,13 +176,14 @@ export default class App extends React.Component<{}, IState> {
 
   render() {
     return (
-      <div className="App">
-        <h1>Smart Grid</h1>
-        <h3>
-          <a href="https://github.com/mukuljainx/smart-grid/blob/master/README.md">
-            Docs
-          </a>
-        </h3>
+      <div
+        style={{
+          height: 600,
+          padding: 16,
+          maxWidth: 800,
+          ...this.props.style,
+        }}
+      >
         <Grid
           style={{
             flexGrow: 2,
@@ -166,7 +193,7 @@ export default class App extends React.Component<{}, IState> {
           loadMore={this.loadMoreData}
           loadingMoreData={this.state.data.length > 0 && this.state.loading}
           buffer={5}
-          dynamicRowHeight={false}
+          dynamicRowHeight={this.props.dynamicRowHeight}
           rowHeight={40}
           headerHeight={40}
           schema={this.schema}
