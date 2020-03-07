@@ -1,0 +1,144 @@
+import { Tag, TagGroup, Divider } from 'rsuite';
+
+## data
+
+<TagGroup>
+  <Tag color="red">Required</Tag>
+  <Tag color="blue">Array</Tag>
+</TagGroup>
+<br />
+Data should be collection of object.
+<Divider />
+
+## schema
+
+<TagGroup>
+  <Tag color="red">Required</Tag>
+  <Tag color="blue">Array</Tag>
+</TagGroup>
+<br />
+Schema should be collection of object of `ISchema` type
+<br />
+
+1. **width**: Should be in pixels.
+2. **get**: Each cell does not need all the data from row using getter one pick limited keys from the row, as each cell template is rendered inside Pure Component it will be only updated when those values are changed.
+3. **template**: React Component, component will receive props from getter function also `rowIndex` as props.
+4. **pinned**: "LEFT" or undefined, will pin following coloumn to left.
+5. **header**: React Component
+
+<Divider />
+
+### rowHeight
+
+<TagGroup>
+  <Tag color="red">Required</Tag>
+  <Tag color="blue">Number</Tag>
+</TagGroup>
+<br />
+Height of row in pixels.
+<Divider />
+
+### headerHeight
+
+<TagGroup>
+  <Tag color="red">Required</Tag>
+  <Tag color="blue">Number</Tag>
+</TagGroup>
+<br />
+Height of header in pixels.
+<Divider />
+
+### loadMore
+
+<TagGroup>
+  <Tag color="red">Optional</Tag>
+  <Tag color="blue">Function</Tag>
+</TagGroup>
+<br />
+
+Function of type `() => void` should be provided which will be invoked when user is about reach the end of grid. It will be invoked once and will be not rendered again till the data is updated.
+
+<Divider />
+
+### buffer
+
+<TagGroup>
+  <Tag color="red">Optional</Tag>
+  <Tag color="blue">Number</Tag>
+</TagGroup>
+<br />
+
+**default**: 5
+
+Extra rows to be rendered below and above the visible table for smooth user experiance, for e.g. if row 15 to 25 are visible to user and buffer is 5, then rows from 10 to 30 will be rendered.
+
+<Divider />
+
+### loading
+
+<TagGroup>
+  <Tag color="red">Optional</Tag>
+  <Tag color="blue">Boolean</Tag>
+</TagGroup>
+<br />
+
+**default**: false
+
+Will show loading state for whole table if true.
+
+<Divider />
+
+### loader
+
+<TagGroup>
+  <Tag color="red">Optional</Tag>
+  <Tag color="blue">ReactChild</Tag>
+</TagGroup>
+<br />
+
+**default**: Grid's `<Loader />` component
+
+This will be rendered when loading is true, Grid has a default Loader component.
+
+<Divider />
+
+### loadingMoreData
+
+<TagGroup>
+  <Tag color="red">Optional</Tag>
+  <Tag color="blue">Boolean</Tag>
+</TagGroup>
+<br />
+
+**default**: false
+
+Will show loader in last two rows, loader will rendered as per provided `ISchema[]` 🙌
+
+<Divider />
+
+### dynamicRowHeight
+
+<TagGroup>
+  <Tag color="red">Optional</Tag>
+  <Tag color="blue">Boolean</Tag>
+</TagGroup>
+<br />
+
+**default**: false
+
+When `true` each row height will be calculated dynamically and given row height will be considered as minimun row height.
+The performace will not be equivalent fixed height row. To **match the performace** it advised to provided paginated data via usig `loadMore` prop, as once the height and position of rows are calculated they are cached and re-render for same rows are 200% faster.
+
+<Divider />
+
+### virtualization
+
+<TagGroup>
+  <Tag color="red">Optional</Tag>
+  <Tag color="blue">Boolean</Tag>
+</TagGroup>
+<br />
+
+**default**: false
+
+All the rows will be rendered at once, this is will result in better performace for small data sets but for large data (rows > 100) sets performance can suffer

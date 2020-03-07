@@ -2,6 +2,8 @@
 
 A light ( < 1kb) weight alternate to ag-grid.
 
+<br />
+
 #### Features
 
 1. Pinning
@@ -9,8 +11,13 @@ A light ( < 1kb) weight alternate to ag-grid.
 3. 826 bytes (gzipped)
 4. styled-components friendly
 5. Add className key to any row data to add an extra class to that row for custom styling
+6. Dynamic height support
+
+<br />
 
 #### Props
+
+<br />
 
 | Prop name       | Type       | Default   | Description                                                                |
 | --------------- | ---------- | --------- | -------------------------------------------------------------------------- |
@@ -22,8 +29,11 @@ A light ( < 1kb) weight alternate to ag-grid.
 | loading         | boolean    | false     | shows loader on whole table                                                |
 | loadMore        | () => void | undefined | called when user about reach the end of the table                          |
 | loadingMoreData | boolean    | false     | shows a partial loader at the end of table                                 |
+| virtualization  | boolean    | true      | Only visible and buffer rows will be rendered                              |
 
 #### Example
+
+<br />
 
 ```
 <Table
@@ -44,7 +54,12 @@ A light ( < 1kb) weight alternate to ag-grid.
 
 ```
 
+<br />
+<br />
+
 #### Schema
+
+<br />
 
 A sample object in schema array.
 
