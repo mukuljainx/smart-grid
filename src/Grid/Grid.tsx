@@ -68,6 +68,10 @@ export interface IProps extends IDivProps {
    * Given row height will be considered as minimun row height
    */
   dynamicRowHeight?: boolean;
+  /**
+   * Grid will not be virtualized every row will be rendered
+   */
+  virtualization?: boolean;
 }
 
 interface IState {
@@ -107,7 +111,8 @@ class Grid extends React.PureComponent<IProps, IState> {
   };
 
   public static defaultProps = {
-    buffer: 25,
+    buffer: 5,
+    virtualization: true,
   };
 
   constructor(props: IProps) {
@@ -126,15 +131,21 @@ class Grid extends React.PureComponent<IProps, IState> {
 
     if (this.props.dynamicRowHeight && this.calculateRowHeight) {
       this.calculateRowHeight = false;
-      if (this.props.data && prevProps.data !== this.props.data) {
-        this.calulateRowHeightAndRender();
-      }
-
-      if (this.state.position !== prevState.position) {
+      if (
+        (this.props.data && prevProps.data !== this.props.data) ||
+        this.state.position !== prevState.position
+      ) {
         this.calulateRowHeightAndRender();
       }
     }
   }
+
+  getClientHeight = (element: Element) => {
+    if (!element) {
+      return 0;
+    }
+    return element.clientHeight;
+  };
 
   calulateRowHeightAndRender = () => {
     const leftRows = document.querySelectorAll(
@@ -144,19 +155,27 @@ class Grid extends React.PureComponent<IProps, IState> {
       '.grid .grid-body .grid-center-body .row'
     );
 
-    if (leftRows.length === 0) {
+    if (
+      leftRows.length === 0 &&
+      this.state.gridMeta.leftSchema.length === 0 &&
+      centerRows.length === 0 &&
+      this.state.gridMeta.centerSchema.length === 0
+    ) {
       return;
     }
 
-    leftRows.forEach((row, nodeIndex) => {
+    const rowNodes =
+      leftRows.length > centerRows.length ? leftRows : centerRows;
+
+    rowNodes.forEach((row, nodeIndex) => {
       const index = parseInt(row.getAttribute('data-row'), 10);
       if (this.calculatedRowHeight[index]) {
         return;
       }
 
       const height = Math.max(
-        leftRows[nodeIndex].clientHeight,
-        centerRows[nodeIndex].clientHeight
+        this.getClientHeight(leftRows[nodeIndex]),
+        this.getClientHeight(centerRows[nodeIndex])
       );
 
       this.calculatedRowHeight[index] = height;
@@ -375,15 +394,20 @@ class Grid extends React.PureComponent<IProps, IState> {
     const {
       gridMeta: { leftSchema, centerSchema },
     } = state;
-    const { buffer, data, rowHeight, dynamicRowHeight } = props;
+    const { buffer, data, rowHeight, dynamicRowHeight, virtualization } = props;
 
     const position = this.getScrollPosition();
 
     const visibleCount = this.getVisibleRowsCount();
     let start = Math.max(position - visibleCount - buffer!, 0);
-    const end = Math.min(position + visibleCount + buffer!, data.length - 1);
+    let end = Math.min(position + visibleCount + buffer!, data.length - 1);
     const rowCache = this.cache.row;
     const heightCache = this.cache.height;
+
+    if (!virtualization) {
+      start = 0;
+      end = data.length - 1;
+    }
 
     // We can approximate where the user has landed but we can
     // show if the correct row there unitl we have redered all the
@@ -396,7 +420,6 @@ class Grid extends React.PureComponent<IProps, IState> {
     ) {
       start = Math.min(this.calculatedRowTopPosition.length - 1, start);
     }
-    ``;
 
     for (let index = start; index <= end; index++) {
       if (index === data.length) {
@@ -488,6 +511,7 @@ class Grid extends React.PureComponent<IProps, IState> {
       buffer: __2,
       dynamicRowHeight,
       rowHeight,
+      virtualization,
       loading,
       loader,
       overlay,
@@ -571,7 +595,7 @@ class Grid extends React.PureComponent<IProps, IState> {
         <div
           className="grid"
           ref={this.gridRef}
-          onScroll={this.handleGridScroll}
+          onScroll={virtualization ? this.handleGridScroll : undefined}
         >
           <div
             style={{
