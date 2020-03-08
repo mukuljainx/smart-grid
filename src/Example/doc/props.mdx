@@ -129,6 +129,20 @@ Will show loader in last two rows, loader will rendered as per provided `ISchema
 When `true` each row height will be calculated dynamically and given row height will be considered as minimun row height.
 The performace will not be equivalent fixed height row. To **match the performace** it advised to provided paginated data via usig `loadMore` prop, as once the height and position of rows are calculated they are cached and re-render for same rows are 200% faster.
 
+If any cell data updates which can change the height call, `gridActions.refreshRows([...indexs])` it will render the changed rows with new height.
+
+<Divider />
+
+### getGridActions
+
+<TagGroup>
+  <Tag color="red">Optional</Tag>
+  <Tag color="blue">Function</Tag>
+</TagGroup>
+<br />
+
+Will Call the function with `gridActions` parameter which can be stored in a variable for manipulations.
+
 <Divider />
 
 ### virtualization

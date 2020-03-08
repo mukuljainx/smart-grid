@@ -4,12 +4,13 @@ import 'rsuite/dist/styles/rsuite-default.css';
 
 import About from '../../README.md';
 import Props from './doc/props.mdx';
+import Actions from './doc/actions.mdx';
 import Example from './Example';
 import './index.scss';
 
 class Docs extends React.Component {
   state = {
-    activeKey: 'example-basic',
+    activeKey: 'about',
   };
 
   handleSelect = (activeKey: string) => {
@@ -32,6 +33,11 @@ class Docs extends React.Component {
       'doc-props': (
         <Container className="mdx-container">
           <Props />
+        </Container>
+      ),
+      'doc-actions': (
+        <Container className="mdx-container">
+          <Actions />
         </Container>
       ),
     };
@@ -74,6 +80,7 @@ class Docs extends React.Component {
                   icon={<Icon icon="book2" />}
                 >
                   <Dropdown.Item eventKey="doc-props">Props</Dropdown.Item>
+                  <Dropdown.Item eventKey="doc-actions">Actions</Dropdown.Item>
                 </Dropdown>
               </Nav>
             </Sidenav.Body>

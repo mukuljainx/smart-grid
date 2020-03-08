@@ -10,9 +10,12 @@ import {
   Checkbox,
   Divider,
   Avatar,
+  Icon,
+  Button,
 } from 'rsuite';
 
-import Grid, { ISchema } from '../Grid';
+import Grid, { ISchema, IGridAPIS } from '../Grid';
+import NoteModal from './NoteModal';
 import users from './users';
 import colors from './colors';
 
@@ -40,6 +43,7 @@ interface IState {
   loading: boolean;
   data: any;
   allChecked: boolean;
+  noteModal?: { value: string; index: number };
   grid: {
     initialRows: number;
     virtualization: boolean;
@@ -69,6 +73,7 @@ export default class App extends React.Component<IProps, IState> {
     },
   };
 
+  gridActions: IGridAPIS;
   totalRows = 0;
 
   getData = (limit: number): IRow[] =>
@@ -117,10 +122,13 @@ export default class App extends React.Component<IProps, IState> {
       if (this.totalRows < this.state.grid.limit) {
         this.totalRows =
           this.totalRows + (firstRender ? this.state.grid.initialRows : 100);
-        this.setState({
+        this.setState(state => ({
           loading: false,
-          data: this.getData(this.totalRows),
-        });
+          data: [
+            ...state.data,
+            ...this.getData(this.totalRows - state.data.length),
+          ],
+        }));
       } else {
         this.setState({ loading: false });
       }
@@ -173,7 +181,9 @@ export default class App extends React.Component<IProps, IState> {
             <Avatar
               size="sm"
               circle
-              style={{ background: colors[rowIndex % colors.length] }}
+              style={{
+                background: colors[rowIndex % colors.length],
+              }}
             >
               {x}
             </Avatar>
@@ -216,19 +226,61 @@ export default class App extends React.Component<IProps, IState> {
       },
       {
         width: 200,
-        template: ({ x }: SimpleObject) => (
+        template: ({ x, rowIndex }: SimpleObject) => (
           <div
             className={`cell-wrapper ${
               this.props.dynamicRowHeight ? '' : 'ellipsis'
             }`}
           >
             {x}
+            {this.props.dynamicRowHeight && (
+              <Button
+                style={{ marginLeft: 4, cursor: 'hover' }}
+                onClick={() => this.toggleModal(rowIndex)}
+              >
+                <Icon icon="edit" />
+              </Button>
+            )}
           </div>
         ),
         get: ({ note }: SimpleObject) => ({ x: note }),
         header: () => <div className="cell-wrapper">Note</div>,
       },
     ];
+  };
+
+  toggleModal = (index?: number) => {
+    this.setState(state => ({
+      noteModal: {
+        value: state.data[index].note,
+        index: index,
+      },
+    }));
+  };
+
+  updateNote = (note: string) => {
+    this.setState(state => {
+      return produce(
+        state,
+        draft => {
+          draft.data[state.noteModal.index].note = note;
+          draft.noteModal = undefined;
+        },
+        () => {
+          if (this.gridActions) {
+            this.gridActions.refreshRows([state.noteModal.index]);
+          }
+        }
+      );
+    });
+  };
+
+  closeModal = () => {
+    this.setState({ noteModal: undefined });
+  };
+
+  getGridActions = (gridActions: IGridAPIS) => {
+    this.gridActions = gridActions;
   };
 
   render() {
@@ -334,6 +386,9 @@ export default class App extends React.Component<IProps, IState> {
               (this.state.data.length > 0 && this.state.loading) ||
               this.state.grid.loadingMoreData
             }
+            getGridActions={
+              this.props.dynamicRowHeight ? this.getGridActions : undefined
+            }
             buffer={5}
             dynamicRowHeight={this.props.dynamicRowHeight}
             rowHeight={this.state.grid.rowHeight}
@@ -347,6 +402,14 @@ export default class App extends React.Component<IProps, IState> {
             }
           />
         </div>
+
+        {this.state.noteModal && (
+          <NoteModal
+            note={this.state.noteModal.value}
+            onClose={this.closeModal}
+            onNoteSave={this.updateNote}
+          />
+        )}
       </div>
     );
   }
