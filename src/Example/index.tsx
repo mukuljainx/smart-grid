@@ -1,5 +1,13 @@
 import * as React from 'react';
-import { Container, Sidebar, Sidenav, Nav, Dropdown, Icon } from 'rsuite';
+import {
+  Container,
+  Sidebar,
+  Sidenav,
+  Nav,
+  Dropdown,
+  Icon,
+  Divider,
+} from 'rsuite';
 import 'rsuite/dist/styles/rsuite-default.css';
 
 import About from '../../README.md';
@@ -56,6 +64,25 @@ class Docs extends React.Component {
             onSelect={this.handleSelect}
             style={{ height: '100%' }}
           >
+            <Sidenav.Header>
+              <div
+                style={{
+                  padding: 20,
+                  fontSize: 16,
+                  paddingBottom: 4,
+                }}
+              >
+                <h4>Smart Grid</h4>
+                <a href="https://badge.fury.io/js/%40crafts%2Fsmart-grid">
+                  <img
+                    src="https://badge.fury.io/js/%40crafts%2Fsmart-grid.svg"
+                    alt="npm version"
+                    height="18"
+                  />
+                </a>
+              </div>
+              <Divider />
+            </Sidenav.Header>
             <Sidenav.Body>
               <Nav>
                 <Nav.Item eventKey="about" icon={<Icon icon="dashboard" />}>
