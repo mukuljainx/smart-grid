@@ -6,84 +6,7 @@ import Cell from './Atoms/Cell';
 import Header from './Header';
 import Loader, { PartialLoader } from './Loader';
 
-type IDivProps = JSX.IntrinsicElements['div'];
-
-export interface ISchema {
-  width: number;
-  template: React.ElementType;
-  pinned?: 'LEFT';
-  get: (props: any) => any;
-  header: React.ElementType;
-}
-
-interface ICache {
-  row: Record<string, { left: React.ReactElement; center: React.ReactElement }>;
-  height: number[];
-}
-
-export interface ObjectLiteral {
-  [k: string]: any;
-}
-
-export interface IProps extends IDivProps {
-  data: ObjectLiteral[];
-  schema: ISchema[];
-  /**
-   * In case of dynamic height this will be taken
-   * as minimun height
-   */
-  rowHeight: number;
-  headerHeight: number;
-  /**
-   * Function which is invoked when user is about to reach
-   * the end
-   */
-
-  loadMore?: () => void;
-  /**
-   * extra rows to be rendered
-   * above and below visible table
-   */
-  buffer?: number;
-  /**
-   * Shows the loader
-   */
-  loading?: boolean;
-  /**
-   * This will render if loading is true
-   * parent element will gird's first div
-   */
-  loader?: React.ReactChild;
-  /**
-   * Will show loader in last two rows
-   */
-  loadingMoreData?: boolean;
-  /**
-   * Will show overlay in place of grid
-   */
-  showOverlay?: boolean;
-  overlay?: React.ReactChild;
-  /**
-   * Each row height will be calculated dynamically
-   * Given row height will be considered as minimun row height
-   */
-  dynamicRowHeight?: boolean;
-  /**
-   * Grid will not be virtualized every row will be rendered
-   */
-  virtualization?: boolean;
-}
-
-interface IState {
-  isScrolling: Boolean;
-  position: number;
-  gridMeta: {
-    leftSchema: ISchema[];
-    centerSchema: ISchema[];
-    leftWidth: number;
-    centerWidth: number;
-  };
-}
+import { IState, IProps, ICache, ISchema, IGridAPIS } from './interfaces';
 
 class Grid extends React.PureComponent<IProps, IState> {
   // Refs
@@ -122,6 +45,12 @@ class Grid extends React.PureComponent<IProps, IState> {
       isScrolling: false,
       gridMeta: this.updateSchema(this.props.schema),
     };
+
+    if (props.getGridActions) {
+      props.getGridActions({
+        refreshRows: this.refreshRows,
+      });
+    }
   }
 
   componentDidUpdate(prevProps: IProps, prevState: IState) {
@@ -139,6 +68,19 @@ class Grid extends React.PureComponent<IProps, IState> {
       }
     }
   }
+
+  /**
+   * Will clear height caches for provided set of indexs
+   * and will re-render the grid
+   * @memberof Grid
+   */
+  refreshRows = (indexs: number[]) => {
+    indexs.forEach(index => {
+      this.cache.height[index] = undefined;
+      this.calculatedRowHeight[index] = undefined;
+      this.calculatedRowTopPosition[index] = undefined;
+    });
+  };
 
   getClientHeight = (element: Element) => {
     if (!element) {
@@ -169,9 +111,6 @@ class Grid extends React.PureComponent<IProps, IState> {
 
     rowNodes.forEach((row, nodeIndex) => {
       const index = parseInt(row.getAttribute('data-row'), 10);
-      if (this.calculatedRowHeight[index]) {
-        return;
-      }
 
       const height = Math.max(
         this.getClientHeight(leftRows[nodeIndex]),
@@ -509,6 +448,7 @@ class Grid extends React.PureComponent<IProps, IState> {
       schema: __,
       loadMore: __1,
       buffer: __2,
+      getGridActions: __3,
       dynamicRowHeight,
       rowHeight,
       virtualization,

@@ -1,7 +1,7 @@
 import Table from './Grid';
 import { Placeholder } from './Loader';
 
-import { ISchema } from './Grid';
+import { ISchema, IGridAPIS } from './interfaces';
 
 export default Table;
-export { ISchema, Placeholder };
+export { ISchema, Placeholder, IGridAPIS };
