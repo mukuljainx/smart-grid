@@ -72,7 +72,21 @@ class Docs extends React.Component {
                   paddingBottom: 4,
                 }}
               >
-                <h4>Smart Grid</h4>
+                <h4>
+                  Smart Grid
+                  <a
+                    href="https://github.com/mukuljainx/smart-grid"
+                    target="_blank"
+                  >
+                    <Icon
+                      style={{
+                        fontSize: 'inherit',
+                        marginLeft: 8,
+                      }}
+                      icon="github"
+                    />
+                  </a>
+                </h4>
                 <a href="https://badge.fury.io/js/%40crafts%2Fsmart-grid">
                   <img
                     src="https://badge.fury.io/js/%40crafts%2Fsmart-grid.svg"

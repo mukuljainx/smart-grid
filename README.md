@@ -1,6 +1,6 @@
 ### Smart Grid
 
-A light ( < 1kb) weight alternate to ag-grid.
+A light ![npm bundle size](https://img.shields.io/bundlephobia/minzip/@crafts/smart-grid) weight alternate to ag-grid.
 
 <br />
 

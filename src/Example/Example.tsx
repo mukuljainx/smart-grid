@@ -291,7 +291,13 @@ export default class App extends React.Component<IProps, IState> {
           <p style={{ maxWidth: 800 }}>
             You can toggle some the props here to see how table behaves some
             complex props like Grid data, schema, loadMore has been Ommited here
-            as they are generated using generators.
+            as they are generated using generators.{' '}
+            <a
+              href="https://github.com/mukuljainx/smart-grid/blob/master/src/Example/Example.tsx"
+              target="_blank"
+            >
+              View example code on Github
+            </a>
           </p>
           <Divider />
           <Form className="example-form">
