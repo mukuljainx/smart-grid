@@ -6,7 +6,7 @@ import Cell from './Atoms/Cell';
 import Header from './Header';
 import Loader, { PartialLoader } from './Loader';
 
-import { IState, IProps, ICache, ISchema, IGridAPIS } from './interfaces';
+import { IState, IProps, ICache, ISchema } from './interfaces';
 
 class Grid extends React.PureComponent<IProps, IState> {
   // Refs
@@ -58,16 +58,25 @@ class Grid extends React.PureComponent<IProps, IState> {
       this.setState({ gridMeta: this.updateSchema(this.props.schema) });
     }
 
-    if (this.props.dynamicRowHeight && this.calculateRowHeight) {
+    if (
+      this.props.dynamicRowHeight &&
+      this.calculateRowHeight &&
+      this.isColumnActive()
+    ) {
       this.calculateRowHeight = false;
       if (
         (this.props.data && prevProps.data !== this.props.data) ||
-        this.state.position !== prevState.position
+        this.state.position !== prevState.position ||
+        this.state.gridMeta !== prevState.gridMeta
       ) {
         this.calulateRowHeightAndRender();
       }
     }
   }
+
+  isColumnActive = () =>
+    this.state.gridMeta.leftSchema.length > 0 ||
+    this.state.gridMeta.centerSchema.length > 0;
 
   /**
    * Will clear height caches for provided set of indexs
@@ -260,7 +269,7 @@ class Grid extends React.PureComponent<IProps, IState> {
     if (
       currentPosition > this.loadMoreDataPosition.position &&
       dataLength > this.loadMoreDataPosition.end &&
-      currentPosition > dataLength - 1.5 * visibleCount
+      currentPosition > dataLength - visibleCount - 5
     ) {
       if (this.props.loadMore) {
         this.props.loadMore();
@@ -515,7 +524,7 @@ class Grid extends React.PureComponent<IProps, IState> {
 
     let gridHeight = this.getGridHeight();
 
-    if (dynamicRowHeight) {
+    if (dynamicRowHeight && loadingMoreData) {
       gridHeight += rowHeight * 2;
     }
 

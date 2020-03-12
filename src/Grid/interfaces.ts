@@ -61,11 +61,14 @@ export interface IProps extends IDivProps {
    */
   dynamicRowHeight?: boolean;
   /**
-   * Grid will not be virtualized every row will be rendered
+   * Grid will be virtualized only visible and buffered rows will be
+   * rendered in the dom
    */
   virtualization?: boolean;
-
-  getGridActions?: (gridActions?: IGridAPIS) => void;
+  /**
+   * Assign the gridActions to passed variable
+   */
+  getGridActions?: (gridActions?: IGridActions) => void;
 }
 
 export interface IState {
@@ -79,6 +82,6 @@ export interface IState {
   };
 }
 
-export interface IGridAPIS {
+export interface IGridActions {
   refreshRows: (indexs: number[]) => void;
 }

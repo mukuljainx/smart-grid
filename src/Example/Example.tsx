@@ -14,7 +14,7 @@ import {
   Button,
 } from 'rsuite';
 
-import Grid, { ISchema, IGridAPIS } from '../Grid';
+import Grid, { ISchema, IGridActions } from '../Grid';
 import NoteModal from './NoteModal';
 import users from './users';
 import colors from './colors';
@@ -73,7 +73,7 @@ export default class App extends React.Component<IProps, IState> {
     },
   };
 
-  gridActions: IGridAPIS;
+  gridActions: IGridActions;
   totalRows = 0;
 
   getData = (limit: number): IRow[] =>
@@ -279,7 +279,7 @@ export default class App extends React.Component<IProps, IState> {
     this.setState({ noteModal: undefined });
   };
 
-  getGridActions = (gridActions: IGridAPIS) => {
+  getGridActions = (gridActions: IGridActions) => {
     this.gridActions = gridActions;
   };
 
