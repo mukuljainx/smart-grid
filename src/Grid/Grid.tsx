@@ -89,7 +89,12 @@ class Grid extends React.PureComponent<IProps, IState> {
    * and will re-render the grid
    * @memberof Grid
    */
-  refreshRows = (indexs: number[]) => {
+  refreshRows = (indexs: number[], all?: boolean) => {
+    if (all) {
+      this.cache.height = [];
+      this.calculatedRowHeight = [];
+      this.calculatedRowTopPosition = [];
+    }
     indexs.forEach(index => {
       this.cache.height[index] = undefined;
       this.calculatedRowHeight[index] = undefined;
