@@ -30,6 +30,12 @@ class Grid extends React.PureComponent<IProps, IState> {
   // Cache row with there index
   cache: ICache = {
     row: {},
+    // this cache is needed to check for optimization during scroll
+    // when user is scroll we can check the cache and row in row cache
+    // iff row cache & height is available row can be picked from row cache
+    // in case of dynamic scrolling else new row will be created
+    // height cache only filled when row is created with actual height & top position
+    // will never be cleared once created until done through gridActions
     height: [],
   };
 
@@ -89,6 +95,7 @@ class Grid extends React.PureComponent<IProps, IState> {
       this.calculatedRowHeight[index] = undefined;
       this.calculatedRowTopPosition[index] = undefined;
     });
+    this.forceUpdate();
   };
 
   getClientHeight = (element: Element) => {
@@ -126,7 +133,9 @@ class Grid extends React.PureComponent<IProps, IState> {
         this.getClientHeight(centerRows[nodeIndex])
       );
 
-      this.calculatedRowHeight[index] = height;
+      if (!this.calculatedRowHeight[index]) {
+        this.calculatedRowHeight[index] = height;
+      }
       if (index !== 0) {
         if (this.calculatedRowTopPosition[index - 1] !== undefined) {
           this.calculatedRowTopPosition[index] =
@@ -261,6 +270,18 @@ class Grid extends React.PureComponent<IProps, IState> {
     this.setState({ isScrolling });
   });
 
+  // checks if user has scrolled to end of the table
+  isScrollEnd = () => {
+    const element = this.gridRef.current;
+    if (!element) {
+      return false;
+    }
+
+    if (element.scrollHeight - element.scrollTop === element.clientHeight) {
+      return true;
+    }
+  };
+
   loadMoreData = (
     currentPosition: number,
     visibleCount: number,
@@ -339,6 +360,8 @@ class Grid extends React.PureComponent<IProps, IState> {
     const leftRows = [];
     const centerRows = [];
 
+    const heightCache = this.cache.height;
+
     const {
       gridMeta: { leftSchema, centerSchema },
     } = state;
@@ -350,7 +373,6 @@ class Grid extends React.PureComponent<IProps, IState> {
     let start = Math.max(position - visibleCount - buffer!, 0);
     let end = Math.min(position + visibleCount + buffer!, data.length - 1);
     const rowCache = this.cache.row;
-    const heightCache = this.cache.height;
 
     if (!virtualization) {
       start = 0;
@@ -388,7 +410,6 @@ class Grid extends React.PureComponent<IProps, IState> {
         centerRows.push(rowCache[index].center);
       } else {
         const row = data[index];
-        heightCache[index] = this.calculatedRowHeight[index];
 
         rowCache[index] = {
           left: null,
@@ -414,6 +435,8 @@ class Grid extends React.PureComponent<IProps, IState> {
           dynamicRowHeight,
         });
         centerRows.push(rowCache[index].center);
+
+        heightCache[index] = this.calculatedRowHeight[index];
       }
     }
 
