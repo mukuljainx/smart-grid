@@ -95,7 +95,6 @@ class Grid extends React.PureComponent<IProps, IState> {
       this.calculatedRowHeight[index] = undefined;
       this.calculatedRowTopPosition[index] = undefined;
     });
-    this.forceUpdate();
   };
 
   getClientHeight = (element: Element) => {
