@@ -6,7 +6,7 @@ import Cell from './Atoms/Cell';
 import Header from './Header';
 import Loader, { PartialLoader } from './Loader';
 
-import { IState, IProps, ICache, ISchema } from './interfaces';
+import { IState, IProps, ICache, ISchema, IGridActions } from './interfaces';
 
 class Grid extends React.PureComponent<IProps, IState> {
   // Refs
@@ -89,17 +89,21 @@ class Grid extends React.PureComponent<IProps, IState> {
    * and will re-render the grid
    * @memberof Grid
    */
-  refreshRows = (indexs: number[], all?: boolean) => {
+  refreshRows: IGridActions['refreshRows'] = (indexs, all) => {
     if (all) {
       this.cache.height = [];
       this.calculatedRowHeight = [];
       this.calculatedRowTopPosition = [];
+      return;
     }
-    indexs.forEach(index => {
-      this.cache.height[index] = undefined;
-      this.calculatedRowHeight[index] = undefined;
-      this.calculatedRowTopPosition[index] = undefined;
-    });
+
+    const minIndex = Math.min(...indexs);
+    this.cache.height = this.cache.height.slice(0, minIndex);
+    this.calculatedRowHeight = this.calculatedRowHeight.slice(0, minIndex);
+    this.calculatedRowTopPosition = this.calculatedRowTopPosition.slice(
+      0,
+      minIndex
+    );
   };
 
   getClientHeight = (element: Element) => {
@@ -402,7 +406,7 @@ class Grid extends React.PureComponent<IProps, IState> {
 
       // To stop unnecessary renders
       this.calculateRowHeight = !this.calculateRowHeight
-        ? this.getTopPosition(index) === undefined
+        ? this.cache.height[index] === undefined
         : this.calculateRowHeight;
 
       if (

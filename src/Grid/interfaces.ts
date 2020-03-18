@@ -83,5 +83,5 @@ export interface IState {
 }
 
 export interface IGridActions {
-  refreshRows: (indexs: number[]) => void;
+  refreshRows: (indexs: number[], all?: boolean) => void;
 }
