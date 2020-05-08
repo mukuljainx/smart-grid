@@ -69,6 +69,10 @@ export interface IProps extends IDivProps {
    * Assign the gridActions to passed variable
    */
   getGridActions?: (gridActions?: IGridActions) => void;
+  /**
+   * Triggers loadmore when n number of rows are remaining
+   */
+  loadMoreThreshold?: number;
 }
 
 export interface IState {

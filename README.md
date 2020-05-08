@@ -19,18 +19,19 @@ A light ![npm bundle size](https://img.shields.io/bundlephobia/minzip/@crafts/sm
 
 <br />
 
-| Prop name       | Type                  | Default   | Description                                                                |
-| --------------- | --------------------- | --------- | -------------------------------------------------------------------------- |
-| data            | Array                 | Required  | row data                                                                   |
-| schema          | array                 | Required  | table schema                                                               |
-| rowHeight       | number                | Required  | row height                                                                 |
-| headerHeight    | number                | Required  | header height                                                              |
-| buffer          | number                | 10        | extra rows to be loaded at the start and end of table for smooth scrolling |
-| loading         | boolean               | false     | shows loader on whole table                                                |
-| loadMore        | () => void            | undefined | called when user about reach the end of the table                          |
-| loadingMoreData | boolean               | false     | shows a partial loader at the end of table                                 |
-| virtualization  | boolean               | true      | Only visible and buffer rows will be rendered                              |
-| getGridActions  | (gridActions) => void | undefined | Assign the gridActions to passed variable                                  |
+| Prop name         | Type                  | Default   | Description                                                                |
+| ----------------- | --------------------- | --------- | -------------------------------------------------------------------------- |
+| data              | Array                 | Required  | row data                                                                   |
+| schema            | array                 | Required  | table schema                                                               |
+| rowHeight         | number                | Required  | row height                                                                 |
+| headerHeight      | number                | Required  | header height                                                              |
+| buffer            | number                | 10        | extra rows to be loaded at the start and end of table for smooth scrolling |
+| loading           | boolean               | false     | shows loader on whole table                                                |
+| loadMore          | () => void            | undefined | called when user about reach the end of the table                          |
+| loadingMoreData   | boolean               | false     | shows a partial loader at the end of table                                 |
+| virtualization    | boolean               | true      | Only visible and buffer rows will be rendered                              |
+| getGridActions    | (gridActions) => void | undefined | Assign the gridActions to passed variable                                  |
+| loadMoreThreshold | number                | 5         | Triggers loadmore when n number of rows are remaining                      |
 
 #### Example
 

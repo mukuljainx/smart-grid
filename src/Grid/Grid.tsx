@@ -42,6 +42,7 @@ class Grid extends React.PureComponent<IProps, IState> {
   public static defaultProps = {
     buffer: 5,
     virtualization: true,
+    loadMoreThreshold: 5,
   };
 
   constructor(props: IProps) {
@@ -174,7 +175,7 @@ class Grid extends React.PureComponent<IProps, IState> {
     }
 
     const index = this.calculatedRowTopPosition.findIndex(
-      position => position > scrollTop
+      (position) => position > scrollTop
     );
 
     if (index !== -1) {
@@ -298,7 +299,7 @@ class Grid extends React.PureComponent<IProps, IState> {
     if (
       currentPosition > this.loadMoreDataPosition.position &&
       dataLength > this.loadMoreDataPosition.end &&
-      currentPosition > dataLength - visibleCount - 5
+      currentPosition > dataLength - visibleCount - this.props.loadMoreThreshold
     ) {
       if (this.props.loadMore) {
         this.props.loadMore();
