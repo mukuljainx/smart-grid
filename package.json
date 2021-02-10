@@ -1,6 +1,6 @@
 {
   "name": "@crafts/smart-grid",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "private": false,
   "main": "dist/cjs/index.js",
   "typings": "dist/cjs/index.d.ts",
