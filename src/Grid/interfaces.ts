@@ -80,6 +80,14 @@ export interface IProps extends IDivProps {
    * Triggers loadmore when n number of rows are remaining
    */
   loadMoreThreshold?: number;
+
+  rowProps?: IRowProps;
+}
+
+export interface IRowProps {
+  onClick?: (rowIndex: number, gridPosition: GridPosition) => void;
+  onMouseEnter?: (rowIndex: number, gridPosition: GridPosition) => void;
+  onMouseLeave?: (rowIndex: number, gridPosition: GridPosition) => void;
 }
 
 export interface IState {
@@ -100,3 +108,5 @@ export interface IGridActions {
   scrollToTop: () => void;
   refreshLoadMoreCache: () => void;
 }
+
+export type GridPosition = 'LEFT' | 'CENTER' | 'RIGHT';

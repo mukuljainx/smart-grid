@@ -6,7 +6,15 @@ import Cell from './Atoms/Cell';
 import Header from './Header';
 import Loader, { PartialLoader } from './Loader';
 
-import { IState, IProps, ICache, ISchema, IGridActions } from './interfaces';
+import {
+  IState,
+  IProps,
+  ICache,
+  ISchema,
+  IGridActions,
+  GridPosition,
+  IRowProps,
+} from './interfaces';
 
 class Grid extends React.PureComponent<IProps, IState> {
   // Refs
@@ -358,13 +366,18 @@ class Grid extends React.PureComponent<IProps, IState> {
     row,
     schema,
     dynamicRowHeight,
+    gridPosition,
+    onClick,
+    onMouseEnter,
+    onMouseLeave,
   }: {
     index: number;
     rowHeight?: IProps['rowHeight'];
     row: IProps['data'][0];
     schema: IProps['schema'];
     dynamicRowHeight: boolean;
-  }) => {
+    gridPosition: GridPosition;
+  } & IRowProps) => {
     return (
       <div
         data-row={index}
@@ -378,6 +391,21 @@ class Grid extends React.PureComponent<IProps, IState> {
         }}
         className={`row ${row.className || ''}`}
         key={index}
+        onClick={() => {
+          if (onClick) {
+            onClick(index, gridPosition);
+          }
+        }}
+        onMouseEnter={() => {
+          if (onMouseEnter) {
+            onMouseEnter(index, gridPosition);
+          }
+        }}
+        onMouseLeave={() => {
+          if (onMouseLeave) {
+            onMouseLeave(index, gridPosition);
+          }
+        }}
       >
         {schema.map(({ width, template, get }, j) => (
           <Cell
@@ -461,6 +489,10 @@ class Grid extends React.PureComponent<IProps, IState> {
           rowHeight,
           row,
           dynamicRowHeight,
+          gridPosition: 'LEFT',
+          onClick: this.props.rowProps.onClick,
+          onMouseEnter: this.props.rowProps.onMouseEnter,
+          onMouseLeave: this.props.rowProps.onMouseLeave,
         });
         leftRows.push(rowCache[index].left);
 
@@ -471,6 +503,10 @@ class Grid extends React.PureComponent<IProps, IState> {
           rowHeight,
           row,
           dynamicRowHeight,
+          gridPosition: 'CENTER',
+          onClick: this.props.rowProps.onClick,
+          onMouseEnter: this.props.rowProps.onMouseEnter,
+          onMouseLeave: this.props.rowProps.onMouseLeave,
         });
         centerRows.push(rowCache[index].center);
 
@@ -481,6 +517,10 @@ class Grid extends React.PureComponent<IProps, IState> {
           rowHeight,
           row,
           dynamicRowHeight,
+          gridPosition: 'RIGHT',
+          onClick: this.props.rowProps.onClick,
+          onMouseEnter: this.props.rowProps.onMouseEnter,
+          onMouseLeave: this.props.rowProps.onMouseLeave,
         });
         rightRows.push(rowCache[index].right);
 

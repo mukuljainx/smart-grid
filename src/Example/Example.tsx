@@ -14,7 +14,7 @@ import {
   Button,
 } from 'rsuite';
 
-import Grid, { ISchema, IGridActions } from '../Grid';
+import Grid, { ISchema, IGridActions, GridPosition } from '../Grid';
 import NoteModal from './NoteModal';
 import users from './users';
 import colors from './colors';
@@ -77,23 +77,23 @@ export default class App extends React.Component<IProps, IState> {
   totalRows = 0;
 
   getData = (limit: number): IRow[] =>
-    range(limit).map(i => ({
+    range(limit).map((i) => ({
       ...users[i % users.length],
       checked: false,
       note: notes[i % 100],
     }));
 
   handleCheckboxClick = (__: any, rowIndex: number) => {
-    this.setState(state => {
-      return produce(state, draft => {
+    this.setState((state) => {
+      return produce(state, (draft) => {
         draft.data[rowIndex].checked = !draft.data[rowIndex].checked;
       });
     });
   };
 
   handleHeaderCheckboxClick = (__: any) => {
-    this.setState(state => {
-      return produce(state, draft => {
+    this.setState((state) => {
+      return produce(state, (draft) => {
         draft.allChecked = !state.allChecked;
         draft.data.forEach((row: IRow) => {
           row.checked = !state.allChecked;
@@ -114,7 +114,7 @@ export default class App extends React.Component<IProps, IState> {
   }
 
   loadMoreData = (firstRender?: boolean) => {
-    this.setState(state => ({
+    this.setState((state) => ({
       loading: true,
       data: firstRender ? [] : state.data,
     }));
@@ -122,7 +122,7 @@ export default class App extends React.Component<IProps, IState> {
       if (this.totalRows < this.state.grid.limit) {
         this.totalRows =
           this.totalRows + (firstRender ? this.state.grid.initialRows : 100);
-        this.setState(state => ({
+        this.setState((state) => ({
           loading: false,
           data: [
             ...state.data,
@@ -139,7 +139,7 @@ export default class App extends React.Component<IProps, IState> {
     fieldKey: keyof IState['grid'],
     value: string | number | boolean
   ) => {
-    this.setState(state => ({
+    this.setState((state) => ({
       grid: { ...state.grid, [fieldKey]: value },
     }));
   };
@@ -152,7 +152,7 @@ export default class App extends React.Component<IProps, IState> {
           return (
             <div className="cell-wrapper">
               <Checkbox
-                onChange={event => this.handleCheckboxClick(event, rowIndex)}
+                onChange={(event) => this.handleCheckboxClick(event, rowIndex)}
                 checked={checked}
               />
             </div>
@@ -250,7 +250,7 @@ export default class App extends React.Component<IProps, IState> {
   };
 
   toggleModal = (index?: number) => {
-    this.setState(state => ({
+    this.setState((state) => ({
       noteModal: {
         value: state.data[index].note,
         index: index,
@@ -259,10 +259,10 @@ export default class App extends React.Component<IProps, IState> {
   };
 
   updateNote = (note: string) => {
-    this.setState(state => {
+    this.setState((state) => {
       return produce(
         state,
-        draft => {
+        (draft) => {
           draft.data[state.noteModal.index].note = note;
           draft.noteModal = undefined;
         },
@@ -281,6 +281,24 @@ export default class App extends React.Component<IProps, IState> {
 
   getGridActions = (gridActions: IGridActions) => {
     this.gridActions = gridActions;
+  };
+
+  onRowClick = (rowIndex: number, gridPosition: GridPosition) => {
+    console.log(
+      `Row CLICKED having index ${rowIndex} and grid-position ${gridPosition}`
+    );
+  };
+
+  onRowMouseEnter = (rowIndex: number, gridPosition: GridPosition) => {
+    console.log(
+      `Row mouse ENTERED having index ${rowIndex} and grid-position ${gridPosition}`
+    );
+  };
+
+  onRowMouseLeave = (rowIndex: number, gridPosition: GridPosition) => {
+    console.log(
+      `Row mouse LEAVE having index ${rowIndex} and grid-position ${gridPosition}`
+    );
   };
 
   render() {
@@ -305,7 +323,7 @@ export default class App extends React.Component<IProps, IState> {
               <ControlLabel style={{ marginRight: 8 }}>Row Height</ControlLabel>
               <FormControl
                 value={this.state.grid.rowHeight}
-                onChange={value =>
+                onChange={(value) =>
                   this.handleInputChange('rowHeight', parseInt(value || '0'))
                 }
                 name="rowHeight"
@@ -315,7 +333,7 @@ export default class App extends React.Component<IProps, IState> {
               </ControlLabel>
               <FormControl
                 value={this.state.grid.headerHeight}
-                onChange={value =>
+                onChange={(value) =>
                   this.handleInputChange('headerHeight', parseInt(value || '0'))
                 }
                 name="headerHeight"
@@ -323,7 +341,7 @@ export default class App extends React.Component<IProps, IState> {
               <ControlLabel style={{ marginRight: 8 }}>Buffer</ControlLabel>
               <FormControl
                 value={this.state.grid.buffer}
-                onChange={value =>
+                onChange={(value) =>
                   this.handleInputChange('buffer', parseInt(value || '0'))
                 }
                 name="headerHeight"
@@ -331,7 +349,7 @@ export default class App extends React.Component<IProps, IState> {
               <ControlLabel style={{ marginRight: 8 }}>Max Rows</ControlLabel>
               <FormControl
                 value={this.state.grid.limit}
-                onChange={value =>
+                onChange={(value) =>
                   this.handleInputChange('limit', parseInt(value || '0'))
                 }
                 name="headerHeight"
@@ -341,7 +359,7 @@ export default class App extends React.Component<IProps, IState> {
               </ControlLabel>
               <FormControl
                 value={this.state.grid.initialRows}
-                onChange={value =>
+                onChange={(value) =>
                   this.handleInputChange('initialRows', parseInt(value || '0'))
                 }
                 name="headerHeight"
@@ -353,7 +371,7 @@ export default class App extends React.Component<IProps, IState> {
               </ControlLabel>
               <Toggle
                 checked={this.state.grid.virtualization}
-                onChange={value =>
+                onChange={(value) =>
                   this.handleInputChange('virtualization', value)
                 }
               />
@@ -362,14 +380,14 @@ export default class App extends React.Component<IProps, IState> {
               </ControlLabel>
               <Toggle
                 checked={this.state.grid.loadingMoreData}
-                onChange={value =>
+                onChange={(value) =>
                   this.handleInputChange('loadingMoreData', value)
                 }
               />
               <ControlLabel style={{ marginRight: 8 }}>Loading</ControlLabel>
               <Toggle
                 checked={this.state.grid.loading}
-                onChange={value => this.handleInputChange('loading', value)}
+                onChange={(value) => this.handleInputChange('loading', value)}
               />
             </FlexboxGrid>
           </Form>
@@ -406,6 +424,11 @@ export default class App extends React.Component<IProps, IState> {
               (this.state.data.length === 0 && this.state.loading) ||
               this.state.grid.loading
             }
+            rowProps={{
+              onClick: this.onRowClick,
+              onMouseEnter: this.onRowMouseEnter,
+              onMouseLeave: this.onRowMouseLeave,
+            }}
           />
         </div>
 
