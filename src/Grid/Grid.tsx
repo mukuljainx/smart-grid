@@ -56,6 +56,17 @@ class Grid extends React.PureComponent<IProps, IState> {
     if (props.getGridActions) {
       props.getGridActions({
         refreshRows: this.refreshRows,
+        scrollToTop: function () {
+          if (this.gridRef.current) {
+            this.gridRef.current.scrollTo(0, 0);
+          }
+        },
+        refreshLoadMoreCache: function () {
+          this.loadMoreDataPosition = {
+            position: -1,
+            end: -1,
+          };
+        },
       });
     }
   }

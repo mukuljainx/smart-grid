@@ -88,4 +88,6 @@ export interface IState {
 
 export interface IGridActions {
   refreshRows: (indexs: number[], all?: boolean) => void;
+  scrollToTop: () => void;
+  refreshLoadMoreCache: () => void;
 }
