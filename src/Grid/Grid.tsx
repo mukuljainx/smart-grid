@@ -482,6 +482,12 @@ class Grid extends React.PureComponent<IProps, IState> {
           center: null,
           right: null,
         };
+
+        const rowProps = this.props.rowProps;
+        const onClick = rowProps ? rowProps.onClick : undefined;
+        const onMouseEnter = rowProps ? rowProps.onMouseEnter : undefined;
+        const onMouseLeave = rowProps ? rowProps.onMouseLeave : undefined;
+
         // Left grid
         rowCache[index].left = this.createRow({
           schema: leftSchema,
@@ -490,9 +496,9 @@ class Grid extends React.PureComponent<IProps, IState> {
           row,
           dynamicRowHeight,
           gridPosition: 'LEFT',
-          onClick: this.props.rowProps.onClick,
-          onMouseEnter: this.props.rowProps.onMouseEnter,
-          onMouseLeave: this.props.rowProps.onMouseLeave,
+          onClick,
+          onMouseEnter,
+          onMouseLeave,
         });
         leftRows.push(rowCache[index].left);
 
@@ -504,9 +510,9 @@ class Grid extends React.PureComponent<IProps, IState> {
           row,
           dynamicRowHeight,
           gridPosition: 'CENTER',
-          onClick: this.props.rowProps.onClick,
-          onMouseEnter: this.props.rowProps.onMouseEnter,
-          onMouseLeave: this.props.rowProps.onMouseLeave,
+          onClick,
+          onMouseEnter,
+          onMouseLeave,
         });
         centerRows.push(rowCache[index].center);
 
@@ -518,9 +524,9 @@ class Grid extends React.PureComponent<IProps, IState> {
           row,
           dynamicRowHeight,
           gridPosition: 'RIGHT',
-          onClick: this.props.rowProps.onClick,
-          onMouseEnter: this.props.rowProps.onMouseEnter,
-          onMouseLeave: this.props.rowProps.onMouseLeave,
+          onClick,
+          onMouseEnter,
+          onMouseLeave,
         });
         rightRows.push(rowCache[index].right);
 
