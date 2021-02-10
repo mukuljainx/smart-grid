@@ -425,9 +425,9 @@ export default class App extends React.Component<IProps, IState> {
               this.state.grid.loading
             }
             rowProps={{
-              onRowClick: this.onRowClick,
-              onRowMouseEnter: this.onRowMouseEnter,
-              onRowMouseLeave: this.onRowMouseLeave,
+              onClick: this.onRowClick,
+              onMouseEnter: this.onRowMouseEnter,
+              onMouseLeave: this.onRowMouseLeave,
             }}
           />
         </div>

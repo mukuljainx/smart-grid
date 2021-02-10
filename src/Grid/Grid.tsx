@@ -367,9 +367,9 @@ class Grid extends React.PureComponent<IProps, IState> {
     schema,
     dynamicRowHeight,
     gridPosition,
-    onRowClick,
-    onRowMouseEnter,
-    onRowMouseLeave,
+    onClick,
+    onMouseEnter,
+    onMouseLeave,
   }: {
     index: number;
     rowHeight?: IProps['rowHeight'];
@@ -392,18 +392,18 @@ class Grid extends React.PureComponent<IProps, IState> {
         className={`row ${row.className || ''}`}
         key={index}
         onClick={() => {
-          if (onRowClick) {
-            onRowClick(index, gridPosition);
+          if (onClick) {
+            onClick(index, gridPosition);
           }
         }}
         onMouseEnter={() => {
-          if (onRowMouseEnter) {
-            onRowMouseEnter(index, gridPosition);
+          if (onMouseEnter) {
+            onMouseEnter(index, gridPosition);
           }
         }}
         onMouseLeave={() => {
-          if (onRowMouseLeave) {
-            onRowMouseLeave(index, gridPosition);
+          if (onMouseLeave) {
+            onMouseLeave(index, gridPosition);
           }
         }}
       >
@@ -490,9 +490,9 @@ class Grid extends React.PureComponent<IProps, IState> {
           row,
           dynamicRowHeight,
           gridPosition: 'LEFT',
-          onRowClick: this.props.rowProps.onRowClick,
-          onRowMouseEnter: this.props.rowProps.onRowMouseEnter,
-          onRowMouseLeave: this.props.rowProps.onRowMouseLeave,
+          onClick: this.props.rowProps.onClick,
+          onMouseEnter: this.props.rowProps.onMouseEnter,
+          onMouseLeave: this.props.rowProps.onMouseLeave,
         });
         leftRows.push(rowCache[index].left);
 
@@ -504,9 +504,9 @@ class Grid extends React.PureComponent<IProps, IState> {
           row,
           dynamicRowHeight,
           gridPosition: 'CENTER',
-          onRowClick: this.props.rowProps.onRowClick,
-          onRowMouseEnter: this.props.rowProps.onRowMouseEnter,
-          onRowMouseLeave: this.props.rowProps.onRowMouseLeave,
+          onClick: this.props.rowProps.onClick,
+          onMouseEnter: this.props.rowProps.onMouseEnter,
+          onMouseLeave: this.props.rowProps.onMouseLeave,
         });
         centerRows.push(rowCache[index].center);
 
@@ -518,9 +518,9 @@ class Grid extends React.PureComponent<IProps, IState> {
           row,
           dynamicRowHeight,
           gridPosition: 'RIGHT',
-          onRowClick: this.props.rowProps.onRowClick,
-          onRowMouseEnter: this.props.rowProps.onRowMouseEnter,
-          onRowMouseLeave: this.props.rowProps.onRowMouseLeave,
+          onClick: this.props.rowProps.onClick,
+          onMouseEnter: this.props.rowProps.onMouseEnter,
+          onMouseLeave: this.props.rowProps.onMouseLeave,
         });
         rightRows.push(rowCache[index].right);
 

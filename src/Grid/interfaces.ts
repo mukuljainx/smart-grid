@@ -85,9 +85,9 @@ export interface IProps extends IDivProps {
 }
 
 export interface IRowProps {
-  onRowClick?: (rowIndex: number, gridPosition: GridPosition) => void;
-  onRowMouseEnter?: (rowIndex: number, gridPosition: GridPosition) => void;
-  onRowMouseLeave?: (rowIndex: number, gridPosition: GridPosition) => void;
+  onClick?: (rowIndex: number, gridPosition: GridPosition) => void;
+  onMouseEnter?: (rowIndex: number, gridPosition: GridPosition) => void;
+  onMouseLeave?: (rowIndex: number, gridPosition: GridPosition) => void;
 }
 
 export interface IState {
