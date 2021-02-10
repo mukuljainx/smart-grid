@@ -3,13 +3,20 @@ type IDivProps = JSX.IntrinsicElements['div'];
 export interface ISchema {
   width: number;
   template: React.ElementType;
-  pinned?: 'LEFT';
+  pinned?: 'LEFT' | 'RIGHT';
   get: (props: any) => any;
   header: React.ElementType;
 }
 
 export interface ICache {
-  row: Record<string, { left: React.ReactElement; center: React.ReactElement }>;
+  row: Record<
+    string,
+    {
+      left: React.ReactElement;
+      center: React.ReactElement;
+      right: React.ReactElement;
+    }
+  >;
   height: number[];
 }
 
@@ -81,8 +88,10 @@ export interface IState {
   gridMeta: {
     leftSchema: ISchema[];
     centerSchema: ISchema[];
+    rightSchema: ISchema[];
     leftWidth: number;
     centerWidth: number;
+    rightWidth: number;
   };
 }
 

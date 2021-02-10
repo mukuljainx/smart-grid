@@ -94,7 +94,8 @@ class Grid extends React.PureComponent<IProps, IState> {
 
   isColumnActive = () =>
     this.state.gridMeta.leftSchema.length > 0 ||
-    this.state.gridMeta.centerSchema.length > 0;
+    this.state.gridMeta.centerSchema.length > 0 ||
+    this.state.gridMeta.rightSchema.length > 0;
 
   /**
    * Will clear height caches for provided set of indexs
@@ -133,24 +134,31 @@ class Grid extends React.PureComponent<IProps, IState> {
       '.grid .grid-body .grid-center-body .row'
     );
 
+    const rightRows = document.querySelectorAll(
+      '.grid .grid-body .grid-right-body .row'
+    );
+
     if (
       leftRows.length === 0 &&
       this.state.gridMeta.leftSchema.length === 0 &&
       centerRows.length === 0 &&
-      this.state.gridMeta.centerSchema.length === 0
+      this.state.gridMeta.centerSchema.length === 0 &&
+      rightRows.length === 0 &&
+      this.state.gridMeta.rightSchema.length === 0
     ) {
       return;
     }
 
-    const rowNodes =
-      leftRows.length > centerRows.length ? leftRows : centerRows;
+    let rowNodes = leftRows.length > centerRows.length ? leftRows : centerRows;
+    rowNodes = rowNodes.length === 0 ? rightRows : rowNodes;
 
     rowNodes.forEach((row, nodeIndex) => {
       const index = parseInt(row.getAttribute('data-row'), 10);
 
       const height = Math.max(
         this.getClientHeight(leftRows[nodeIndex]),
-        this.getClientHeight(centerRows[nodeIndex])
+        this.getClientHeight(centerRows[nodeIndex]),
+        this.getClientHeight(rightRows[nodeIndex])
       );
 
       if (!this.calculatedRowHeight[index]) {
@@ -239,9 +247,15 @@ class Grid extends React.PureComponent<IProps, IState> {
 
   updateSchema = (schema: ISchema[]) => {
     const leftSchema = schema.filter(({ pinned }) => pinned === 'LEFT');
+    const rightSchema = schema.filter(({ pinned }) => pinned === 'RIGHT');
     const centerSchema = schema.filter(({ pinned }) => !pinned);
 
     const leftWidth = leftSchema.reduce(
+      (total, current) => (total = total + current.width),
+      0
+    );
+
+    const rightWidth = rightSchema.reduce(
       (total, current) => (total = total + current.width),
       0
     );
@@ -253,9 +267,11 @@ class Grid extends React.PureComponent<IProps, IState> {
 
     return {
       leftSchema,
+      rightSchema,
       centerSchema,
       leftWidth,
       centerWidth,
+      rightWidth,
     };
   };
 
@@ -379,11 +395,12 @@ class Grid extends React.PureComponent<IProps, IState> {
   getVirtualList = (state: IState, props: IProps) => {
     const leftRows = [];
     const centerRows = [];
+    const rightRows = [];
 
     const heightCache = this.cache.height;
 
     const {
-      gridMeta: { leftSchema, centerSchema },
+      gridMeta: { leftSchema, centerSchema, rightSchema },
     } = state;
     const { buffer, data, rowHeight, dynamicRowHeight, virtualization } = props;
 
@@ -428,12 +445,14 @@ class Grid extends React.PureComponent<IProps, IState> {
       ) {
         leftRows.push(rowCache[index].left);
         centerRows.push(rowCache[index].center);
+        rightRows.push(rowCache[index].right);
       } else {
         const row = data[index];
 
         rowCache[index] = {
           left: null,
           center: null,
+          right: null,
         };
         // Left grid
         rowCache[index].left = this.createRow({
@@ -443,7 +462,6 @@ class Grid extends React.PureComponent<IProps, IState> {
           row,
           dynamicRowHeight,
         });
-
         leftRows.push(rowCache[index].left);
 
         // Center grid
@@ -456,11 +474,21 @@ class Grid extends React.PureComponent<IProps, IState> {
         });
         centerRows.push(rowCache[index].center);
 
+        // right grid
+        rowCache[index].right = this.createRow({
+          schema: rightSchema,
+          index,
+          rowHeight,
+          row,
+          dynamicRowHeight,
+        });
+        rightRows.push(rowCache[index].right);
+
         heightCache[index] = this.calculatedRowHeight[index];
       }
     }
 
-    return { leftGrid: leftRows, centerGrid: centerRows };
+    return { leftGrid: leftRows, centerGrid: centerRows, rightGrid: rightRows };
   };
 
   getTopPosition = (index: number) => {
@@ -525,7 +553,7 @@ class Grid extends React.PureComponent<IProps, IState> {
     if (visibleCount === -1) {
       return (
         <div ref={this.gridRef} style={this.props.style}>
-          Loading No Mounted yet
+          Loading, nothing mounted yet
         </div>
       );
     }
@@ -552,7 +580,7 @@ class Grid extends React.PureComponent<IProps, IState> {
       );
     }
 
-    const { leftGrid, centerGrid } = this.getVirtualList(
+    const { leftGrid, centerGrid, rightGrid } = this.getVirtualList(
       this.state,
       this.props
     );
@@ -571,9 +599,13 @@ class Grid extends React.PureComponent<IProps, IState> {
       gridHeight += rowHeight * 2;
     }
 
+    console.log(gridMeta.rightSchema, rightGrid);
+
     return (
       <div {...girdRestProps}>
         <Header
+          rightSchema={gridMeta.rightSchema}
+          rightWidth={gridMeta.rightWidth}
           getRef={this.getHeaderRef}
           centerSchema={gridMeta.centerSchema}
           leftSchema={gridMeta.leftSchema}
@@ -598,7 +630,7 @@ class Grid extends React.PureComponent<IProps, IState> {
             {/*
              * Left Pinned Grid
              */}
-            {gridMeta.leftWidth > 0 && (
+            {gridMeta.leftSchema.length > 0 && (
               <div style={{ width: gridMeta.leftWidth }} className="grid-left">
                 <div className="grid-left-body">
                   {leftGrid}
@@ -622,9 +654,11 @@ class Grid extends React.PureComponent<IProps, IState> {
             {/*
              * Center Grid
              */}
-            {gridMeta.centerWidth > 0 && (
+            {gridMeta.centerSchema.length > 0 && (
               <div
-                style={{ width: `calc(100% - ${gridMeta.leftWidth}px)` }}
+                style={{
+                  width: `calc(100% - ${gridMeta.leftWidth}px - ${gridMeta.rightWidth}px)`,
+                }}
                 className="grid-center"
               >
                 <div
@@ -657,6 +691,30 @@ class Grid extends React.PureComponent<IProps, IState> {
                 </div>
               </div>
             )}
+            {gridMeta.rightSchema.length > 0 && (
+              <div
+                style={{ width: gridMeta.rightWidth }}
+                className="grid-right"
+              >
+                <div className="grid-right-body">
+                  {rightGrid}
+                  {loadingMoreData && (
+                    <PartialLoader
+                      style={{
+                        transform: `translateY(${
+                          dynamicRowHeight
+                            ? gridHeight - rowHeight * 2
+                            : this.getTopPosition(data.length)
+                        }px)`,
+                      }}
+                      schema={gridMeta.rightSchema}
+                      className="partial-loader"
+                      rowStyle={{ height: rowHeight }}
+                    />
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         </div>
         <div className="grid-scroll">
@@ -666,7 +724,7 @@ class Grid extends React.PureComponent<IProps, IState> {
           />
           <div
             style={{
-              width: `calc(100% - ${gridMeta.leftWidth}px)`,
+              width: `calc(100% - ${gridMeta.leftWidth}px) ${gridMeta.rightWidth}px)`,
             }}
             className="grid-scroll-center overflow-y-hidden"
             ref={this.centerScrollRef}
@@ -674,6 +732,10 @@ class Grid extends React.PureComponent<IProps, IState> {
           >
             <div style={{ width: gridMeta.centerWidth }} />
           </div>
+          <div
+            className="grid-scroll-right"
+            style={{ width: gridMeta.rightWidth }}
+          />
         </div>
       </div>
     );

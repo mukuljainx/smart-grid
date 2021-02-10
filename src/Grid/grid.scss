@@ -11,6 +11,7 @@
   .grid {
     overflow-y: auto;
     position: initial;
+    overflow-x: hidden;
   }
 
   .grid-body {
@@ -19,6 +20,7 @@
   }
 
   .grid-left,
+  .grid-right,
   .grid-center {
     flex-shrink: 0;
     height: 100%;
@@ -53,6 +55,10 @@
     position: relative;
   }
 
+  .grid-right-body {
+    position: relative;
+  }
+
   .grid-center-body-inner {
     height: 100%;
     overflow: hidden;
@@ -84,6 +90,11 @@
   .grid-left .row {
     border-bottom: 1px solid #efefef;
     border-right: 1px solid #efefef;
+  }
+
+  .grid-right .row {
+    border-bottom: 1px solid #efefef;
+    border-left: 1px solid #efefef;
   }
 
   .row {
@@ -133,7 +144,12 @@
     border-right: 1px solid #efefef;
   }
 
+  .grid-header-right {
+    border-left: 1px solid #efefef;
+  }
+
   .grid-header-left,
+  .grid-header-right,
   .grid-header-center {
     flex-shrink: 0;
     overflow-y: hidden;
