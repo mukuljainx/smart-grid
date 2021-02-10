@@ -64,12 +64,12 @@ class Grid extends React.PureComponent<IProps, IState> {
     if (props.getGridActions) {
       props.getGridActions({
         refreshRows: this.refreshRows,
-        scrollToTop: function () {
+        scrollToTop: () => {
           if (this.gridRef.current) {
             this.gridRef.current.scrollTo(0, 0);
           }
         },
-        refreshLoadMoreCache: function () {
+        refreshLoadMoreCache: () => {
           this.loadMoreDataPosition = {
             position: -1,
             end: -1,
@@ -644,8 +644,6 @@ class Grid extends React.PureComponent<IProps, IState> {
     if (dynamicRowHeight && loadingMoreData) {
       gridHeight += rowHeight * 2;
     }
-
-    console.log(gridMeta.rightSchema, rightGrid);
 
     return (
       <div {...girdRestProps}>
