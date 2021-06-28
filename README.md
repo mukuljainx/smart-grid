@@ -6,12 +6,21 @@
 
 ### Folder structure
 
--- src
----- Example
------- index.tsx (root file for development)
------- Table.tsx (Table using hooks)
-...
----- Grid
------- hooks
--------- useVirtualization.ts (hook for virtualization)
----------- useVirtualization.test.js (test)
+
+```bash
+├── Example
+│   ├── index.tsx (root file for development)
+│   ├── Table.tsx (Table sample using hooks)
+│   ├── styles.scss 
+│   ├── colors.ts
+│   └── users.ts
+├── Grid
+│   └── hooks
+│       ├── useVirtualization.test.js
+│       └── useVirtualization.ts
+├── global.d.ts
+├── index.html
+├── index.scss
+├── index.tsx
+└── logo.svg
+```
