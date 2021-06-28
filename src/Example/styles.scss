@@ -1,0 +1,32 @@
+.App {
+  font-family: sans-serif;
+  text-align: center;
+}
+body {
+  background: black;
+  color: gray;
+}
+
+table {
+  border: 1px solid white;
+  text-align: left;
+  width: 480px;
+}
+th,
+td {
+  padding: 8px 12px;
+  border-bottom: 1px solid white;
+}
+
+tbody {
+  display: block;
+  height: 320px;
+  overflow: auto;
+}
+
+thead,
+tbody tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed; /* even columns width , fix width of table too*/
+}
