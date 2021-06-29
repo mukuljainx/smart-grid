@@ -3,7 +3,7 @@
 // After the first render, we don't have to repeat the calculation cycle again
 // each time a row will be rendered and we can get it's height and move on.
 
-import React, { createRef, useCallback, useRef, useState } from "react";
+import React, { createRef, useCallback, useRef, useState } from 'react';
 
 interface IProps {
   limit?: number;
@@ -19,17 +19,17 @@ const useVirtualization = ({
   buffer = 20,
   rowHeight,
   totalCount,
-  dynamicHeight
+  dynamicHeight,
 }: IProps) => {
   const [visible, setVisible] = useState(0);
   const [renderCount, setRenderCount] = useState(0);
-  // const [calculatingHeihgt, setCalculatingHeihgt] = useState(false);
+  // const [calculatingHeight, setCalculatingHeight] = useState(false);
   const scrollPosition = useRef(0);
   const heightCache = useRef<number[]>([]);
   const heightToBeCalculated = useRef<number[]>([]);
   const positionCache = useRef<number[]>([]);
   const rowRefs = useRef<React.RefObject<HTMLElement>[]>([]);
-  const calculatingHeihgt = useRef(false);
+  const calculatingHeight = useRef(false);
 
   const getTopRowIndex = React.useCallback(
     (scrollTop: number) => {
@@ -39,13 +39,13 @@ const useVirtualization = ({
 
       if (dynamicHeight) {
         if (positionCache.current.length === 0) {
-          console.log("A");
+          console.log('A');
           return 0;
         }
         const index = positionCache.current.findIndex(
           (position) => position > scrollTop
         );
-        console.log("B", index);
+        console.log('B', index);
         return index === -1 ? 0 : Math.max(0, index);
       }
 
@@ -100,7 +100,7 @@ const useVirtualization = ({
                   ? positionCache.current[i]
                   : i * rowHeight
               }px)`,
-              position: "absolute"
+              position: 'absolute',
             },
             i,
             rowRefs.current[i]
@@ -120,7 +120,7 @@ const useVirtualization = ({
       heightToBeCalculated.current.forEach((i) => {
         heightCache.current[i] = rowRefs.current[i].current?.clientHeight || 0;
       });
-      calculatingHeihgt.current = false;
+      calculatingHeight.current = false;
       let position = 0;
       heightCache.current.forEach((height, index) => {
         positionCache.current[index] = position;
