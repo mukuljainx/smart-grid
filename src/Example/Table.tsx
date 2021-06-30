@@ -15,11 +15,19 @@ const randomString = [
   'kick',
 ];
 
-const data = new Array(1000).fill(0).map((_, i) => ({
-  firstName: sampleSize(randomString, random(1, 5)).join(' '),
-  lastName: `React ${i}`,
-  age: `2${i}`,
-}));
+const generateData = (offset = 0) =>
+  new Array(100).fill(0).map((_, i) => ({
+    firstName: sampleSize(randomString, random(1, 5)).join(' '),
+    lastName: `React ${i + offset}`,
+    age: `2${i + offset}`,
+  }));
+
+const api = (offset: number) =>
+  new Promise<any>((res) => {
+    setTimeout(() => {
+      res(generateData(offset));
+    }, 1200);
+  });
 
 interface IProps {
   rowHeight?: number;
@@ -28,13 +36,37 @@ interface IProps {
 }
 
 const Table = ({ rowHeight, buffer, limit }: IProps) => {
+  const [data, setData] = React.useState(generateData());
+  // const [loading, setLoading] = React.useState(false);
+  const loading = React.useRef(false);
+  const getData = React.useCallback(
+    (sp: number) => {
+      console.log(sp, loading.current);
+      if (loading.current) {
+        return;
+      }
+      console.log('CALL');
+      loading.current = true;
+      offset.current += 100;
+      api(offset.current).then((newD) => {
+        setData((d) => [...d, ...newD]);
+        loading.current = false;
+      });
+    },
+    [loading]
+  );
   const { onScroll, virtualizedRows } = useVirtualization({
-    totalCount: data.length,
+    totalCount: data.length + (loading.current ? 2 : 0),
     rowHeight: rowHeight || 39,
     buffer,
     limit,
     dynamicHeight: true,
+    loadMore: getData,
   });
+  const offset = React.useRef(0);
+
+  console.log('TABLE');
+
   return (
     <div className="App">
       <table style={{ height: 200, overflow: 'hidden' }}>
@@ -49,19 +81,33 @@ const Table = ({ rowHeight, buffer, limit }: IProps) => {
           onScroll={onScroll}
           style={{ overflow: 'auto', position: 'relative' }}
         >
-          {virtualizedRows(data, (row, style, index, ref) => (
-            <tr
-              ref={ref}
-              className="table-row"
-              data-testid={`table-row-${index}`}
-              style={style}
-              key={index}
-            >
-              <td>{row.firstName}</td>
-              <td>{row.lastName}</td>
-              <td>{row.age}</td>
-            </tr>
-          ))}
+          {virtualizedRows(
+            loading.current ? data.concat([null, null]) : data,
+            (row, style, index, ref) =>
+              row ? (
+                <tr
+                  ref={ref}
+                  className="table-row"
+                  data-testid={`table-row-${index}`}
+                  style={style}
+                  key={index}
+                >
+                  <td>{row.firstName}</td>
+                  <td>{row.lastName}</td>
+                  <td>{row.age}</td>
+                </tr>
+              ) : (
+                <tr
+                  ref={ref}
+                  className="table-row"
+                  data-testid={`table-row-${index}`}
+                  style={style}
+                  key={index}
+                >
+                  Loading
+                </tr>
+              )
+          )}
         </tbody>
       </table>
     </div>

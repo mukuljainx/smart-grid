@@ -9,9 +9,11 @@ interface IProps {
   limit?: number;
   buffer?: number;
   dynamicHeight?: boolean;
-  // will be ingored in case of dynamic height
+  // minimum height in case of dynamicHeight
   rowHeight: number;
   totalCount: number;
+  loadMore?: (sp: number) => void;
+  loadMoreOffset?: number;
 }
 
 const useVirtualization = ({
@@ -20,14 +22,16 @@ const useVirtualization = ({
   rowHeight,
   totalCount,
   dynamicHeight,
+  loadMoreOffset = Infinity,
+  loadMore,
 }: IProps) => {
   const [visible, setVisible] = useState(0);
-  const [renderCount, setRenderCount] = useState(0);
-  // const [calculatingHeight, setCalculatingHeight] = useState(false);
+  const [_, setRenderCount] = useState(0);
   const scrollPosition = useRef(0);
   const heightCache = useRef<number[]>([]);
   const heightToBeCalculated = useRef<number[]>([]);
   const positionCache = useRef<number[]>([]);
+  const lastRowPosition = useRef<number>(0);
   const rowRefs = useRef<React.RefObject<HTMLElement>[]>([]);
   const calculatingHeight = useRef(false);
 
@@ -39,13 +43,11 @@ const useVirtualization = ({
 
       if (dynamicHeight) {
         if (positionCache.current.length === 0) {
-          console.log('A');
           return 0;
         }
         const index = positionCache.current.findIndex(
           (position) => position > scrollTop
         );
-        console.log('B', index);
         return index === -1 ? 0 : Math.max(0, index);
       }
 
@@ -56,15 +58,24 @@ const useVirtualization = ({
 
   const onScroll = useCallback(
     (event: React.UIEvent<HTMLElement>) => {
-      const scrollTop = (event.target as HTMLElement).scrollTop;
+      const table = event.target as HTMLElement;
+      const scrollTop = table.scrollTop;
+      const tableHeight = table.clientHeight;
       const sp = getTopRowIndex(scrollTop);
+      // Incase where loadMoreOffset is totalCount-1
+      // sp will never reach there until table height is also equal to rowHeight
+      // this creates another offset which computed based on tableHeight and a magic number
+      const loadMoreOffsetFuse = totalCount - tableHeight / rowHeight - 3;
 
+      if (loadMore && sp >= Math.min(loadMoreOffsetFuse, loadMoreOffset)) {
+        loadMore(sp);
+      }
       if (scrollPosition.current !== sp) {
         scrollPosition.current = sp;
         setVisible(sp);
       }
     },
-    [setVisible, getTopRowIndex]
+    [setVisible, getTopRowIndex, totalCount]
   );
 
   const virtualizedRows = useCallback(
@@ -83,23 +94,36 @@ const useVirtualization = ({
 
       heightToBeCalculated.current = [];
       for (let i = start; i < end; i++) {
-        if (!heightCache.current[i]) {
+        if (dynamicHeight && data[i] && !heightCache.current[i]) {
           rowRefs.current[i] = createRef();
           heightToBeCalculated.current.push(i);
         }
       }
 
+      let extraRowCounter = 0;
       for (let i = start; i < end; i++) {
+        let currentRowPosition = 0;
+        let opacity = 1;
+
+        if (dynamicHeight) {
+          opacity = data[i] && positionCache.current[i] === undefined ? 0 : 1;
+          if (positionCache.current[i] !== undefined && data[i]) {
+            currentRowPosition = positionCache.current[i];
+          } else {
+            currentRowPosition =
+              lastRowPosition.current + extraRowCounter * rowHeight;
+            extraRowCounter++;
+          }
+        } else {
+          currentRowPosition = i * rowHeight;
+        }
+
         rowsUI.push(
           func(
             data[i],
             {
-              opacity: positionCache.current[i] !== undefined ? 1 : 0,
-              transform: `translateY(${
-                dynamicHeight && positionCache.current[i]
-                  ? positionCache.current[i]
-                  : i * rowHeight
-              }px)`,
+              opacity,
+              transform: `translateY(${currentRowPosition}px)`,
               position: 'absolute',
             },
             i,
@@ -107,15 +131,12 @@ const useVirtualization = ({
           )
         );
       }
-      // }
-      // console.log("ROW");
       return rowsUI;
     },
     [buffer, limit, totalCount, visible, rowHeight, dynamicHeight]
   );
 
   React.useEffect(() => {
-    // console.log("USE_EFFECT");
     if (heightToBeCalculated.current.length) {
       heightToBeCalculated.current.forEach((i) => {
         heightCache.current[i] = rowRefs.current[i].current?.clientHeight || 0;
@@ -124,11 +145,15 @@ const useVirtualization = ({
       let position = 0;
       heightCache.current.forEach((height, index) => {
         positionCache.current[index] = position;
+        lastRowPosition.current = position + height;
         position += height;
       });
+      // prevents render when only one row is scrolled as
+      // that will be done next cycle!
+      if (heightToBeCalculated.current.length > 1) {
+        setRenderCount((x) => x + 1);
+      }
       heightToBeCalculated.current = [];
-      setRenderCount((x) => x + 1);
-      // console.log("XXXX", positionCache);
     }
   });
 
