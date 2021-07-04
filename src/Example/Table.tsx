@@ -1,6 +1,6 @@
 import * as React from 'react';
-import useVirtualization from '../Grid/hooks/useVirtualization';
 import { sampleSize, random } from 'lodash';
+import useTable from '../Grid/hooks/useTable';
 
 const randomString = [
   'Montain',
@@ -55,7 +55,7 @@ const Table = ({ rowHeight, buffer, limit }: IProps) => {
     },
     [loading]
   );
-  const { onScroll, virtualizedRows } = useVirtualization({
+  const { onScroll, tableRenderer } = useTable({
     totalCount: data.length + (loading.current ? 2 : 0),
     rowHeight: rowHeight || 39,
     buffer,
@@ -81,7 +81,7 @@ const Table = ({ rowHeight, buffer, limit }: IProps) => {
           onScroll={onScroll}
           style={{ overflow: 'auto', position: 'relative' }}
         >
-          {virtualizedRows(
+          {tableRenderer(
             loading.current ? data.concat([null, null]) : data,
             (row, style, index, ref) =>
               row ? (

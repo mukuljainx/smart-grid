@@ -1,5 +1,5 @@
 import * as React from 'react';
-import useTable from '../Grid/hooks/useTable';
+import useTables from '../Grid/hooks/useTables';
 import { sampleSize, random } from 'lodash';
 
 const randomString = [
@@ -18,7 +18,7 @@ const randomString = [
 const generateData = (offset = 0) =>
   new Array(100).fill(0).map((_, i) => ({
     firstName: sampleSize(randomString, random(1, 5)).join(' '),
-    lastName: `React ${i + offset}`,
+    lastName: sampleSize(randomString, random(1, 5)).join(' '),
     age: `2${i + offset}`,
   }));
 
@@ -55,7 +55,16 @@ const Table = ({ rowHeight, buffer, limit }: IProps) => {
     },
     [loading]
   );
-  const { onScroll, virtualizedRows } = useTable({
+  const {
+    onScroll,
+    tableRenderers,
+    tableHeight,
+    horizontalSync,
+    bodyRef,
+    headerRef,
+    tableRef,
+    actions,
+  } = useTables(2, {
     totalCount: data.length + (loading.current ? 2 : 0),
     rowHeight: rowHeight || 39,
     buffer,
@@ -65,84 +74,119 @@ const Table = ({ rowHeight, buffer, limit }: IProps) => {
   });
   const offset = React.useRef(0);
 
-  console.log('TABLE');
+  // @ts-ignore
+  window.tableX = { actions };
 
   return (
     <div className="App">
       <div
         style={{
-          height: 500,
-          width: 700,
-          border: '1px solid white',
           display: 'flex',
-          overflow: 'auto',
+          border: '1px solid red',
+          overflow: 'hidden',
         }}
       >
-        <div style={{ height: 2000, display: 'flex' }}>
+        {[0, 1].map((i) => (
+          <div
+            onScroll={horizontalSync[i]}
+            ref={headerRef[i] as any}
+            style={{ width: i === 0 ? 200 : 300, overflowX: 'auto' }}
+          >
+            <div>
+              {i === 0 && (
+                <tr>
+                  <th style={{ width: 200 }}>First Name</th>
+                </tr>
+              )}
+              {i === 1 && (
+                <tr>
+                  <th style={{ width: 200 }}>Last Name</th>
+                  <th style={{ width: 200 }}>Age</th>
+                  <th style={{ width: 200 }}>Last Name</th>
+                  <th style={{ width: 200 }}>Age</th>
+                  <th style={{ width: 200 }}>Last Name</th>
+                  <th style={{ width: 200 }}>Age</th>
+                </tr>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div
+        onScroll={onScroll}
+        ref={tableRef}
+        style={{
+          display: 'flex',
+          height: 480,
+          overflowY: 'auto',
+          overflowX: 'hidden',
+          border: '1px solid red',
+        }}
+      >
+        {tableRenderers.map((tableRenderer, i) => (
           <div
             style={{
-              height: 2000,
-              width: 400,
-              border: '1px solid red',
+              position: 'relative',
               flexShrink: 0,
-              backgroundImage: 'linear-gradient(red, yellow)',
+              overflowX: 'auto',
+              overflowY: 'hidden',
+              height: tableHeight + (loading.current ? 2 * 39 : 0),
+              maxWidth: 300,
             }}
-          />
-          <div style={{ overflowX: 'auto' }}>
-            <div
-              style={{
-                height: 2000,
-                width: 800,
-                border: '1px solid blue',
-                flexShrink: 0,
-                backgroundImage: 'linear-gradient(blue, green)',
-              }}
-            />
+            ref={bodyRef[i] as any}
+            onScroll={horizontalSync[i]}
+          >
+            <tbody style={{ position: 'relative', width: i == 0 ? 200 : 1200 }}>
+              {tableRenderer(
+                loading.current ? data.concat([null, null]) : data,
+                (row, style, index, ref) =>
+                  row ? (
+                    <tr
+                      ref={ref}
+                      className="table-row"
+                      data-testid={`table-row-${index}`}
+                      style={style}
+                      key={index}
+                    >
+                      {i === 0 && (
+                        <td style={{ width: 200 }}>
+                          {index}:{row.firstName}
+                        </td>
+                      )}
+                      {i === 1 && (
+                        <>
+                          <td style={{ width: 200 }}>
+                            {index}: {row.lastName}
+                          </td>
+                          <td style={{ width: 200 }}>{row.age}</td>
+                          <td style={{ width: 200 }}>
+                            {index}: {row.lastName}
+                          </td>
+                          <td style={{ width: 200 }}>{row.age}</td>
+                          <td style={{ width: 200 }}>
+                            {index}: {row.lastName}
+                          </td>
+                          <td style={{ width: 200 }}>{row.age}</td>
+                        </>
+                      )}
+                    </tr>
+                  ) : (
+                    <tr
+                      ref={ref}
+                      className="table-row"
+                      data-testid={`table-row-${index}`}
+                      style={style}
+                      key={index}
+                    >
+                      <td>Loading</td>
+                    </tr>
+                  )
+              )}
+            </tbody>
           </div>
-        </div>
+        ))}
       </div>
-      ;
-      <table style={{ height: 200, overflow: 'hidden' }}>
-        <thead>
-          <tr>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>Age</th>
-          </tr>
-        </thead>
-        <tbody
-          onScroll={onScroll}
-          style={{ overflow: 'auto', position: 'relative' }}
-        >
-          {virtualizedRows(
-            loading.current ? data.concat([null, null]) : data,
-            (row, style, index, ref) =>
-              row ? (
-                <tr
-                  ref={ref}
-                  className="table-row"
-                  data-testid={`table-row-${index}`}
-                  style={style}
-                  key={index}
-                >
-                  <td>{row.firstName}</td>
-                  <td>{row.lastName}</td>
-                  <td>{row.age}</td>
-                </tr>
-              ) : (
-                <tr
-                  ref={ref}
-                  className="table-row"
-                  data-testid={`table-row-${index}`}
-                  style={style}
-                  key={index}
-                >
-                  <td>Loading</td>
-                </tr>
-              )
-          )}
-        </tbody>
-      </table>
     </div>
   );
 };

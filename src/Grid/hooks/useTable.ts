@@ -1,5 +1,6 @@
 import React, { createRef, useCallback, useRef, useState } from 'react';
-import useVirtualization from './useVirtualization-copy';
+import useVirtualization from './useVirtualization';
+import useHeight from './useHeight';
 
 interface IProps {
   limit?: number;
@@ -21,12 +22,13 @@ const useTable = ({
   loadMoreOffset = Infinity,
   loadMore,
 }: IProps) => {
-  const [_, setRenderCount] = useState(0);
-  const heightCache = useRef<number[]>([]);
-  const heightToBeCalculated = useRef<number[]>([]);
-  const positionCache = useRef<number[]>([]);
-  const lastRowPosition = useRef<number>(0);
-  const rowRefs = useRef<React.RefObject<HTMLElement>[]>([]);
+  const {
+    rowRefs,
+    lastRowPosition,
+    positionCache,
+    heightToBeCalculated,
+    heightCache,
+  } = useHeight();
 
   const { onScroll, visible } = useVirtualization({
     loadMore,
@@ -37,7 +39,7 @@ const useTable = ({
     totalCount,
   });
 
-  const virtualizedRows = useCallback(
+  const tableRenderer = useCallback(
     (
       data: Array<any>,
       func: (
@@ -54,7 +56,7 @@ const useTable = ({
       heightToBeCalculated.current = [];
       for (let i = start; i < end; i++) {
         if (dynamicHeight && data[i] && !heightCache.current[i]) {
-          rowRefs.current[i] = createRef();
+          rowRefs.current[0][i] = createRef();
           heightToBeCalculated.current.push(i);
         }
       }
@@ -86,7 +88,7 @@ const useTable = ({
               position: 'absolute',
             },
             i,
-            rowRefs.current[i]
+            rowRefs.current[0][i]
           )
         );
       }
@@ -95,27 +97,7 @@ const useTable = ({
     [buffer, limit, totalCount, visible, rowHeight, dynamicHeight]
   );
 
-  React.useEffect(() => {
-    if (heightToBeCalculated.current.length) {
-      heightToBeCalculated.current.forEach((i) => {
-        heightCache.current[i] = rowRefs.current[i].current?.clientHeight || 0;
-      });
-      let position = 0;
-      heightCache.current.forEach((height, index) => {
-        positionCache.current[index] = position;
-        lastRowPosition.current = position + height;
-        position += height;
-      });
-      // prevents render when only one row is scrolled as
-      // that will be done next cycle!
-      if (heightToBeCalculated.current.length > 1) {
-        setRenderCount((x) => x + 1);
-      }
-      heightToBeCalculated.current = [];
-    }
-  });
-
-  return { onScroll, virtualizedRows };
+  return { onScroll, tableRenderer };
 };
 
 export default useTable;

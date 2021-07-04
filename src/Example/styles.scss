@@ -1,27 +1,31 @@
+* {
+  box-sizing: border-box;
+}
 .App {
   font-family: sans-serif;
   text-align: center;
 }
-body {
-  background: black;
-  color: gray;
-}
+// body {
+//   background: black;
+//   color: gray;
+// }
 
 table {
-  border: 1px solid white;
+  // border: 1px solid white;
   text-align: left;
-  width: 480px;
+  // width: 480px;
 }
 th,
 td {
   padding: 8px 12px;
-  border-bottom: 1px solid white;
+  text-align: left;
+  border-bottom: 1px solid black;
 }
 
 tbody {
   display: block;
-  height: 320px;
-  overflow: auto;
+  // height: 320px;
+  // overflow: auto;
 }
 
 thead,
