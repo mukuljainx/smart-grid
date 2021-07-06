@@ -1,0 +1,61 @@
+.table-wrapper {
+  overflow-x: auto;
+  width: 100%;
+  height: 100%;
+  display: flex;
+}
+
+table {
+  border-collapse: collapse;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  /* width: 1002px; */
+  border: 1px solid black;
+}
+
+tbody,
+thead {
+  display: block;
+  width: 1400px;
+}
+
+thead {
+  flex-shrink: 0;
+}
+tbody {
+  flex-grow: 2;
+  overflow-y: auto;
+  overflow-x: hidden;
+  position: relative;
+}
+
+th,
+td {
+  padding: 8px 12px;
+  text-align: left;
+  border-bottom: 1px solid black;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+  min-width: 200px;
+}
+
+tr:first-child th {
+  text-align: center;
+}
+td:not(:last-child),
+th:not(:last-child) {
+  border-right: 1px solid;
+}
+
+thead,
+tbody tr {
+  display: table;
+  table-layout: fixed; /* even columns width , fix width of table too*/
+}
+
+.table-row.loading {
+  width: 100%;
+}

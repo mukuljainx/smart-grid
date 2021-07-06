@@ -1,41 +1,57 @@
 {
-  "name": "gatsby-starter-rocket-docs",
-  "private": true,
+  "name": "@crafts/smart-grid",
   "version": "1.0.0",
-  "description": "Out of the box Gatsby Starter for creating documentation websites easily and quickly. With support for MDX, code highlight, Analytics, SEO and more",
-  "author": "João Pedro Schmitz <hey@joaopedro.dev> (@jpedroschmitz)",
-  "license": "MIT",
-  "starter-name": "gatsby-starter-rocket-docs",
-  "dependencies": {
-    "@rocketseat/gatsby-theme-docs": "^2.3.1",
-    "gatsby": "^3.0.4",
-    "gatsby-plugin-canonical-urls": "^3.0.0",
-    "gatsby-plugin-google-analytics": "^3.0.0",
-    "gatsby-plugin-manifest": "^3.0.0",
-    "gatsby-plugin-offline": "^4.0.0",
-    "gatsby-plugin-remove-trailing-slashes": "^3.0.0",
-    "gatsby-plugin-sitemap": "^3.0.0",
-    "prop-types": "^15.7.2",
-    "react": "^17.0.1",
-    "react-dom": "^17.0.1"
+  "private": false,
+  "main": "dist/cjs/index.js",
+  "typings": "dist/cjs/index.d.ts",
+  "module": "dist/esm/index.js",
+  "homepage": "https://mukuljainx.github.io/smart-grid/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mukuljainx/smart-grid"
   },
-  "devDependencies": {},
+  "files": [
+    "dist/cjs",
+    "dist/esm"
+  ],
   "keywords": [
-    "gatsby",
-    "rocketseat",
-    "gatsby-starter"
+    "table",
+    "grid",
+    "useTable"
   ],
   "scripts": {
-    "build:docs": "gatsby build",
-    "start": "gatsby develop",
-    "serve": "gatsby serve",
-    "clean": "gatsby clean",
-    "build": "rm -rf dist && npm run build:cjs && npm run build:esnext && npm run css",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "tsc -m commonjs --outDir dist/cjs -p tsconfig.json -w",
+    "build": "rm -rf dist && npm run build:cjs && npm run build:esnext",
     "css": "npm run css:compile && npm run css:prefix && npm run css:end",
-    "css:compile": "sass src/Grid:dist/cjs && sass src/Grid:dist/esm",
+    "css:compile": "sass src:dist/cjs && sass src:dist/esm",
     "css:prefix": "postcss dist/cjs/**/*.css dist/esm/**/*.css --use autoprefixer --replace",
     "css:end": "replace-in-file .scss .css 'dist/**/*'",
-    "build:cjs": "tsc -m commonjs --outDir dist/cjs -p tsconfig.build.json",
-    "build:esnext": "tsc -m esnext --outDir dist/esm -p tsconfig.build.json"
-  }
+    "build:cjs": "tsc -m commonjs --outDir dist/cjs -p tsconfig.json",
+    "build:esnext": "tsc -m esnext --outDir dist/esm -p tsconfig.json"
+  },
+  "author": {
+    "name": "Mukul Jain",
+    "email": "jainmukul1996@gmail.com",
+    "url": "https://mukuljain.me"
+  },
+  "license": "ISC",
+  "devDependencies": {
+    "@types/react": "^16.9.17",
+    "@types/react-dom": "^16.9.4",
+    "autoprefixer": "^9.7.4",
+    "css-loader": "^3.4.2",
+    "node-sass": "^4.13.1",
+    "postcss-cli": "^7.1.0",
+    "react": "^16.8.0",
+    "react-dom": "^16.8.0",
+    "replace-in-file": "^5.0.2",
+    "sass": "^1.25.0",
+    "typescript": "^3.7.5"
+  },
+  "peerDependencies": {
+    "react": "^16.8.0",
+    "react-dom": "^16.8.0"
+  },
+  "dependencies": {}
 }

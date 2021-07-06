@@ -5,16 +5,7 @@
   font-family: sans-serif;
   text-align: center;
 }
-// body {
-//   background: black;
-//   color: gray;
-// }
 
-table {
-  // border: 1px solid white;
-  text-align: left;
-  // width: 480px;
-}
 th,
 td {
   padding: 8px 12px;
@@ -24,8 +15,6 @@ td {
 
 tbody {
   display: block;
-  // height: 320px;
-  // overflow: auto;
 }
 
 thead,
@@ -34,3 +23,5 @@ tbody tr {
   width: 100%;
   table-layout: fixed; /* even columns width , fix width of table too*/
 }
+
+/*# sourceMappingURL=index.109c2293.css.map */

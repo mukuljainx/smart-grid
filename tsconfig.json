@@ -14,5 +14,5 @@
     "moduleResolution": "node",
     "declaration": true
   },
-  "include": ["src/Grid/**/*.tsx"]
+  "include": ["src"]
 }

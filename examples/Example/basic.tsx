@@ -1,30 +1,14 @@
 import * as React from 'react';
-import { sampleSize, random } from 'lodash';
-import useTable from '../Grid/hooks/useTable';
+import { useTable } from '@crafts/smart-grid';
+import users from './users';
+import './basic.css';
 
-const randomString = [
-  'Montain',
-  'Heavy',
-  'bike',
-  'car',
-  'broken',
-  'all',
-  'of',
-  'me',
-  'dance',
-  'kick',
-];
-
-const generateData = (offset = 0) =>
-  new Array(100).fill(0).map((_, i) => ({
-    firstName: sampleSize(randomString, random(1, 5)).join(' '),
-    lastName: `React ${i + offset}`,
-    age: `2${i + offset}`,
-  }));
+const generateData = (offset = 0) => users.slice(offset, offset + 100);
 
 const api = (offset: number) =>
   new Promise<any>((res) => {
     setTimeout(() => {
+      console.log(generateData(offset));
       res(generateData(offset));
     }, 1200);
   });
@@ -37,7 +21,6 @@ interface IProps {
 
 const Table = ({ rowHeight, buffer, limit }: IProps) => {
   const [data, setData] = React.useState(generateData());
-  // const [loading, setLoading] = React.useState(false);
   const loading = React.useRef(false);
   const getData = React.useCallback(
     (sp: number) => {
@@ -60,51 +43,74 @@ const Table = ({ rowHeight, buffer, limit }: IProps) => {
     rowHeight: rowHeight || 39,
     buffer,
     limit,
-    dynamicHeight: true,
     loadMore: getData,
   });
   const offset = React.useRef(0);
 
-  console.log('TABLE');
-
   return (
-    <div className="App">
-      <table style={{ height: 200, overflow: 'hidden' }}>
+    <div className="table-wrapper">
+      <table role="table">
         <thead>
-          <tr>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>Age</th>
+          <tr role="row">
+            <th role="cell" colSpan={4}></th>
+            <th role="cell" colSpan={3}>
+              Car
+            </th>
+          </tr>
+          <tr role="row">
+            <th colSpan={1} role="cell">
+              First Name
+            </th>
+            <th colSpan={1} role="cell">
+              Last Name
+            </th>
+            <th colSpan={1} role="cell">
+              Age
+            </th>
+            <th colSpan={1} role="cell">
+              Email
+            </th>
+            <th colSpan={1} role="cell">
+              Make
+            </th>
+            <th colSpan={1} role="cell">
+              Model
+            </th>
+            <th colSpan={1} role="cell">
+              Year
+            </th>
           </tr>
         </thead>
-        <tbody
-          onScroll={onScroll}
-          style={{ overflow: 'auto', position: 'relative' }}
-        >
+        <tbody role="rowgroup" onScroll={onScroll}>
           {tableRenderer(
             loading.current ? data.concat([null, null]) : data,
             (row, style, index, ref) =>
               row ? (
                 <tr
+                  role="row"
                   ref={ref}
                   className="table-row"
                   data-testid={`table-row-${index}`}
                   style={style}
                   key={index}
                 >
-                  <td>{row.firstName}</td>
-                  <td>{row.lastName}</td>
-                  <td>{row.age}</td>
+                  <td role="cell">{row.firstName}</td>
+                  <td role="cell">{row.lastName}</td>
+                  <td role="cell">{row.age}</td>
+                  <td role="cell">{row.email}</td>
+                  <td role="cell">{row.carMake}</td>
+                  <td role="cell">{row.carModel}</td>
+                  <td role="cell">{row.carYear}</td>
                 </tr>
               ) : (
                 <tr
                   ref={ref}
-                  className="table-row"
+                  className="table-row loading"
                   data-testid={`table-row-${index}`}
                   style={style}
                   key={index}
                 >
-                  <td>Loading</td>
+                  <td role="cell">Loading</td>
                 </tr>
               )
           )}

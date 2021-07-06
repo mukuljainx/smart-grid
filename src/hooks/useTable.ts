@@ -1,4 +1,4 @@
-import React, { createRef, useCallback, useRef, useState } from 'react';
+import * as React from 'react';
 import useVirtualization from './useVirtualization';
 import useHeight from './useHeight';
 
@@ -39,7 +39,7 @@ const useTable = ({
     totalCount,
   });
 
-  const tableRenderer = useCallback(
+  const tableRenderer = React.useCallback(
     (
       data: Array<any>,
       func: (
@@ -54,10 +54,12 @@ const useTable = ({
       let rowsUI: React.ReactNode[] = [];
 
       heightToBeCalculated.current = [];
-      for (let i = start; i < end; i++) {
-        if (dynamicHeight && data[i] && !heightCache.current[i]) {
-          rowRefs.current[0][i] = createRef();
-          heightToBeCalculated.current.push(i);
+      if (dynamicHeight) {
+        for (let i = start; i < end; i++) {
+          if (data[i] && !heightCache.current[i]) {
+            rowRefs.current[0][i] = React.createRef();
+            heightToBeCalculated.current.push(i);
+          }
         }
       }
 
@@ -65,11 +67,13 @@ const useTable = ({
       for (let i = start; i < end; i++) {
         let currentRowPosition = 0;
         let opacity = 1;
+        let height = rowHeight;
 
         if (dynamicHeight) {
           opacity = data[i] && positionCache.current[i] === undefined ? 0 : 1;
           if (positionCache.current[i] !== undefined && data[i]) {
             currentRowPosition = positionCache.current[i];
+            height = heightCache.current[i];
           } else {
             currentRowPosition =
               lastRowPosition.current + extraRowCounter * rowHeight;
@@ -83,6 +87,7 @@ const useTable = ({
           func(
             data[i],
             {
+              height,
               opacity,
               transform: `translateY(${currentRowPosition}px)`,
               position: 'absolute',
@@ -92,6 +97,7 @@ const useTable = ({
           )
         );
       }
+
       return rowsUI;
     },
     [buffer, limit, totalCount, visible, rowHeight, dynamicHeight]
