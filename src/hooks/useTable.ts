@@ -1,5 +1,5 @@
 import * as React from 'react';
-import useVirtualization from './useVirtualization';
+import useVerticalScroll from './useVerticalScroll';
 import useHeight from './useHeight';
 
 interface IProps {
@@ -8,19 +8,21 @@ interface IProps {
   dynamicHeight?: boolean;
   // minimum height in case of dynamicHeight
   rowHeight: number;
-  totalCount: number;
+  data: any[];
   loadMore?: (sp: number) => void;
   loadMoreOffset?: number;
+  virtualized?: boolean;
 }
 
 const useTable = ({
   limit = 20,
   buffer = 20,
   rowHeight,
-  totalCount,
+  data,
   dynamicHeight,
   loadMoreOffset = Infinity,
   loadMore,
+  virtualized = true,
 }: IProps) => {
   const {
     rowRefs,
@@ -28,20 +30,22 @@ const useTable = ({
     positionCache,
     heightToBeCalculated,
     heightCache,
+    tableHeight: tableHeightX,
   } = useHeight();
-
-  const { onScroll, visible } = useVirtualization({
+  const { onScroll, visible } = useVerticalScroll({
     loadMore,
     loadMoreOffset,
     positionCache: positionCache.current,
     rowHeight,
     dynamicHeight,
-    totalCount,
+    totalCount: data.length,
+    virtualized,
   });
+  let tableHeight: string | number =
+    tableHeightX.current || data.length * rowHeight;
 
   const tableRenderer = React.useCallback(
     (
-      data: Array<any>,
       func: (
         row: any,
         style: React.CSSProperties,
@@ -49,9 +53,13 @@ const useTable = ({
         ref?: any
       ) => React.ReactNode
     ) => {
-      const start = Math.max(visible - buffer, 0);
-      const end = Math.min(visible + limit + buffer, totalCount);
+      const start = virtualized ? Math.max(visible - buffer, 0) : 0;
+      const end = virtualized
+        ? Math.min(visible + limit + buffer, data.length)
+        : data.length;
+
       let rowsUI: React.ReactNode[] = [];
+      tableHeight = data.length * rowHeight;
 
       heightToBeCalculated.current = [];
       if (dynamicHeight) {
@@ -69,7 +77,7 @@ const useTable = ({
         let opacity = 1;
         let height = rowHeight;
 
-        if (dynamicHeight) {
+        if (dynamicHeight && virtualized) {
           opacity = data[i] && positionCache.current[i] === undefined ? 0 : 1;
           if (positionCache.current[i] !== undefined && data[i]) {
             currentRowPosition = positionCache.current[i];
@@ -89,8 +97,10 @@ const useTable = ({
             {
               height,
               opacity,
-              transform: `translateY(${currentRowPosition}px)`,
-              position: 'absolute',
+              transform: virtualized
+                ? `translateY(${currentRowPosition}px)`
+                : undefined,
+              position: virtualized ? 'absolute' : 'inherit',
             },
             i,
             rowRefs.current[0][i]
@@ -100,10 +110,10 @@ const useTable = ({
 
       return rowsUI;
     },
-    [buffer, limit, totalCount, visible, rowHeight, dynamicHeight]
+    [buffer, limit, data, visible, rowHeight, dynamicHeight]
   );
 
-  return { onScroll, tableRenderer };
+  return { onScroll, tableRenderer, tableHeight };
 };
 
 export default useTable;

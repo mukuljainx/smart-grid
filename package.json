@@ -21,7 +21,7 @@
   ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "tsc -m commonjs --outDir dist/cjs -p tsconfig.json -w",
+    "start": "tsc -m commonjs --outDir examples/grid -p tsconfig.json -w",
     "build": "rm -rf dist && npm run build:cjs && npm run build:esnext",
     "css": "npm run css:compile && npm run css:prefix && npm run css:end",
     "css:compile": "sass src:dist/cjs && sass src:dist/esm",

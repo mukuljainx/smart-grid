@@ -7,15 +7,17 @@ interface IProps {
   loadMore?: (sp: number) => void;
   loadMoreOffset?: number;
   positionCache: number[];
+  virtualized?: boolean;
 }
 
-const useVirtualization = ({
+const useVerticalScroll = ({
   totalCount,
   loadMoreOffset = Infinity,
   loadMore,
   dynamicHeight,
   positionCache,
   rowHeight,
+  virtualized,
 }: IProps) => {
   const [visible, setVisible] = useState(0);
   const scrollPosition = useRef(0);
@@ -59,7 +61,7 @@ const useVirtualization = ({
       if (loadMore && sp >= Math.min(loadMoreOffsetFuse, loadMoreOffset)) {
         loadMore(sp);
       }
-      if (scrollPosition.current !== sp) {
+      if (scrollPosition.current !== sp && virtualized) {
         scrollPosition.current = sp;
         setVisible(sp);
       }
@@ -70,4 +72,4 @@ const useVirtualization = ({
   return { onScroll, visible };
 };
 
-export default useVirtualization;
+export default useVerticalScroll;

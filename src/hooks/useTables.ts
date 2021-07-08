@@ -1,5 +1,5 @@
 import React, { createRef, useCallback, useRef, useState } from 'react';
-import useVirtualization from './useVirtualization';
+import useVirtualization from './useVerticalScroll';
 import useHeight from './useHeight';
 import { get2DArray } from '../util';
 import useScrollSync from './useScrollSync';

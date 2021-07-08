@@ -1,3 +1,25 @@
+* {
+  box-sizing: border-box;
+}
+.App {
+  font-family: sans-serif;
+  text-align: center;
+}
+
+html,
+body,
+.App,
+#root {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.App {
+  padding: 16px;
+}
+
 .table-wrapper {
   overflow-x: auto;
   width: 100%;
@@ -17,7 +39,7 @@ table {
 tbody,
 thead {
   display: block;
-  width: 1400px;
+  width: 700px;
 }
 
 thead {
@@ -38,8 +60,8 @@ td {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 200px;
-  min-width: 200px;
+  max-width: 100px;
+  min-width: 100px;
 }
 
 tr:first-child th {
@@ -59,3 +81,5 @@ tbody tr {
 .table-row.loading {
   width: 100%;
 }
+
+/*# sourceMappingURL=index.293fd27e.css.map */

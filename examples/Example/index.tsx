@@ -1,13 +1,15 @@
 import * as React from 'react';
 import './index.css';
-import Table from './basic';
+import Basic from './basic';
+import BasicWithoutVirtualization from './BasicWithoutVirtualization';
 // import Pinned from './Pinned';
 
 export default function App() {
   return (
     <div className="App">
       {/* <Pinned /> */}
-      <Table />
+      {/* <Basic /> */}
+      <BasicWithoutVirtualization />
     </div>
   );
 }

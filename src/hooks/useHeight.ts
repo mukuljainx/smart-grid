@@ -50,6 +50,7 @@ const useHeight = (count = 1) => {
     heightToBeCalculated,
     heightCache,
     clearAfter,
+    tableHeight,
   };
 };
 
