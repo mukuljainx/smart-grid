@@ -1,8 +1,9 @@
 import * as React from 'react';
 import useVerticalScroll from './useVerticalScroll';
 import useHeight from './useHeight';
+import rowRendererHelper from './rowRendererHelper';
 
-interface IProps {
+export interface IGridProps {
   limit?: number;
   buffer?: number;
   dynamicHeight?: boolean;
@@ -23,26 +24,20 @@ const useTable = ({
   loadMoreOffset = Infinity,
   loadMore,
   virtualized = true,
-}: IProps) => {
-  const {
-    rowRefs,
-    lastRowPosition,
-    positionCache,
-    heightToBeCalculated,
-    heightCache,
-    tableHeight: tableHeightX,
-  } = useHeight();
+}: IGridProps) => {
+  const heightProps = useHeight();
   const { onScroll, visible } = useVerticalScroll({
     loadMore,
     loadMoreOffset,
-    positionCache: positionCache.current,
+    positionCache: heightProps.positionCache.current,
     rowHeight,
     dynamicHeight,
     totalCount: data.length,
     virtualized,
   });
   let tableHeight: string | number =
-    tableHeightX.current || data.length * rowHeight;
+    heightProps.tableHeight.current || data.length * rowHeight;
+  const tableIndex = 0;
 
   const tableRenderer = React.useCallback(
     (
@@ -52,64 +47,23 @@ const useTable = ({
         index: number,
         ref?: any
       ) => React.ReactNode
-    ) => {
-      const start = virtualized ? Math.max(visible - buffer, 0) : 0;
-      const end = virtualized
-        ? Math.min(visible + limit + buffer, data.length)
-        : data.length;
-
-      let rowsUI: React.ReactNode[] = [];
-      tableHeight = data.length * rowHeight;
-
-      heightToBeCalculated.current = [];
-      if (dynamicHeight) {
-        for (let i = start; i < end; i++) {
-          if (data[i] && !heightCache.current[i]) {
-            rowRefs.current[0][i] = React.createRef();
-            heightToBeCalculated.current.push(i);
-          }
-        }
-      }
-
-      let extraRowCounter = 0;
-      for (let i = start; i < end; i++) {
-        let currentRowPosition = 0;
-        let opacity = 1;
-        let height = rowHeight;
-
-        if (dynamicHeight && virtualized) {
-          opacity = data[i] && positionCache.current[i] === undefined ? 0 : 1;
-          if (positionCache.current[i] !== undefined && data[i]) {
-            currentRowPosition = positionCache.current[i];
-            height = heightCache.current[i];
-          } else {
-            currentRowPosition =
-              lastRowPosition.current + extraRowCounter * rowHeight;
-            extraRowCounter++;
-          }
-        } else {
-          currentRowPosition = i * rowHeight;
-        }
-
-        rowsUI.push(
-          func(
-            data[i],
-            {
-              height,
-              opacity,
-              transform: virtualized
-                ? `translateY(${currentRowPosition}px)`
-                : undefined,
-              position: virtualized ? 'absolute' : 'inherit',
-            },
-            i,
-            rowRefs.current[0][i]
-          )
-        );
-      }
-
-      return rowsUI;
-    },
+    ) =>
+      rowRendererHelper({
+        rowFunc: func,
+        visible,
+        tableIndex,
+        rowHeight,
+        limit,
+        buffer,
+        virtualized,
+        dynamicHeight,
+        data,
+        heightCache: heightProps.heightCache,
+        heightToBeCalculated: heightProps.heightToBeCalculated,
+        lastRowPosition: heightProps.lastRowPosition,
+        positionCache: heightProps.positionCache,
+        rowRefs: heightProps.rowRefs,
+      }),
     [buffer, limit, data, visible, rowHeight, dynamicHeight]
   );
 

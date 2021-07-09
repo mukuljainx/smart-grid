@@ -1,0 +1,58 @@
+.table-wrapper {
+  overflow-x: auto;
+  width: 100%;
+  height: 100%;
+  display: flex;
+}
+
+.ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.table-row.loading {
+  width: 100%;
+}
+
+.table {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  border: 1px solid;
+}
+
+.table-header {
+  display: flex;
+  border-bottom: 1px solid;
+}
+
+.table-header-cell {
+  flex-shrink: 0;
+  width: 100px;
+  padding: 8px 4px;
+}
+
+.table-body-wrapper {
+  overflow-y: auto;
+}
+
+.table-body {
+  position: relative;
+}
+
+.table-row {
+  display: flex;
+  border-bottom: 1px solid;
+}
+
+.table-row-cell {
+  flex-shrink: 0;
+  width: 100px;
+  padding: 8px 4px;
+}
+
+.table-row-cell:not(:last-child),
+.table-header-cell:not(:last-child) {
+  border-right: 1px solid;
+}

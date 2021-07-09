@@ -87,7 +87,7 @@ const Table = ({ rowHeight, buffer, limit, virtualized = true }: IProps) => {
           </tr>
         </thead>
         <tbody
-          style={{ height: tableHeight }}
+          // style={{ minHeight: tableHeight }}
           role="rowgroup"
           onScroll={onScroll}
         >

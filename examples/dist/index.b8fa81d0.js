@@ -407,7 +407,7 @@ _reactDom.render(/*#__PURE__*/ _react.createElement(_indexDefault.default, {
   window.$RefreshReg$ = prevRefreshReg;
   window.$RefreshSig$ = prevRefreshSig;
 }
-},{"react":"1UBbG","react-dom":"bo4LK","./node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"dzy2P","./Example/index":"bVKvC","@parcel/transformer-js/src/esmodule-helpers.js":"obaoz"}],"1UBbG":[function(require,module,exports) {
+},{"react":"1UBbG","react-dom":"bo4LK","./Example/index":"bVKvC","@parcel/transformer-js/src/esmodule-helpers.js":"obaoz","./node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"dzy2P"}],"1UBbG":[function(require,module,exports) {
 'use strict';
 module.exports = require('./cjs/react.development.js');
 
@@ -20522,6 +20522,74 @@ module.exports = require('./cjs/scheduler-tracing.development.js');
     exports.unstable_wrap = unstable_wrap;
 })();
 
+},{}],"bVKvC":[function(require,module,exports) {
+var helpers = require("../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
+var prevRefreshReg = window.$RefreshReg$;
+var prevRefreshSig = window.$RefreshSig$;
+helpers.prelude(module);
+
+try {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _react = require("react");
+var _indexCss = require("./index.css");
+var _basic = require("./basic");
+var _basicDefault = parcelHelpers.interopDefault(_basic);
+function App() {
+    return(/*#__PURE__*/ _react.createElement("div", {
+        className: "App",
+        __source: {
+            fileName: "/Users/i0424/react/smart-grid/examples/example/index.tsx",
+            lineNumber: 10
+        },
+        __self: this
+    }, /*#__PURE__*/ _react.createElement(_basicDefault.default, {
+        __source: {
+            fileName: "/Users/i0424/react/smart-grid/examples/example/index.tsx",
+            lineNumber: 12
+        },
+        __self: this
+    })));
+}
+exports.default = App;
+
+  helpers.postlude(module);
+} finally {
+  window.$RefreshReg$ = prevRefreshReg;
+  window.$RefreshSig$ = prevRefreshSig;
+}
+},{"react":"1UBbG","./index.css":"lDuDM","@parcel/transformer-js/src/esmodule-helpers.js":"obaoz","../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"dzy2P","./basic":"a5E0Z"}],"lDuDM":[function() {},{}],"obaoz":[function(require,module,exports) {
+exports.interopDefault = function(a) {
+    return a && a.__esModule ? a : {
+        default: a
+    };
+};
+exports.defineInteropFlag = function(a) {
+    Object.defineProperty(a, '__esModule', {
+        value: true
+    });
+};
+exports.exportAll = function(source, dest) {
+    Object.keys(source).forEach(function(key) {
+        if (key === 'default' || key === '__esModule') return;
+        // Skip duplicate re-exports when they have the same value.
+        if (key in dest && dest[key] === source[key]) return;
+        Object.defineProperty(dest, key, {
+            enumerable: true,
+            get: function() {
+                return source[key];
+            }
+        });
+    });
+    return dest;
+};
+exports.export = function(dest, destName, get) {
+    Object.defineProperty(dest, destName, {
+        enumerable: true,
+        get: get
+    });
+};
+
 },{}],"dzy2P":[function(require,module,exports) {
 "use strict";
 var Refresh = require('react-refresh/runtime');
@@ -21109,104 +21177,7 @@ module.exports = require('./cjs/react-refresh-runtime.development.js');
     exports.setSignature = setSignature;
 })();
 
-},{}],"bVKvC":[function(require,module,exports) {
-var helpers = require("../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
-var prevRefreshReg = window.$RefreshReg$;
-var prevRefreshSig = window.$RefreshSig$;
-helpers.prelude(module);
-
-try {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-var _react = require("react");
-var _indexCss = require("./index.css");
-var _basicWithoutVirtualization = require("./BasicWithoutVirtualization");
-var _basicWithoutVirtualizationDefault = parcelHelpers.interopDefault(_basicWithoutVirtualization);
-function App() {
-    return(/*#__PURE__*/ _react.createElement("div", {
-        className: "App",
-        __source: {
-            fileName: "/Users/i0424/react/smart-grid/examples/example/index.tsx",
-            lineNumber: 9
-        },
-        __self: this
-    }, /*#__PURE__*/ _react.createElement(_basicWithoutVirtualizationDefault.default, {
-        __source: {
-            fileName: "/Users/i0424/react/smart-grid/examples/example/index.tsx",
-            lineNumber: 12
-        },
-        __self: this
-    })));
-}
-exports.default = App;
-
-  helpers.postlude(module);
-} finally {
-  window.$RefreshReg$ = prevRefreshReg;
-  window.$RefreshSig$ = prevRefreshSig;
-}
-},{"react":"1UBbG","./index.css":"lDuDM","@parcel/transformer-js/src/esmodule-helpers.js":"obaoz","../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"dzy2P","./BasicWithoutVirtualization":"kg5Z6"}],"lDuDM":[function() {},{}],"obaoz":[function(require,module,exports) {
-exports.interopDefault = function(a) {
-    return a && a.__esModule ? a : {
-        default: a
-    };
-};
-exports.defineInteropFlag = function(a) {
-    Object.defineProperty(a, '__esModule', {
-        value: true
-    });
-};
-exports.exportAll = function(source, dest) {
-    Object.keys(source).forEach(function(key) {
-        if (key === 'default' || key === '__esModule') return;
-        // Skip duplicate re-exports when they have the same value.
-        if (key in dest && dest[key] === source[key]) return;
-        Object.defineProperty(dest, key, {
-            enumerable: true,
-            get: function() {
-                return source[key];
-            }
-        });
-    });
-    return dest;
-};
-exports.export = function(dest, destName, get) {
-    Object.defineProperty(dest, destName, {
-        enumerable: true,
-        get: get
-    });
-};
-
-},{}],"kg5Z6":[function(require,module,exports) {
-var helpers = require("../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
-var prevRefreshReg = window.$RefreshReg$;
-var prevRefreshSig = window.$RefreshSig$;
-helpers.prelude(module);
-
-try {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-var _react = require("react");
-var _basic = require("../Basic");
-var _basicDefault = parcelHelpers.interopDefault(_basic);
-const BasicWithoutVirtualization = ()=>{
-    return(/*#__PURE__*/ _react.createElement(_basicDefault.default, {
-        virtualized: false,
-        __source: {
-            fileName: "/Users/i0424/react/smart-grid/examples/example/BasicWithoutVirtualization/index.tsx",
-            lineNumber: 5
-        },
-        __self: undefined
-    }));
-};
-exports.default = BasicWithoutVirtualization;
-
-  helpers.postlude(module);
-} finally {
-  window.$RefreshReg$ = prevRefreshReg;
-  window.$RefreshSig$ = prevRefreshSig;
-}
-},{"react":"1UBbG","../Basic":"a5E0Z","@parcel/transformer-js/src/esmodule-helpers.js":"obaoz","../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"dzy2P"}],"a5E0Z":[function(require,module,exports) {
+},{}],"a5E0Z":[function(require,module,exports) {
 var helpers = require("../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
 var prevRefreshReg = window.$RefreshReg$;
 var prevRefreshSig = window.$RefreshSig$;
@@ -21375,9 +21346,7 @@ const Table = ({ rowHeight , buffer , limit , virtualized =true  })=>{
         },
         __self: undefined
     }, "Year"))), /*#__PURE__*/ _react.createElement("tbody", {
-        style: {
-            height: tableHeight
-        },
+        // style={{ minHeight: tableHeight }}
         role: "rowgroup",
         onScroll: onScroll,
         __source: {
@@ -21537,54 +21506,38 @@ Object.defineProperty(exports, "__esModule", {
 var React = __importStar(require("react"));
 var useVerticalScroll_1 = __importDefault(require("./useVerticalScroll"));
 var useHeight_1 = __importDefault(require("./useHeight"));
+var rowRendererHelper_1 = __importDefault(require("./rowRendererHelper"));
 var useTable = function(_a) {
     var _b = _a.limit, limit = _b === void 0 ? 20 : _b, _c = _a.buffer, buffer = _c === void 0 ? 20 : _c, rowHeight = _a.rowHeight, data = _a.data, dynamicHeight = _a.dynamicHeight, _d = _a.loadMoreOffset, loadMoreOffset = _d === void 0 ? Infinity : _d, loadMore = _a.loadMore, _e = _a.virtualized, virtualized = _e === void 0 ? true : _e;
-    var _f = useHeight_1.default(), rowRefs = _f.rowRefs, lastRowPosition = _f.lastRowPosition, positionCache = _f.positionCache, heightToBeCalculated = _f.heightToBeCalculated, heightCache = _f.heightCache, tableHeightX = _f.tableHeight;
-    var _g = useVerticalScroll_1.default({
+    var heightProps = useHeight_1.default();
+    var _f = useVerticalScroll_1.default({
         loadMore: loadMore,
         loadMoreOffset: loadMoreOffset,
-        positionCache: positionCache.current,
+        positionCache: heightProps.positionCache.current,
         rowHeight: rowHeight,
         dynamicHeight: dynamicHeight,
         totalCount: data.length,
         virtualized: virtualized
-    }), onScroll = _g.onScroll, visible = _g.visible;
-    var tableHeight = tableHeightX.current || data.length * rowHeight;
+    }), onScroll = _f.onScroll, visible = _f.visible;
+    var tableHeight = heightProps.tableHeight.current || data.length * rowHeight;
+    var tableIndex = 0;
     var tableRenderer = React.useCallback(function(func) {
-        var start = virtualized ? Math.max(visible - buffer, 0) : 0;
-        var end = virtualized ? Math.min(visible + limit + buffer, data.length) : data.length;
-        var rowsUI = [];
-        tableHeight = data.length * rowHeight;
-        heightToBeCalculated.current = [];
-        if (dynamicHeight) {
-            for(var i = start; i < end; i++)if (data[i] && !heightCache.current[i]) {
-                rowRefs.current[0][i] = React.createRef();
-                heightToBeCalculated.current.push(i);
-            }
-        }
-        var extraRowCounter = 0;
-        for(var i = start; i < end; i++){
-            var currentRowPosition = 0;
-            var opacity = 1;
-            var height = rowHeight;
-            if (dynamicHeight && virtualized) {
-                opacity = data[i] && positionCache.current[i] === undefined ? 0 : 1;
-                if (positionCache.current[i] !== undefined && data[i]) {
-                    currentRowPosition = positionCache.current[i];
-                    height = heightCache.current[i];
-                } else {
-                    currentRowPosition = lastRowPosition.current + extraRowCounter * rowHeight;
-                    extraRowCounter++;
-                }
-            } else currentRowPosition = i * rowHeight;
-            rowsUI.push(func(data[i], {
-                height: height,
-                opacity: opacity,
-                transform: virtualized ? "translateY(" + currentRowPosition + "px)" : undefined,
-                position: virtualized ? 'absolute' : 'inherit'
-            }, i, rowRefs.current[0][i]));
-        }
-        return rowsUI;
+        return rowRendererHelper_1.default({
+            rowFunc: func,
+            visible: visible,
+            tableIndex: tableIndex,
+            rowHeight: rowHeight,
+            limit: limit,
+            buffer: buffer,
+            virtualized: virtualized,
+            dynamicHeight: dynamicHeight,
+            data: data,
+            heightCache: heightProps.heightCache,
+            heightToBeCalculated: heightProps.heightToBeCalculated,
+            lastRowPosition: heightProps.lastRowPosition,
+            positionCache: heightProps.positionCache,
+            rowRefs: heightProps.rowRefs
+        });
     }, [
         buffer,
         limit,
@@ -21606,7 +21559,7 @@ exports.default = useTable;
   window.$RefreshReg$ = prevRefreshReg;
   window.$RefreshSig$ = prevRefreshSig;
 }
-},{"react":"1UBbG","./useVerticalScroll":"a3Asj","./useHeight":"gtk5S","../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"dzy2P"}],"a3Asj":[function(require,module,exports) {
+},{"react":"1UBbG","./useVerticalScroll":"a3Asj","./useHeight":"gtk5S","../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"dzy2P","./rowRendererHelper":"hkgdw"}],"a3Asj":[function(require,module,exports) {
 var helpers = require("../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
 var prevRefreshReg = window.$RefreshReg$;
 var prevRefreshSig = window.$RefreshSig$;
@@ -21797,7 +21750,92 @@ exports.get2DArray = function(count) {
     return arr;
 };
 
-},{}],"6HokT":[function(require,module,exports) {
+},{}],"hkgdw":[function(require,module,exports) {
+var helpers = require("../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
+var prevRefreshReg = window.$RefreshReg$;
+var prevRefreshSig = window.$RefreshSig$;
+helpers.prelude(module);
+
+try {
+"use strict";
+var __createBinding = this && this.__createBinding || (Object.create ? function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, {
+        enumerable: true,
+        get: function() {
+            return m[k];
+        }
+    });
+} : function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+});
+var __setModuleDefault = this && this.__setModuleDefault || (Object.create ? function(o, v) {
+    Object.defineProperty(o, "default", {
+        enumerable: true,
+        value: v
+    });
+} : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = this && this.__importStar || function(mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {
+    };
+    if (mod != null) for(var k in mod)if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+var React = __importStar(require("react"));
+var func = function(_a) {
+    var virtualized = _a.virtualized, buffer = _a.buffer, limit = _a.limit, visible = _a.visible, rowHeight = _a.rowHeight, data = _a.data, heightToBeCalculated = _a.heightToBeCalculated, dynamicHeight = _a.dynamicHeight, tableIndex = _a.tableIndex, heightCache = _a.heightCache, rowRefs = _a.rowRefs, positionCache = _a.positionCache, lastRowPosition = _a.lastRowPosition, rowFunc = _a.rowFunc;
+    console.log('HELLO', tableIndex);
+    var start = virtualized ? Math.max(visible - buffer, 0) : 0;
+    var end = virtualized ? Math.min(visible + limit + buffer, data.length) : data.length;
+    var rowsUI = [];
+    heightToBeCalculated.current = [];
+    if (dynamicHeight) {
+        for(var i = start; i < end; i++)if (data[i] && !heightCache.current[i]) {
+            rowRefs.current[tableIndex][i] = React.createRef();
+            heightToBeCalculated.current.push(i);
+        }
+    }
+    var extraRowCounter = 0;
+    for(var i = start; i < end; i++){
+        var currentRowPosition = 0;
+        var opacity = 1;
+        var height = rowHeight;
+        if (dynamicHeight && virtualized) {
+            height = undefined;
+            opacity = data[i] && positionCache.current[i] === undefined ? 0 : 1;
+            if (positionCache.current[i] !== undefined && data[i]) {
+                currentRowPosition = positionCache.current[i];
+                height = heightCache.current[i];
+            } else {
+                currentRowPosition = lastRowPosition.current + extraRowCounter * rowHeight;
+                extraRowCounter++;
+            }
+        } else currentRowPosition = i * rowHeight;
+        rowsUI.push(rowFunc(data[i], {
+            height: height,
+            opacity: opacity,
+            transform: virtualized ? "translateY(" + currentRowPosition + "px)" : undefined,
+            position: virtualized ? 'absolute' : 'inherit'
+        }, i, rowRefs.current[tableIndex][i]));
+    }
+    return rowsUI;
+};
+exports.default = func;
+
+  helpers.postlude(module);
+} finally {
+  window.$RefreshReg$ = prevRefreshReg;
+  window.$RefreshSig$ = prevRefreshSig;
+}
+},{"react":"1UBbG","../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"dzy2P"}],"6HokT":[function(require,module,exports) {
 var helpers = require("../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
 var prevRefreshReg = window.$RefreshReg$;
 var prevRefreshSig = window.$RefreshSig$;
@@ -21847,18 +21885,20 @@ var useHeight_1 = __importDefault(require("./useHeight"));
 var util_1 = require("../util");
 var useScrollSync_1 = __importDefault(require("./useScrollSync"));
 var useActions_1 = __importDefault(require("./useActions"));
+var rowRendererHelper_1 = __importDefault(require("./rowRendererHelper"));
 var useTables = function(tableCount, _a) {
-    var _b = _a.limit, limit = _b === void 0 ? 20 : _b, _c = _a.buffer, buffer = _c === void 0 ? 20 : _c, rowHeight = _a.rowHeight, totalCount = _a.totalCount, dynamicHeight = _a.dynamicHeight, _d = _a.loadMoreOffset, loadMoreOffset = _d === void 0 ? Infinity : _d, loadMore = _a.loadMore;
+    var _b = _a.limit, limit = _b === void 0 ? 20 : _b, _c = _a.buffer, buffer = _c === void 0 ? 20 : _c, rowHeight = _a.rowHeight, dynamicHeight = _a.dynamicHeight, _d = _a.loadMoreOffset, loadMoreOffset = _d === void 0 ? Infinity : _d, loadMore = _a.loadMore, data = _a.data, _e = _a.virtualized, virtualized = _e === void 0 ? true : _e;
     var heightProps = useHeight_1.default(tableCount);
-    var _e = useVerticalScroll_1.default({
+    var _f = useVerticalScroll_1.default({
         loadMore: loadMore,
         loadMoreOffset: loadMoreOffset,
         positionCache: heightProps.positionCache.current,
         rowHeight: rowHeight,
         dynamicHeight: dynamicHeight,
-        totalCount: totalCount
-    }), onScroll = _e.onScroll, visible = _e.visible;
-    var _f = useScrollSync_1.default(tableCount), horizontalSync = _f.horizontalSync, headerRef = _f.headerRef, bodyRef = _f.bodyRef;
+        totalCount: data.length,
+        virtualized: virtualized
+    }), onScroll = _f.onScroll, visible = _f.visible;
+    var _g = useScrollSync_1.default(tableCount), horizontalSync = _g.horizontalSync, headerRef = _g.headerRef, bodyRef = _g.bodyRef;
     var tableRef = react_1.default.useRef();
     var actions = useActions_1.default({
         positionCache: heightProps.positionCache,
@@ -21867,46 +21907,30 @@ var useTables = function(tableCount, _a) {
         lastRowPosition: heightProps.lastRowPosition,
         clearAfter: heightProps.clearAfter
     });
+    var tableHeight = heightProps.tableHeight.current || data.length * rowHeight;
     var tableRenderer = react_1.useCallback(function(tableIndex) {
-        return function(data, func) {
-            var start = Math.max(visible - buffer, 0);
-            var end = Math.min(visible + limit + buffer, totalCount);
-            var rowsUI = [];
-            heightProps.heightToBeCalculated.current = [];
-            for(var i = start; i < end; i++)if (dynamicHeight && data[i] && !heightProps.heightCache.current[i]) {
-                heightProps.rowRefs.current[tableIndex][i] = react_1.createRef();
-                heightProps.heightToBeCalculated.current.push(i);
-            }
-            var extraRowCounter = 0;
-            for(var i = start; i < end; i++){
-                var currentRowPosition = 0;
-                var opacity = 1;
-                var height = undefined;
-                if (dynamicHeight) {
-                    opacity = data[i] && heightProps.positionCache.current[i] === undefined ? 0 : 1;
-                    if (heightProps.positionCache.current[i] !== undefined && data[i]) {
-                        currentRowPosition = heightProps.positionCache.current[i];
-                        height = heightProps.heightCache.current[i];
-                    } else {
-                        height = rowHeight;
-                        currentRowPosition = heightProps.lastRowPosition.current + extraRowCounter * rowHeight;
-                        extraRowCounter++;
-                    }
-                } else currentRowPosition = i * rowHeight;
-                rowsUI.push(func(data[i], {
-                    height: height,
-                    opacity: opacity,
-                    zIndex: opacity === 0 ? -1 : undefined,
-                    transform: "translateY(" + currentRowPosition + "px)",
-                    position: 'absolute'
-                }, i, heightProps.rowRefs.current[tableIndex][i]));
-            }
-            return rowsUI;
+        return function(func) {
+            return rowRendererHelper_1.default({
+                rowFunc: func,
+                visible: visible,
+                tableIndex: tableIndex,
+                rowHeight: rowHeight,
+                limit: limit,
+                buffer: buffer,
+                virtualized: virtualized,
+                dynamicHeight: dynamicHeight,
+                data: data,
+                heightCache: heightProps.heightCache,
+                heightToBeCalculated: heightProps.heightToBeCalculated,
+                lastRowPosition: heightProps.lastRowPosition,
+                positionCache: heightProps.positionCache,
+                rowRefs: heightProps.rowRefs
+            });
         };
     }, [
         buffer,
         limit,
-        totalCount,
+        data,
         visible,
         rowHeight,
         dynamicHeight
@@ -21917,7 +21941,7 @@ var useTables = function(tableCount, _a) {
     return {
         onScroll: onScroll,
         tableRenderers: tableRenderers,
-        tableHeight: heightProps.lastRowPosition.current,
+        tableHeight: tableHeight,
         horizontalSync: horizontalSync,
         headerRef: headerRef,
         bodyRef: bodyRef,
@@ -21932,7 +21956,7 @@ exports.default = useTables;
   window.$RefreshReg$ = prevRefreshReg;
   window.$RefreshSig$ = prevRefreshSig;
 }
-},{"react":"1UBbG","./useVerticalScroll":"a3Asj","./useHeight":"gtk5S","../util":"84vjg","./useScrollSync":"563UO","./useActions":"cnTaE","../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"dzy2P"}],"563UO":[function(require,module,exports) {
+},{"react":"1UBbG","./useVerticalScroll":"a3Asj","./useHeight":"gtk5S","../util":"84vjg","./useScrollSync":"563UO","./useActions":"cnTaE","./rowRendererHelper":"hkgdw","../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"dzy2P"}],"563UO":[function(require,module,exports) {
 var helpers = require("../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
 var prevRefreshReg = window.$RefreshReg$;
 var prevRefreshSig = window.$RefreshSig$;

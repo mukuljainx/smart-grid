@@ -4,6 +4,7 @@ import useHeight from './useHeight';
 import { get2DArray } from '../util';
 import useScrollSync from './useScrollSync';
 import useActions from './useActions';
+import rowRendererHelper from './rowRendererHelper';
 
 interface IProps {
   limit?: number;
@@ -11,9 +12,10 @@ interface IProps {
   dynamicHeight?: boolean;
   // minimum height in case of dynamicHeight
   rowHeight: number;
-  totalCount: number;
   loadMore?: (sp: number) => void;
   loadMoreOffset?: number;
+  data: Array<any>;
+  virtualized?: boolean;
 }
 
 const useTables = (
@@ -22,10 +24,11 @@ const useTables = (
     limit = 20,
     buffer = 20,
     rowHeight,
-    totalCount,
     dynamicHeight,
     loadMoreOffset = Infinity,
     loadMore,
+    data,
+    virtualized = true,
   }: IProps
 ) => {
   const heightProps = useHeight(tableCount);
@@ -35,7 +38,8 @@ const useTables = (
     positionCache: heightProps.positionCache.current,
     rowHeight,
     dynamicHeight,
-    totalCount,
+    totalCount: data.length,
+    virtualized,
   });
   const { horizontalSync, headerRef, bodyRef } = useScrollSync(tableCount);
   const tableRef = React.useRef();
@@ -46,74 +50,36 @@ const useTables = (
     lastRowPosition: heightProps.lastRowPosition,
     clearAfter: heightProps.clearAfter,
   });
+  let tableHeight: string | number =
+    heightProps.tableHeight.current || data.length * rowHeight;
 
   const tableRenderer = useCallback(
     (tableIndex) =>
       (
-        data: Array<any>,
         func: (
           row: any,
           style: React.CSSProperties,
           index: number,
           ref?: any
         ) => React.ReactNode
-      ) => {
-        const start = Math.max(visible - buffer, 0);
-        const end = Math.min(visible + limit + buffer, totalCount);
-        let rowsUI: React.ReactNode[] = [];
-
-        heightProps.heightToBeCalculated.current = [];
-        for (let i = start; i < end; i++) {
-          if (dynamicHeight && data[i] && !heightProps.heightCache.current[i]) {
-            heightProps.rowRefs.current[tableIndex][i] = createRef();
-            heightProps.heightToBeCalculated.current.push(i);
-          }
-        }
-
-        let extraRowCounter = 0;
-
-        for (let i = start; i < end; i++) {
-          let currentRowPosition = 0;
-          let opacity = 1;
-          let height = undefined;
-
-          if (dynamicHeight) {
-            opacity =
-              data[i] && heightProps.positionCache.current[i] === undefined
-                ? 0
-                : 1;
-            if (heightProps.positionCache.current[i] !== undefined && data[i]) {
-              currentRowPosition = heightProps.positionCache.current[i];
-              height = heightProps.heightCache.current[i];
-            } else {
-              height = rowHeight;
-              currentRowPosition =
-                heightProps.lastRowPosition.current +
-                extraRowCounter * rowHeight;
-              extraRowCounter++;
-            }
-          } else {
-            currentRowPosition = i * rowHeight;
-          }
-
-          rowsUI.push(
-            func(
-              data[i],
-              {
-                height,
-                opacity,
-                zIndex: opacity === 0 ? -1 : undefined,
-                transform: `translateY(${currentRowPosition}px)`,
-                position: 'absolute',
-              },
-              i,
-              heightProps.rowRefs.current[tableIndex][i]
-            )
-          );
-        }
-        return rowsUI;
-      },
-    [buffer, limit, totalCount, visible, rowHeight, dynamicHeight]
+      ) =>
+        rowRendererHelper({
+          rowFunc: func,
+          visible,
+          tableIndex,
+          rowHeight,
+          limit,
+          buffer,
+          virtualized,
+          dynamicHeight,
+          data,
+          heightCache: heightProps.heightCache,
+          heightToBeCalculated: heightProps.heightToBeCalculated,
+          lastRowPosition: heightProps.lastRowPosition,
+          positionCache: heightProps.positionCache,
+          rowRefs: heightProps.rowRefs,
+        }),
+    [buffer, limit, data, visible, rowHeight, dynamicHeight]
   );
 
   const tableRenderers = get2DArray(tableCount).map((_, i) => tableRenderer(i));
@@ -121,7 +87,7 @@ const useTables = (
   return {
     onScroll,
     tableRenderers,
-    tableHeight: heightProps.lastRowPosition.current,
+    tableHeight,
     horizontalSync,
     headerRef,
     bodyRef,
