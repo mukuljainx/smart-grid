@@ -53,7 +53,7 @@ const useGrids = (
   let tableHeight: string | number =
     heightProps.tableHeight.current || data.length * rowHeight;
 
-  const tableRenderer = useCallback(
+  const rowRenderer = useCallback(
     (tableIndex) =>
       (
         func: (
@@ -82,11 +82,11 @@ const useGrids = (
     [buffer, limit, data, visible, rowHeight, dynamicHeight]
   );
 
-  const tableRenderers = get2DArray(tableCount).map((_, i) => tableRenderer(i));
+  const rowRenderers = get2DArray(tableCount).map((_, i) => rowRenderer(i));
 
   return {
     onScroll,
-    tableRenderers,
+    rowRenderers,
     tableHeight,
     horizontalSync,
     headerRef,

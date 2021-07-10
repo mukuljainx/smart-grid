@@ -39,7 +39,7 @@ const useGrid = ({
     heightProps.tableHeight.current || data.length * rowHeight;
   const tableIndex = 0;
 
-  const tableRenderer = React.useCallback(
+  const rowRenderer = React.useCallback(
     (
       func: (
         row: any,
@@ -67,7 +67,7 @@ const useGrid = ({
     [buffer, limit, data, visible, rowHeight, dynamicHeight]
   );
 
-  return { onScroll, tableRenderer, tableHeight };
+  return { onScroll, rowRenderer, tableHeight };
 };
 
 export default useGrid;

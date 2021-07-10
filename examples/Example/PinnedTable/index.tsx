@@ -58,7 +58,7 @@ const Table = ({ rowHeight, buffer, limit }: IProps) => {
   );
   const {
     onScroll,
-    tableRenderers,
+    rowRenderers,
     tableHeight,
     horizontalSync,
     bodyRef,
@@ -121,7 +121,7 @@ const Table = ({ rowHeight, buffer, limit }: IProps) => {
           border: '1px solid red',
         }}
       >
-        {tableRenderers.map((tableRenderer, i) => (
+        {rowRenderers.map((rowRenderer, i) => (
           <div
             style={{
               position: 'relative',
@@ -138,7 +138,7 @@ const Table = ({ rowHeight, buffer, limit }: IProps) => {
               className="table-body"
               style={{ position: 'relative', width: i == 0 ? 100 : 600 }}
             >
-              {tableRenderer((row, style, index, ref) =>
+              {rowRenderer((row, style, index, ref) =>
                 row ? (
                   <div
                     ref={ref}

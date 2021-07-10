@@ -68,7 +68,7 @@ const DynamicHeight = ({
     [state.loading]
   );
 
-  const { onScroll, tableRenderer, tableHeight } = useGrid({
+  const { onScroll, rowRenderer, tableHeight } = useGrid({
     data: state.loading ? state.data.concat([null, null]) : state.data,
     rowHeight: rowHeight || 39,
     buffer,
@@ -103,7 +103,7 @@ const DynamicHeight = ({
 
         <div className="table-body-wrapper" onScroll={onScroll}>
           <div className="table-body" style={{ height: tableHeight }}>
-            {tableRenderer((row, style, index, ref) =>
+            {rowRenderer((row, style, index, ref) =>
               row ? (
                 <div
                   role="row"
