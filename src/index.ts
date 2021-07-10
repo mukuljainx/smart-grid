@@ -1,4 +1,4 @@
-import useTable from './hooks/useTable';
-import useTables from './hooks/useTables';
+import useGrid from './hooks/useGrid';
+import useGrids from './hooks/useGrids';
 
-export { useTable, useTables };
+export { useGrid, useGrids };

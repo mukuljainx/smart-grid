@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { IGridProps } from './useTable';
+import { IGridProps } from './useGrid';
 
 interface IProps
   extends Pick<
