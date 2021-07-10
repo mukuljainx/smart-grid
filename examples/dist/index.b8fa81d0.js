@@ -21187,7 +21187,7 @@ try {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _react = require("react");
-// import { useTable } from '@crafts/smart-grid';
+// import { useGrid } from '@crafts/smart-grid';
 var _grid = require("../../grid");
 var _users = require("../users");
 var _usersDefault = parcelHelpers.interopDefault(_users);
@@ -21228,7 +21228,7 @@ const Table = ({ rowHeight , buffer , limit , virtualized =true  })=>{
     }, [
         state.loading
     ]);
-    const { onScroll , tableRenderer , tableHeight  } = _grid.useTable({
+    const { onScroll , tableRenderer , tableHeight  } = _grid.useGrid({
         data: state.loading ? state.data.concat([
             null,
             null
@@ -21453,13 +21453,13 @@ var __importDefault = this && this.__importDefault || function(mod) {
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.useTables = exports.useTable = void 0;
-var useTable_1 = __importDefault(require("./hooks/useTable"));
-exports.useTable = useTable_1.default;
-var useTables_1 = __importDefault(require("./hooks/useTables"));
-exports.useTables = useTables_1.default;
+exports.useGrids = exports.useGrid = void 0;
+var useGrid_1 = __importDefault(require("./hooks/useGrid"));
+exports.useGrid = useGrid_1.default;
+var useGrids_1 = __importDefault(require("./hooks/useGrids"));
+exports.useGrids = useGrids_1.default;
 
-},{"./hooks/useTable":"aCYpm","./hooks/useTables":"6HokT"}],"aCYpm":[function(require,module,exports) {
+},{"./hooks/useGrid":"fpNXY","./hooks/useGrids":"fp0Wm"}],"fpNXY":[function(require,module,exports) {
 var helpers = require("../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
 var prevRefreshReg = window.$RefreshReg$;
 var prevRefreshSig = window.$RefreshSig$;
@@ -21507,7 +21507,7 @@ var React = __importStar(require("react"));
 var useVerticalScroll_1 = __importDefault(require("./useVerticalScroll"));
 var useHeight_1 = __importDefault(require("./useHeight"));
 var rowRendererHelper_1 = __importDefault(require("./rowRendererHelper"));
-var useTable = function(_a) {
+var useGrid = function(_a) {
     var _b = _a.limit, limit = _b === void 0 ? 20 : _b, _c = _a.buffer, buffer = _c === void 0 ? 20 : _c, rowHeight = _a.rowHeight, data = _a.data, dynamicHeight = _a.dynamicHeight, _d = _a.loadMoreOffset, loadMoreOffset = _d === void 0 ? Infinity : _d, loadMore = _a.loadMore, _e = _a.virtualized, virtualized = _e === void 0 ? true : _e;
     var heightProps = useHeight_1.default();
     var _f = useVerticalScroll_1.default({
@@ -21552,14 +21552,14 @@ var useTable = function(_a) {
         tableHeight: tableHeight
     };
 };
-exports.default = useTable;
+exports.default = useGrid;
 
   helpers.postlude(module);
 } finally {
   window.$RefreshReg$ = prevRefreshReg;
   window.$RefreshSig$ = prevRefreshSig;
 }
-},{"react":"1UBbG","./useVerticalScroll":"a3Asj","./useHeight":"gtk5S","../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"dzy2P","./rowRendererHelper":"hkgdw"}],"a3Asj":[function(require,module,exports) {
+},{"react":"1UBbG","./useVerticalScroll":"a3Asj","./useHeight":"gtk5S","./rowRendererHelper":"hkgdw","../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"dzy2P"}],"a3Asj":[function(require,module,exports) {
 var helpers = require("../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
 var prevRefreshReg = window.$RefreshReg$;
 var prevRefreshSig = window.$RefreshSig$;
@@ -21835,7 +21835,7 @@ exports.default = func;
   window.$RefreshReg$ = prevRefreshReg;
   window.$RefreshSig$ = prevRefreshSig;
 }
-},{"react":"1UBbG","../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"dzy2P"}],"6HokT":[function(require,module,exports) {
+},{"react":"1UBbG","../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"dzy2P"}],"fp0Wm":[function(require,module,exports) {
 var helpers = require("../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
 var prevRefreshReg = window.$RefreshReg$;
 var prevRefreshSig = window.$RefreshSig$;
@@ -21886,7 +21886,7 @@ var util_1 = require("../util");
 var useScrollSync_1 = __importDefault(require("./useScrollSync"));
 var useActions_1 = __importDefault(require("./useActions"));
 var rowRendererHelper_1 = __importDefault(require("./rowRendererHelper"));
-var useTables = function(tableCount, _a) {
+var useGrids = function(tableCount, _a) {
     var _b = _a.limit, limit = _b === void 0 ? 20 : _b, _c = _a.buffer, buffer = _c === void 0 ? 20 : _c, rowHeight = _a.rowHeight, dynamicHeight = _a.dynamicHeight, _d = _a.loadMoreOffset, loadMoreOffset = _d === void 0 ? Infinity : _d, loadMore = _a.loadMore, data = _a.data, _e = _a.virtualized, virtualized = _e === void 0 ? true : _e;
     var heightProps = useHeight_1.default(tableCount);
     var _f = useVerticalScroll_1.default({
@@ -21949,7 +21949,7 @@ var useTables = function(tableCount, _a) {
         actions: actions
     };
 };
-exports.default = useTables;
+exports.default = useGrids;
 
   helpers.postlude(module);
 } finally {

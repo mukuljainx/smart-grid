@@ -18,7 +18,7 @@ interface IProps {
   virtualized?: boolean;
 }
 
-const useTables = (
+const useGrids = (
   tableCount: number,
   {
     limit = 20,
@@ -96,4 +96,4 @@ const useTables = (
   };
 };
 
-export default useTables;
+export default useGrids;

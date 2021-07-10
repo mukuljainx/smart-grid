@@ -1,5 +1,5 @@
 import * as React from 'react';
-import useTables from '../../grid/hooks/useTables';
+import { useGrids } from '../../grid';
 import { sampleSize, random } from 'lodash';
 import './pinned.css';
 
@@ -65,7 +65,7 @@ const Table = ({ rowHeight, buffer, limit }: IProps) => {
     headerRef,
     tableRef,
     actions,
-  } = useTables(2, {
+  } = useGrids(2, {
     data: loading.current ? data.concat([null, null]) : data,
     rowHeight: rowHeight || 39,
     buffer,

@@ -15,7 +15,7 @@ export interface IGridProps {
   virtualized?: boolean;
 }
 
-const useTable = ({
+const useGrid = ({
   limit = 20,
   buffer = 20,
   rowHeight,
@@ -70,4 +70,4 @@ const useTable = ({
   return { onScroll, tableRenderer, tableHeight };
 };
 
-export default useTable;
+export default useGrid;

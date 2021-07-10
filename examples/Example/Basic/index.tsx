@@ -1,6 +1,6 @@
 import * as React from 'react';
-// import { useTable } from '@crafts/smart-grid';
-import { useTable } from '../../grid';
+// import { useGrid } from '@crafts/smart-grid';
+import { useGrid } from '../../grid';
 import users from '../users';
 import './basic.css';
 
@@ -43,7 +43,7 @@ const Table = ({ rowHeight, buffer, limit, virtualized = true }: IProps) => {
     [state.loading]
   );
 
-  const { onScroll, tableRenderer, tableHeight } = useTable({
+  const { onScroll, tableRenderer, tableHeight } = useGrid({
     data: state.loading ? state.data.concat([null, null]) : state.data,
     rowHeight: rowHeight || 39,
     buffer,
