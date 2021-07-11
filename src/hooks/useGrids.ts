@@ -41,7 +41,8 @@ const useGrids = (
     totalCount: data.length,
     virtualized,
   });
-  const { horizontalSync, headerRef, bodyRef } = useScrollSync(tableCount);
+  const { horizontalSync, headerRef, bodyRef, GridHeaders, GridBodies } =
+    useScrollSync(tableCount);
   const tableRef = React.useRef();
   const actions = useActions({
     positionCache: heightProps.positionCache,
@@ -81,7 +82,6 @@ const useGrids = (
         }),
     [buffer, limit, data, visible, rowHeight, dynamicHeight]
   );
-
   const rowRenderers = get2DArray(tableCount).map((_, i) => rowRenderer(i));
 
   return {
@@ -93,6 +93,8 @@ const useGrids = (
     bodyRef,
     tableRef,
     actions,
+    GridHeaders,
+    GridBodies,
   };
 };
 

@@ -28,7 +28,9 @@
     "css:prefix": "postcss dist/cjs/**/*.css dist/esm/**/*.css --use autoprefixer --replace",
     "css:end": "replace-in-file .scss .css 'dist/**/*'",
     "build:cjs": "tsc -m commonjs --outDir dist/cjs -p tsconfig.json",
-    "build:esnext": "tsc -m esnext --outDir dist/esm -p tsconfig.json"
+    "build:esnext": "tsc -m esnext --outDir dist/esm -p tsconfig.json",
+    "build:css": "copyfiles src/**/*.css  dist/",
+    "dev:css": "copyfiles src/**/*.css  examples/grid/ -u=1"
   },
   "author": {
     "name": "Mukul Jain",
@@ -40,6 +42,7 @@
     "@types/react": "^16.9.17",
     "@types/react-dom": "^16.9.4",
     "autoprefixer": "^9.7.4",
+    "copyfiles": "^2.4.1",
     "css-loader": "^3.4.2",
     "node-sass": "^4.13.1",
     "postcss-cli": "^7.1.0",
@@ -52,6 +55,5 @@
   "peerDependencies": {
     "react": "^16.8.0",
     "react-dom": "^16.8.0"
-  },
-  "dependencies": {}
+  }
 }

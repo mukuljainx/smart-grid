@@ -20,6 +20,16 @@ body,
   padding: 16px;
 }
 
+.smart-grid-hide-scroll-bar::-webkit-scrollbar {
+  height: 0px; /* Remove scrollbar space */
+  background: transparent; /* Optional: just make scrollbar invisible */
+}
+
+.smart-grid-hide-scroll-bar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
 table {
   text-align: left;
 }
@@ -65,6 +75,10 @@ tbody tr {
   border: 1px solid;
 }
 
+.table-header-wrapper {
+  display: flex;
+}
+
 .table-header {
   display: flex;
   border-bottom: 1px solid;
@@ -76,7 +90,12 @@ tbody tr {
   padding: 8px 4px;
 }
 
+.table-body-container {
+  display: flex;
+}
+
 .table-body-wrapper {
+  flex-shrink: 0;
   overflow-y: auto;
 }
 
@@ -95,8 +114,8 @@ tbody tr {
   padding: 8px 4px;
 }
 
-.table-row-cell:not(:last-child),
-.table-header-cell:not(:last-child) {
+.table-row-cell,
+.table-header-cell {
   border-right: 1px solid;
 }
 

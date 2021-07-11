@@ -49,7 +49,7 @@ const useVerticalScroll = ({
         return;
       }
 
-      const table = event.target as HTMLElement;
+      const table = event.target as HTMLDivElement;
       const scrollTop = table.scrollTop;
       const tableHeight = table.clientHeight;
       const sp = getTopRowIndex(scrollTop);

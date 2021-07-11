@@ -12,7 +12,8 @@
     "jsx": "react",
     "allowJs": true,
     "moduleResolution": "node",
-    "declaration": true
+    "declaration": true,
+    "lib": ["ES6", "DOM"]
   },
   "include": ["src"]
 }

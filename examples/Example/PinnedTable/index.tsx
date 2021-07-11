@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useGrids } from '../../grid';
-import { sampleSize, random } from 'lodash';
+import { sampleSize, random } from 'lodash-es';
+
 import './pinned.css';
 
 const randomString = [
@@ -60,12 +61,11 @@ const Table = ({ rowHeight, buffer, limit }: IProps) => {
     onScroll,
     rowRenderers,
     tableHeight,
-    horizontalSync,
-    bodyRef,
-    headerRef,
     tableRef,
     actions,
-  } = useGrids(2, {
+    GridHeaders,
+    GridBodies,
+  } = useGrids(3, {
     data: loading.current ? data.concat([null, null]) : data,
     rowHeight: rowHeight || 39,
     buffer,
@@ -81,38 +81,50 @@ const Table = ({ rowHeight, buffer, limit }: IProps) => {
   return (
     <div className="App">
       <div
-        className="table-header"
+        className="table-header-wrapper"
         style={{
-          display: 'flex',
           border: '1px solid red',
           overflow: 'hidden',
         }}
       >
-        {[0, 1].map((i) => (
-          <div
-            className="table-header"
-            onScroll={horizontalSync[i]}
-            ref={headerRef[i] as any}
-            style={{ width: i === 0 ? 100 : 300, overflowX: 'auto' }}
-          >
-            {i === 0 && <div className="table-header-cell">First Name</div>}
-            {i === 1 && (
-              <>
-                <div className="table-header-cell">Last Name</div>
-                <div className="table-header-cell">Age</div>
-                <div className="table-header-cell">Last Name</div>
-                <div className="table-header-cell">Age</div>
-                <div className="table-header-cell">Last Name</div>
-                <div className="table-header-cell">Age</div>
-              </>
-            )}
-          </div>
-        ))}
+        {[0, 1, 2].map((i) => {
+          const GridHeader = GridHeaders[i];
+          return (
+            <GridHeader
+              key={i}
+              className="table-header"
+              style={{
+                width: i !== 1 ? 100 : 'auto',
+                overflowX: 'auto',
+                flexShrink: i !== 1 ? 0 : undefined,
+              }}
+            >
+              {i !== 1 && <div className="table-header-cell">First Name</div>}
+              {i === 1 && (
+                <>
+                  <div className="table-header-cell">Last Name</div>
+                  <div className="table-header-cell">Age</div>
+                  <div className="table-header-cell">Last Name</div>
+                  <div className="table-header-cell">Age</div>
+                  <div className="table-header-cell">Last Name</div>
+                  <div className="table-header-cell">Age</div>
+                  <div className="table-header-cell">Last Name</div>
+                  <div className="table-header-cell">Age</div>
+                  <div className="table-header-cell">Last Name</div>
+                  <div className="table-header-cell">Age</div>
+                  <div className="table-header-cell">Last Name</div>
+                  <div className="table-header-cell">Age</div>
+                </>
+              )}
+            </GridHeader>
+          );
+        })}
       </div>
 
       <div
         onScroll={onScroll}
         ref={tableRef}
+        className="table-body-container"
         style={{
           display: 'flex',
           height: 480,
@@ -121,69 +133,85 @@ const Table = ({ rowHeight, buffer, limit }: IProps) => {
           border: '1px solid red',
         }}
       >
-        {rowRenderers.map((rowRenderer, i) => (
-          <div
-            style={{
-              position: 'relative',
-              flexShrink: 0,
-              overflowX: 'auto',
-              overflowY: 'hidden',
-              height: tableHeight + (loading.current ? 2 * 39 : 0),
-              maxWidth: 300,
-            }}
-            ref={bodyRef[i] as any}
-            onScroll={horizontalSync[i]}
-          >
-            <div
-              className="table-body"
-              style={{ position: 'relative', width: i == 0 ? 100 : 600 }}
+        {rowRenderers.map((rowRenderer, i) => {
+          const GridBody = GridBodies[i];
+          return (
+            <GridBody
+              className="table-body-wrapper"
+              key={i}
+              style={{
+                position: 'relative',
+                flexShrink: 0,
+                overflowX: 'auto',
+                overflowY: 'hidden',
+
+                height: tableHeight + (loading.current ? 2 * 39 : 0),
+                flexGrow: i === 1 ? 2 : undefined,
+              }}
             >
-              {rowRenderer((row, style, index, ref) =>
-                row ? (
-                  <div
-                    ref={ref}
-                    className="table-row"
-                    data-testid={`table-row-${index}`}
-                    style={style}
-                    key={index}
-                  >
-                    {i === 0 && (
-                      <div className="table-row-cell">
-                        {index}:{row.firstName}
-                      </div>
-                    )}
-                    {i === 1 && (
-                      <>
+              <div
+                className="table-body"
+                style={{ position: 'relative', width: i !== 1 ? 100 : 'auto' }}
+              >
+                {rowRenderer((row, style, index, ref) =>
+                  row ? (
+                    <div
+                      ref={ref}
+                      className="table-row"
+                      data-testid={`table-row-${index}`}
+                      style={style}
+                      key={index}
+                    >
+                      {(i === 0 || i === 2) && (
                         <div className="table-row-cell">
-                          {index}: {row.lastName}
+                          {index}:{row.firstName}
                         </div>
-                        <div className="table-row-cell">{row.age}</div>
-                        <div className="table-row-cell">
-                          {index}: {row.lastName}
-                        </div>
-                        <div className="table-row-cell">{row.age}</div>
-                        <div className="table-row-cell">
-                          {index}: {row.lastName}
-                        </div>
-                        <div className="table-row-cell">{row.age}</div>
-                      </>
-                    )}
-                  </div>
-                ) : (
-                  <div
-                    ref={ref}
-                    className="table-row"
-                    data-testid={`table-row-${index}`}
-                    style={style}
-                    key={index}
-                  >
-                    <div>Loading</div>
-                  </div>
-                )
-              )}
-            </div>
-          </div>
-        ))}
+                      )}
+                      {i === 1 && (
+                        <>
+                          <div className="table-row-cell">
+                            {index}: {row.lastName}
+                          </div>
+                          <div className="table-row-cell">{row.age}</div>
+                          <div className="table-row-cell">
+                            {index}: {row.lastName}
+                          </div>
+                          <div className="table-row-cell">{row.age}</div>
+                          <div className="table-row-cell">
+                            {index}: {row.lastName}
+                          </div>
+                          <div className="table-row-cell">{row.age}</div>
+                          <div className="table-row-cell">
+                            {index}: {row.lastName}
+                          </div>
+                          <div className="table-row-cell">{row.age}</div>
+                          <div className="table-row-cell">
+                            {index}: {row.lastName}
+                          </div>
+                          <div className="table-row-cell">{row.age}</div>
+                          <div className="table-row-cell">
+                            {index}: {row.lastName}
+                          </div>
+                          <div className="table-row-cell">{row.age}</div>
+                        </>
+                      )}
+                    </div>
+                  ) : (
+                    <div
+                      ref={ref}
+                      className="table-row"
+                      data-testid={`table-row-${index}`}
+                      style={style}
+                      key={index}
+                    >
+                      <div>Loading</div>
+                    </div>
+                  )
+                )}
+              </div>
+            </GridBody>
+          );
+        })}
       </div>
     </div>
   );

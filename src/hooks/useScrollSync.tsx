@@ -1,13 +1,15 @@
 import * as React from 'react';
+import HiddenScrollWrapper, { HeaderProps } from '../atoms/HiddenScrollWrapper';
 
 import { get2DArray } from '../util';
 
 const useScrollSync = (tableCount: number) => {
+  const tableArray = get2DArray(tableCount);
   const headerRef = React.useRef<React.RefObject<HTMLElement>[]>(
-    get2DArray(tableCount).map((_) => React.createRef())
+    tableArray.map((_) => React.createRef())
   );
   const bodyRef = React.useRef<React.RefObject<HTMLElement>[]>(
-    get2DArray(tableCount).map((_) => React.createRef())
+    tableArray.map((_) => React.createRef())
   );
 
   const onScroll = React.useCallback(
@@ -26,12 +28,34 @@ const useScrollSync = (tableCount: number) => {
     []
   );
 
-  const horizontalSync = get2DArray(tableCount).map((_, i) => onScroll(i));
+  const horizontalSync = tableArray.map((_, i) => onScroll(i));
+  const GridHeaders: React.FC<HeaderProps>[] = horizontalSync.map(
+    (handleScroll, i) => (props) =>
+      (
+        <HiddenScrollWrapper
+          {...props}
+          ref={headerRef.current[i] as any}
+          onScroll={handleScroll}
+        />
+      )
+  );
+  const GridBodies: React.FC<HeaderProps>[] = horizontalSync.map(
+    (handleScroll, i) => (props) =>
+      (
+        <HiddenScrollWrapper
+          {...props}
+          ref={bodyRef.current[i] as any}
+          onScroll={handleScroll}
+        />
+      )
+  );
 
   return {
-    horizontalSync,
     headerRef: headerRef.current,
     bodyRef: bodyRef.current,
+    horizontalSync,
+    GridHeaders,
+    GridBodies,
   };
 };
 
