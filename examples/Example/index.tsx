@@ -8,10 +8,10 @@ import PinnedTable from './PinnedTable';
 export default function App() {
   return (
     <div className="App">
-      <PinnedTable />
+      {/* <PinnedTable /> */}
       {/* <Basic /> */}
       {/* <BasicWithoutVirtualization /> */}
-      {/* <DynamicHeight /> */}
+      <DynamicHeight />
     </div>
   );
 }

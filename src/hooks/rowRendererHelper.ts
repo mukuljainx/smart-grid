@@ -32,7 +32,6 @@ const func = ({
   lastRowPosition,
   rowFunc,
 }: IProps) => {
-  console.log('HELLO', tableIndex);
   const start = virtualized ? Math.max(visible - buffer, 0) : 0;
   const end = virtualized
     ? Math.min(visible + limit + buffer, data.length)
@@ -71,6 +70,10 @@ const func = ({
       }
     } else {
       currentRowPosition = i * rowHeight;
+    }
+
+    if (!data[i]) {
+      height = rowHeight;
     }
 
     rowsUI.push(

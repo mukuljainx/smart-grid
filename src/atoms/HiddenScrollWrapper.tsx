@@ -4,7 +4,6 @@ export type HeaderProps = JSX.IntrinsicElements['div'];
 
 const HiddenScrollWrapper: React.FC<HeaderProps> = React.forwardRef(
   (props, ref) => {
-    console.log('RENDER: HEADER');
     return (
       <div
         {...props}

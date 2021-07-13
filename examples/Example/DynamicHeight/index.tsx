@@ -78,8 +78,6 @@ const DynamicHeight = ({
     dynamicHeight: true,
   });
 
-  console.log(tableHeight);
-
   return (
     <div className="table-wrapper">
       <div className="table" role="table">

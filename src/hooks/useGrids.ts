@@ -41,8 +41,14 @@ const useGrids = (
     totalCount: data.length,
     virtualized,
   });
-  const { horizontalSync, headerRef, bodyRef, GridHeaders, GridBodies } =
-    useScrollSync(tableCount);
+  const {
+    horizontalSync,
+    headerRef,
+    bodyRef,
+    GridHeaders,
+    GridBodies,
+    ScrollBars,
+  } = useScrollSync(tableCount);
   const tableRef = React.useRef();
   const actions = useActions({
     positionCache: heightProps.positionCache,
@@ -95,6 +101,7 @@ const useGrids = (
     actions,
     GridHeaders,
     GridBodies,
+    ScrollBars,
   };
 };
 

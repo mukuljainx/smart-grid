@@ -30,27 +30,6 @@ body,
   scrollbar-width: none;
 }
 
-table {
-  text-align: left;
-}
-th,
-td {
-  padding: 8px 12px;
-  text-align: left;
-  border-bottom: 1px solid black;
-}
-
-tbody {
-  display: block;
-}
-
-thead,
-tbody tr {
-  display: table;
-  width: 100%;
-  table-layout: fixed; /* even columns width , fix width of table too*/
-}
-
 .table-wrapper {
   overflow-x: auto;
   width: 100%;
@@ -75,10 +54,6 @@ tbody tr {
   border: 1px solid;
 }
 
-.table-header-wrapper {
-  display: flex;
-}
-
 .table-header {
   display: flex;
   border-bottom: 1px solid;
@@ -90,12 +65,7 @@ tbody tr {
   padding: 8px 4px;
 }
 
-.table-body-container {
-  display: flex;
-}
-
 .table-body-wrapper {
-  flex-shrink: 0;
   overflow-y: auto;
 }
 
@@ -114,8 +84,8 @@ tbody tr {
   padding: 8px 4px;
 }
 
-.table-row-cell,
-.table-header-cell {
+.table-row-cell:not(:last-child),
+.table-header-cell:not(:last-child) {
   border-right: 1px solid;
 }
 
