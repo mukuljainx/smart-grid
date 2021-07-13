@@ -11,8 +11,8 @@ const useHeight = (count = 1) => {
   const rowRefs = useRef<React.RefObject<HTMLElement>[][]>(get2DArray(count));
 
   const clearAfter = React.useCallback((index: number) => {
-    heightCache.current.length = index;
-    positionCache.current.length = index;
+    heightCache.current.length = index + 1;
+    positionCache.current.length = index + 1;
   }, []);
 
   React.useEffect(() => {
@@ -51,6 +51,7 @@ const useHeight = (count = 1) => {
     heightCache,
     clearAfter,
     tableHeight,
+    reRender: () => setRenderCount((r) => r + 1),
   };
 };
 

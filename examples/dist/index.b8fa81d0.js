@@ -21208,9 +21208,11 @@ const noteArray = [
     'Code',
     'Bye', 
 ];
+const getRandomNote = ()=>_lodashEs.sampleSize(noteArray, _lodashEs.random(1, 5)).join(' ')
+;
 const generateData = (offset = 0)=>_usersDefault.default.slice(offset, offset + 100).map((row)=>({
             ...row,
-            note: _lodashEs.sampleSize(noteArray, _lodashEs.random(1, 5)).join(' ')
+            note: getRandomNote()
         })
     )
 ;
@@ -21248,7 +21250,7 @@ const DynamicHeight = ({ rowHeight , buffer , limit , virtualized =true  })=>{
     }, [
         state.loading
     ]);
-    const { onScroll , rowRenderer , tableHeight  } = _grid.useGrid({
+    const { onScroll , rowRenderer , tableHeight , tableRef , actions  } = _grid.useGrid({
         data: state.loading ? state.data.concat([
             null,
             null
@@ -21260,11 +21262,24 @@ const DynamicHeight = ({ rowHeight , buffer , limit , virtualized =true  })=>{
         virtualized,
         dynamicHeight: true
     });
+    const randomizeNote = _react.useCallback((event)=>{
+        const id = parseInt(event.target.getAttribute('data-button-id'), 10);
+        setState((s)=>({
+                loading: false,
+                data: s.data.map((row, i)=>i === id ? {
+                        ...row,
+                        note: getRandomNote()
+                    } : row
+                )
+            })
+        );
+        actions.clear(id);
+    }, []);
     return(/*#__PURE__*/ _react.createElement("div", {
         className: "table-wrapper",
         __source: {
             fileName: "/Users/i0424/react/smart-grid/examples/example/DynamicHeight/index.tsx",
-            lineNumber: 82
+            lineNumber: 102
         },
         __self: undefined
     }, /*#__PURE__*/ _react.createElement("div", {
@@ -21272,7 +21287,7 @@ const DynamicHeight = ({ rowHeight , buffer , limit , virtualized =true  })=>{
         role: "table",
         __source: {
             fileName: "/Users/i0424/react/smart-grid/examples/example/DynamicHeight/index.tsx",
-            lineNumber: 83
+            lineNumber: 103
         },
         __self: undefined
     }, /*#__PURE__*/ _react.createElement("div", {
@@ -21280,7 +21295,7 @@ const DynamicHeight = ({ rowHeight , buffer , limit , virtualized =true  })=>{
         role: "row",
         __source: {
             fileName: "/Users/i0424/react/smart-grid/examples/example/DynamicHeight/index.tsx",
-            lineNumber: 84
+            lineNumber: 104
         },
         __self: undefined
     }, /*#__PURE__*/ _react.createElement("div", {
@@ -21288,7 +21303,7 @@ const DynamicHeight = ({ rowHeight , buffer , limit , virtualized =true  })=>{
         role: "cell",
         __source: {
             fileName: "/Users/i0424/react/smart-grid/examples/example/DynamicHeight/index.tsx",
-            lineNumber: 85
+            lineNumber: 105
         },
         __self: undefined
     }, "First Name"), /*#__PURE__*/ _react.createElement("div", {
@@ -21296,7 +21311,7 @@ const DynamicHeight = ({ rowHeight , buffer , limit , virtualized =true  })=>{
         role: "cell",
         __source: {
             fileName: "/Users/i0424/react/smart-grid/examples/example/DynamicHeight/index.tsx",
-            lineNumber: 88
+            lineNumber: 108
         },
         __self: undefined
     }, "Last Name"), /*#__PURE__*/ _react.createElement("div", {
@@ -21304,7 +21319,7 @@ const DynamicHeight = ({ rowHeight , buffer , limit , virtualized =true  })=>{
         role: "cell",
         __source: {
             fileName: "/Users/i0424/react/smart-grid/examples/example/DynamicHeight/index.tsx",
-            lineNumber: 91
+            lineNumber: 111
         },
         __self: undefined
     }, "Age"), /*#__PURE__*/ _react.createElement("div", {
@@ -21312,7 +21327,7 @@ const DynamicHeight = ({ rowHeight , buffer , limit , virtualized =true  })=>{
         role: "cell",
         __source: {
             fileName: "/Users/i0424/react/smart-grid/examples/example/DynamicHeight/index.tsx",
-            lineNumber: 94
+            lineNumber: 114
         },
         __self: undefined
     }, "Email"), /*#__PURE__*/ _react.createElement("div", {
@@ -21320,15 +21335,24 @@ const DynamicHeight = ({ rowHeight , buffer , limit , virtualized =true  })=>{
         role: "cell",
         __source: {
             fileName: "/Users/i0424/react/smart-grid/examples/example/DynamicHeight/index.tsx",
-            lineNumber: 97
+            lineNumber: 117
         },
         __self: undefined
-    }, "Note")), /*#__PURE__*/ _react.createElement("div", {
+    }, "Note"), /*#__PURE__*/ _react.createElement("div", {
+        className: "table-header-cell",
+        role: "cell",
+        __source: {
+            fileName: "/Users/i0424/react/smart-grid/examples/example/DynamicHeight/index.tsx",
+            lineNumber: 120
+        },
+        __self: undefined
+    }, "Action")), /*#__PURE__*/ _react.createElement("div", {
         className: "table-body-wrapper",
+        ref: tableRef,
         onScroll: onScroll,
         __source: {
             fileName: "/Users/i0424/react/smart-grid/examples/example/DynamicHeight/index.tsx",
-            lineNumber: 102
+            lineNumber: 125
         },
         __self: undefined
     }, /*#__PURE__*/ _react.createElement("div", {
@@ -21338,7 +21362,7 @@ const DynamicHeight = ({ rowHeight , buffer , limit , virtualized =true  })=>{
         },
         __source: {
             fileName: "/Users/i0424/react/smart-grid/examples/example/DynamicHeight/index.tsx",
-            lineNumber: 103
+            lineNumber: 126
         },
         __self: undefined
     }, rowRenderer((row, style, index, ref)=>row ? /*#__PURE__*/ _react.createElement("div", {
@@ -21350,7 +21374,7 @@ const DynamicHeight = ({ rowHeight , buffer , limit , virtualized =true  })=>{
             key: index,
             __source: {
                 fileName: "/Users/i0424/react/smart-grid/examples/example/DynamicHeight/index.tsx",
-                lineNumber: 106
+                lineNumber: 129
             },
             __self: undefined
         }, /*#__PURE__*/ _react.createElement("div", {
@@ -21358,7 +21382,7 @@ const DynamicHeight = ({ rowHeight , buffer , limit , virtualized =true  })=>{
             role: "cell",
             __source: {
                 fileName: "/Users/i0424/react/smart-grid/examples/example/DynamicHeight/index.tsx",
-                lineNumber: 114
+                lineNumber: 137
             },
             __self: undefined
         }, row.firstName), /*#__PURE__*/ _react.createElement("div", {
@@ -21366,7 +21390,7 @@ const DynamicHeight = ({ rowHeight , buffer , limit , virtualized =true  })=>{
             role: "cell",
             __source: {
                 fileName: "/Users/i0424/react/smart-grid/examples/example/DynamicHeight/index.tsx",
-                lineNumber: 117
+                lineNumber: 140
             },
             __self: undefined
         }, row.lastName), /*#__PURE__*/ _react.createElement("div", {
@@ -21374,7 +21398,7 @@ const DynamicHeight = ({ rowHeight , buffer , limit , virtualized =true  })=>{
             role: "cell",
             __source: {
                 fileName: "/Users/i0424/react/smart-grid/examples/example/DynamicHeight/index.tsx",
-                lineNumber: 120
+                lineNumber: 143
             },
             __self: undefined
         }, row.age), /*#__PURE__*/ _react.createElement("div", {
@@ -21382,7 +21406,7 @@ const DynamicHeight = ({ rowHeight , buffer , limit , virtualized =true  })=>{
             role: "cell",
             __source: {
                 fileName: "/Users/i0424/react/smart-grid/examples/example/DynamicHeight/index.tsx",
-                lineNumber: 123
+                lineNumber: 146
             },
             __self: undefined
         }, row.email), /*#__PURE__*/ _react.createElement("div", {
@@ -21390,10 +21414,26 @@ const DynamicHeight = ({ rowHeight , buffer , limit , virtualized =true  })=>{
             role: "cell",
             __source: {
                 fileName: "/Users/i0424/react/smart-grid/examples/example/DynamicHeight/index.tsx",
-                lineNumber: 126
+                lineNumber: 149
             },
             __self: undefined
-        }, row.note)) : /*#__PURE__*/ _react.createElement("div", {
+        }, row.note), /*#__PURE__*/ _react.createElement("div", {
+            className: "table-row-cell",
+            role: "cell",
+            __source: {
+                fileName: "/Users/i0424/react/smart-grid/examples/example/DynamicHeight/index.tsx",
+                lineNumber: 152
+            },
+            __self: undefined
+        }, /*#__PURE__*/ _react.createElement("button", {
+            "data-button-id": index,
+            onClick: randomizeNote,
+            __source: {
+                fileName: "/Users/i0424/react/smart-grid/examples/example/DynamicHeight/index.tsx",
+                lineNumber: 153
+            },
+            __self: undefined
+        }, "Random"))) : /*#__PURE__*/ _react.createElement("div", {
             ref: ref,
             className: "table-row loading",
             "data-testid": `table-row-${index}`,
@@ -21401,7 +21441,7 @@ const DynamicHeight = ({ rowHeight , buffer , limit , virtualized =true  })=>{
             key: index,
             __source: {
                 fileName: "/Users/i0424/react/smart-grid/examples/example/DynamicHeight/index.tsx",
-                lineNumber: 131
+                lineNumber: 159
             },
             __self: undefined
         }, /*#__PURE__*/ _react.createElement("div", {
@@ -21409,7 +21449,7 @@ const DynamicHeight = ({ rowHeight , buffer , limit , virtualized =true  })=>{
             role: "cell",
             __source: {
                 fileName: "/Users/i0424/react/smart-grid/examples/example/DynamicHeight/index.tsx",
-                lineNumber: 138
+                lineNumber: 166
             },
             __self: undefined
         }, "Loading"))
@@ -21487,9 +21527,11 @@ Object.defineProperty(exports, "__esModule", {
 var React = __importStar(require("react"));
 var useVerticalScroll_1 = __importDefault(require("./useVerticalScroll"));
 var useHeight_1 = __importDefault(require("./useHeight"));
+var useActions_1 = __importDefault(require("./useActions"));
 var rowRendererHelper_1 = __importDefault(require("./rowRendererHelper"));
 var useGrid = function(_a) {
     var _b = _a.limit, limit = _b === void 0 ? 20 : _b, _c = _a.buffer, buffer = _c === void 0 ? 20 : _c, rowHeight = _a.rowHeight, data = _a.data, dynamicHeight = _a.dynamicHeight, _d = _a.loadMoreOffset, loadMoreOffset = _d === void 0 ? Infinity : _d, loadMore = _a.loadMore, _e = _a.virtualized, virtualized = _e === void 0 ? true : _e;
+    var tableRef = React.useRef();
     var heightProps = useHeight_1.default();
     var _f = useVerticalScroll_1.default({
         loadMore: loadMore,
@@ -21500,6 +21542,14 @@ var useGrid = function(_a) {
         totalCount: data.length,
         virtualized: virtualized
     }), onScroll = _f.onScroll, visible = _f.visible;
+    var actions = useActions_1.default({
+        positionCache: heightProps.positionCache,
+        tableRef: tableRef,
+        heightCache: heightProps.heightCache,
+        lastRowPosition: heightProps.lastRowPosition,
+        clearAfter: heightProps.clearAfter,
+        reRender: heightProps.reRender
+    });
     var tableHeight = heightProps.tableHeight.current || data.length * rowHeight;
     var tableIndex = 0;
     var rowRenderer = React.useCallback(function(func) {
@@ -21530,7 +21580,9 @@ var useGrid = function(_a) {
     return {
         onScroll: onScroll,
         rowRenderer: rowRenderer,
-        tableHeight: tableHeight
+        tableHeight: tableHeight,
+        tableRef: tableRef,
+        actions: actions
     };
 };
 exports.default = useGrid;
@@ -21540,7 +21592,7 @@ exports.default = useGrid;
   window.$RefreshReg$ = prevRefreshReg;
   window.$RefreshSig$ = prevRefreshSig;
 }
-},{"react":"1UBbG","./useVerticalScroll":"a3Asj","./useHeight":"gtk5S","./rowRendererHelper":"hkgdw","../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"dzy2P"}],"a3Asj":[function(require,module,exports) {
+},{"react":"1UBbG","./useVerticalScroll":"a3Asj","./useHeight":"gtk5S","./rowRendererHelper":"hkgdw","../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"dzy2P","./useActions":"cnTaE"}],"a3Asj":[function(require,module,exports) {
 var helpers = require("../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
 var prevRefreshReg = window.$RefreshReg$;
 var prevRefreshSig = window.$RefreshSig$;
@@ -21678,8 +21730,8 @@ var useHeight = function(count) {
     var tableHeight = react_1.useRef(0);
     var rowRefs = react_1.useRef(util_1.get2DArray(count));
     var clearAfter = react_1.default.useCallback(function(index) {
-        heightCache.current.length = index;
-        positionCache.current.length = index;
+        heightCache.current.length = index + 1;
+        positionCache.current.length = index + 1;
     }, []);
     react_1.default.useEffect(function() {
         if (heightToBeCalculated.current.length) {
@@ -21709,7 +21761,12 @@ var useHeight = function(count) {
         heightToBeCalculated: heightToBeCalculated,
         heightCache: heightCache,
         clearAfter: clearAfter,
-        tableHeight: tableHeight
+        tableHeight: tableHeight,
+        reRender: function() {
+            return setRenderCount(function(r) {
+                return r + 1;
+            });
+        }
     };
 };
 exports.default = useHeight;
@@ -21816,6 +21873,75 @@ exports.default = func;
   window.$RefreshReg$ = prevRefreshReg;
   window.$RefreshSig$ = prevRefreshSig;
 }
+},{"react":"1UBbG","../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"dzy2P"}],"cnTaE":[function(require,module,exports) {
+var helpers = require("../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
+var prevRefreshReg = window.$RefreshReg$;
+var prevRefreshSig = window.$RefreshSig$;
+helpers.prelude(module);
+
+try {
+"use strict";
+var __createBinding = this && this.__createBinding || (Object.create ? function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, {
+        enumerable: true,
+        get: function() {
+            return m[k];
+        }
+    });
+} : function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+});
+var __setModuleDefault = this && this.__setModuleDefault || (Object.create ? function(o, v) {
+    Object.defineProperty(o, "default", {
+        enumerable: true,
+        value: v
+    });
+} : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = this && this.__importStar || function(mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {
+    };
+    if (mod != null) for(var k in mod)if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+var React = __importStar(require("react"));
+var useActions = function(_a) {
+    var positionCache = _a.positionCache, tableRef = _a.tableRef, clearAfter = _a.clearAfter, reRender = _a.reRender;
+    var scrollToRow = React.useCallback(function(row) {
+        tableRef.current.scrollTop = positionCache.current[row];
+    }, []);
+    var getRowPosition = React.useCallback(function(row) {
+        return positionCache.current[row];
+    }, []);
+    var clear = function(index) {
+        var table = tableRef.current;
+        var rowPosition = getRowPosition(index);
+        clearAfter(index - 1);
+        debugger;
+        if (rowPosition >= table.scrollTop && rowPosition <= table.scrollTop + table.clientHeight) return reRender();
+        scrollToRow(index - 1);
+    };
+    return {
+        scrollToRow: scrollToRow,
+        clear: clear,
+        getRowPosition: getRowPosition
+    };
+};
+exports.default = useActions;
+
+  helpers.postlude(module);
+} finally {
+  window.$RefreshReg$ = prevRefreshReg;
+  window.$RefreshSig$ = prevRefreshSig;
+}
 },{"react":"1UBbG","../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"dzy2P"}],"fp0Wm":[function(require,module,exports) {
 var helpers = require("../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
 var prevRefreshReg = window.$RefreshReg$;
@@ -21886,7 +22012,8 @@ var useGrids = function(tableCount, _a) {
         tableRef: tableRef,
         heightCache: heightProps.heightCache,
         lastRowPosition: heightProps.lastRowPosition,
-        clearAfter: heightProps.clearAfter
+        clearAfter: heightProps.clearAfter,
+        reRender: heightProps.reRender
     });
     var tableHeight = heightProps.tableHeight.current || data.length * rowHeight;
     var rowRenderer = react_1.useCallback(function(tableIndex) {
@@ -22208,71 +22335,6 @@ var ScrollBar = React.forwardRef(function(_a, ref) {
     }));
 });
 exports.default = ScrollBar;
-
-  helpers.postlude(module);
-} finally {
-  window.$RefreshReg$ = prevRefreshReg;
-  window.$RefreshSig$ = prevRefreshSig;
-}
-},{"react":"1UBbG","../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"dzy2P"}],"cnTaE":[function(require,module,exports) {
-var helpers = require("../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
-var prevRefreshReg = window.$RefreshReg$;
-var prevRefreshSig = window.$RefreshSig$;
-helpers.prelude(module);
-
-try {
-"use strict";
-var __createBinding = this && this.__createBinding || (Object.create ? function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, {
-        enumerable: true,
-        get: function() {
-            return m[k];
-        }
-    });
-} : function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-});
-var __setModuleDefault = this && this.__setModuleDefault || (Object.create ? function(o, v) {
-    Object.defineProperty(o, "default", {
-        enumerable: true,
-        value: v
-    });
-} : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = this && this.__importStar || function(mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {
-    };
-    if (mod != null) for(var k in mod)if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-var React = __importStar(require("react"));
-var useActions = function(_a) {
-    var positionCache = _a.positionCache, tableRef = _a.tableRef, clearAfter = _a.clearAfter;
-    var scrollToRow = React.useCallback(function(row) {
-        tableRef.current.scrollTop = positionCache.current[row];
-    }, []);
-    var clear = function(index) {
-        clearAfter(index);
-        scrollToRow(index - 1);
-    };
-    var getRowPosition = React.useCallback(function(row) {
-        return positionCache.current[row];
-    }, []);
-    return {
-        scrollToRow: scrollToRow,
-        clear: clear,
-        getRowPosition: getRowPosition
-    };
-};
-exports.default = useActions;
 
   helpers.postlude(module);
 } finally {

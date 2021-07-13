@@ -20,10 +20,13 @@ const noteArray = [
   'Code',
   'Bye',
 ];
+
+const getRandomNote = () => sampleSize(noteArray, random(1, 5)).join(' ');
+
 const generateData = (offset = 0) =>
   users.slice(offset, offset + 100).map((row) => ({
     ...row,
-    note: sampleSize(noteArray, random(1, 5)).join(' '),
+    note: getRandomNote(),
   }));
 
 const api = (offset: number) =>
@@ -68,7 +71,7 @@ const DynamicHeight = ({
     [state.loading]
   );
 
-  const { onScroll, rowRenderer, tableHeight } = useGrid({
+  const { onScroll, rowRenderer, tableHeight, tableRef, actions } = useGrid({
     data: state.loading ? state.data.concat([null, null]) : state.data,
     rowHeight: rowHeight || 39,
     buffer,
@@ -77,6 +80,23 @@ const DynamicHeight = ({
     virtualized,
     dynamicHeight: true,
   });
+
+  const randomizeNote = React.useCallback(
+    (event: React.MouseEvent<HTMLButtonElement>) => {
+      const id = parseInt(
+        (event.target as HTMLElement).getAttribute('data-button-id'),
+        10
+      );
+      setState((s) => ({
+        loading: false,
+        data: s.data.map((row, i) =>
+          i === id ? { ...row, note: getRandomNote() } : row
+        ),
+      }));
+      actions.clear(id);
+    },
+    []
+  );
 
   return (
     <div className="table-wrapper">
@@ -97,9 +117,12 @@ const DynamicHeight = ({
           <div className="table-header-cell" role="cell">
             Note
           </div>
+          <div className="table-header-cell" role="cell">
+            Action
+          </div>
         </div>
 
-        <div className="table-body-wrapper" onScroll={onScroll}>
+        <div className="table-body-wrapper" ref={tableRef} onScroll={onScroll}>
           <div className="table-body" style={{ height: tableHeight }}>
             {rowRenderer((row, style, index, ref) =>
               row ? (
@@ -125,6 +148,11 @@ const DynamicHeight = ({
                   </div>
                   <div className="table-row-cell" role="cell">
                     {row.note}
+                  </div>
+                  <div className="table-row-cell" role="cell">
+                    <button data-button-id={index} onClick={randomizeNote}>
+                      Random
+                    </button>
                   </div>
                 </div>
               ) : (

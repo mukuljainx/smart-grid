@@ -1,6 +1,7 @@
 import * as React from 'react';
 import useVerticalScroll from './useVerticalScroll';
 import useHeight from './useHeight';
+import useActions from './useActions';
 import rowRendererHelper from './rowRendererHelper';
 
 export interface IGridProps {
@@ -25,6 +26,7 @@ const useGrid = ({
   loadMore,
   virtualized = true,
 }: IGridProps) => {
+  const tableRef = React.useRef();
   const heightProps = useHeight();
   const { onScroll, visible } = useVerticalScroll({
     loadMore,
@@ -34,6 +36,14 @@ const useGrid = ({
     dynamicHeight,
     totalCount: data.length,
     virtualized,
+  });
+  const actions = useActions({
+    positionCache: heightProps.positionCache,
+    tableRef,
+    heightCache: heightProps.heightCache,
+    lastRowPosition: heightProps.lastRowPosition,
+    clearAfter: heightProps.clearAfter,
+    reRender: heightProps.reRender,
   });
   let tableHeight: string | number =
     heightProps.tableHeight.current || data.length * rowHeight;
@@ -67,7 +77,7 @@ const useGrid = ({
     [buffer, limit, data, visible, rowHeight, dynamicHeight]
   );
 
-  return { onScroll, rowRenderer, tableHeight };
+  return { onScroll, rowRenderer, tableHeight, tableRef, actions };
 };
 
 export default useGrid;

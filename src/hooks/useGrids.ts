@@ -56,6 +56,7 @@ const useGrids = (
     heightCache: heightProps.heightCache,
     lastRowPosition: heightProps.lastRowPosition,
     clearAfter: heightProps.clearAfter,
+    reRender: heightProps.reRender,
   });
   let tableHeight: string | number =
     heightProps.tableHeight.current || data.length * rowHeight;

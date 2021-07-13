@@ -6,21 +6,36 @@ interface IProps {
   lastRowPosition: React.MutableRefObject<number>;
   tableRef: any;
   clearAfter: (row: number) => void;
+  reRender: () => void;
 }
 
-const useActions = ({ positionCache, tableRef, clearAfter }: IProps) => {
+const useActions = ({
+  positionCache,
+  tableRef,
+  clearAfter,
+  reRender,
+}: IProps) => {
   const scrollToRow = React.useCallback((row: number) => {
     tableRef.current.scrollTop = positionCache.current[row];
   }, []);
 
-  const clear = (index: number) => {
-    clearAfter(index);
-    scrollToRow(index - 1);
-  };
-
   const getRowPosition = React.useCallback((row: number) => {
     return positionCache.current[row];
   }, []);
+
+  const clear = (index: number) => {
+    const table = tableRef.current as HTMLElement;
+    const rowPosition = getRowPosition(index);
+    clearAfter(index - 1);
+    debugger;
+    if (
+      rowPosition >= table.scrollTop &&
+      rowPosition <= table.scrollTop + table.clientHeight
+    ) {
+      return reRender();
+    }
+    scrollToRow(index - 1);
+  };
 
   return { scrollToRow, clear, getRowPosition };
 };
