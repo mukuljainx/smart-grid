@@ -12,7 +12,9 @@
 /coverage
 
 # production
-/dist
+dist
+
+examples/**/*/package-lock.json
 
 # misc
 .DS_Store

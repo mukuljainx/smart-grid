@@ -1,8 +1,14 @@
 import * as React from 'react';
-import Basic from '../Basic';
+import * as ReactDOM from 'react-dom';
+import './index.css';
 
-const BasicWithoutVirtualization = () => {
-  return <Basic virtualized={false} />;
-};
+import BasicWithoutVirtualization from './BasicWithoutVirtualization';
 
-export default BasicWithoutVirtualization;
+const App = () => (
+  <div className="App">
+    <BasicWithoutVirtualization />
+  </div>
+);
+
+const rootElement = document.getElementById('root');
+ReactDOM.render(<App />, rootElement);
