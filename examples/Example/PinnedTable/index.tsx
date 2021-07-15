@@ -75,11 +75,9 @@ const Table = ({ rowHeight, buffer, limit }: IProps) => {
   const loading = React.useRef(false);
   const getData = React.useCallback(
     (sp: number) => {
-      console.log(sp, loading.current);
       if (loading.current) {
         return;
       }
-      console.log('CALL');
       loading.current = true;
       offset.current += 100;
       api(offset.current).then((newD) => {

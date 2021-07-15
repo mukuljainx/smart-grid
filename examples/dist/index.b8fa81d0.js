@@ -21814,7 +21814,6 @@ var useActions = function(_a) {
         var table = tableRef.current;
         var rowPosition = getRowPosition(index);
         clearAfter(index - 1);
-        debugger;
         if (rowPosition >= table.scrollTop && rowPosition <= table.scrollTop + table.clientHeight) return reRender();
         scrollToRow(index - 1);
     };

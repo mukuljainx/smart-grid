@@ -27,7 +27,6 @@ const useActions = ({
     const table = tableRef.current as HTMLElement;
     const rowPosition = getRowPosition(index);
     clearAfter(index - 1);
-    debugger;
     if (
       rowPosition >= table.scrollTop &&
       rowPosition <= table.scrollTop + table.clientHeight
