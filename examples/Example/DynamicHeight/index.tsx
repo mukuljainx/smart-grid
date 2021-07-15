@@ -3,7 +3,7 @@ import * as React from 'react';
 import { useGrid } from '../../grid';
 import users from '../users';
 import './dynamic.css';
-import { sampleSize, random } from 'lodash-es';
+import { sampleSize, random, map } from 'lodash-es';
 
 const noteArray = [
   'Mountain',
@@ -100,6 +100,12 @@ const DynamicHeight = ({
 
   return (
     <div className="table-wrapper">
+      <p>
+        This calculates height for each row using refs and if any cell height
+        changes due any reason like here on click of randomize, you can trigger
+        a re-calculation of height using actions from use Grid. Like
+        actions.clear(rowIndex);
+      </p>
       <div className="table" role="table">
         <div className="table-header" role="row">
           <div className="table-header-cell" role="cell">

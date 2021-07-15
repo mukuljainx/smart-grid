@@ -3,20 +3,26 @@ import useVerticalScroll from './useVerticalScroll';
 import useHeight from './useHeight';
 import useActions from './useActions';
 import rowRendererHelper from './rowRendererHelper';
+import { IGridProps, ArrayElement } from '../index';
 
-export interface IGridProps {
-  limit?: number;
-  buffer?: number;
-  dynamicHeight?: boolean;
-  // minimum height in case of dynamicHeight
-  rowHeight: number;
-  data: any[];
-  loadMore?: (sp: number) => void;
-  loadMoreOffset?: number;
-  virtualized?: boolean;
+interface X {
+  useGridType<T>(params: IGridProps<T>): {
+    onScroll: ReturnType<typeof useVerticalScroll>['onScroll'];
+    rowRenderer: (
+      func: (
+        row: T,
+        style: React.CSSProperties,
+        index: number,
+        ref?: React.RefObject<any>
+      ) => React.ReactNode
+    ) => React.ReactNode;
+    tableHeight: number;
+    tableRef: React.RefObject<any>;
+    actions: ReturnType<typeof useActions>;
+  };
 }
 
-const useGrid = ({
+const useGrid: X['useGridType'] = ({
   limit = 20,
   buffer = 20,
   rowHeight,
@@ -25,7 +31,7 @@ const useGrid = ({
   loadMoreOffset = Infinity,
   loadMore,
   virtualized = true,
-}: IGridProps) => {
+}) => {
   const tableRef = React.useRef();
   const heightProps = useHeight();
   const { onScroll, visible } = useVerticalScroll({
@@ -52,10 +58,10 @@ const useGrid = ({
   const rowRenderer = React.useCallback(
     (
       func: (
-        row: any,
+        row: ArrayElement<typeof data>,
         style: React.CSSProperties,
         index: number,
-        ref?: any
+        ref?: React.RefObject<any>
       ) => React.ReactNode
     ) =>
       rowRendererHelper({

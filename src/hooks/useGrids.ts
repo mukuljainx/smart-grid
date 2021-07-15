@@ -1,24 +1,41 @@
 import React, { createRef, useCallback, useRef, useState } from 'react';
-import useVirtualization from './useVerticalScroll';
+import useVerticalScroll from './useVerticalScroll';
 import useHeight from './useHeight';
 import { get2DArray } from '../util';
 import useScrollSync from './useScrollSync';
 import useActions from './useActions';
 import rowRendererHelper from './rowRendererHelper';
+import { IGridProps, ArrayElement } from '../index';
 
-interface IProps {
-  limit?: number;
-  buffer?: number;
-  dynamicHeight?: boolean;
-  // minimum height in case of dynamicHeight
-  rowHeight: number;
-  loadMore?: (sp: number) => void;
-  loadMoreOffset?: number;
-  data: Array<any>;
-  virtualized?: boolean;
+interface X {
+  useGridType<T>(
+    tableCount: number,
+    params: IGridProps<T>
+  ): {
+    onScroll: ReturnType<typeof useVerticalScroll>['onScroll'];
+    rowRenderers: Array<
+      (
+        func: (
+          row: T,
+          style: React.CSSProperties,
+          index: number,
+          ref?: React.RefObject<any>
+        ) => React.ReactNode
+      ) => React.ReactNode
+    >;
+    tableHeight: number;
+    tableRef: React.RefObject<any>;
+    actions: ReturnType<typeof useActions>;
+    horizontalSync: ReturnType<typeof useScrollSync>['horizontalSync'];
+    headerRef: ReturnType<typeof useScrollSync>['headerRef'];
+    bodyRef: ReturnType<typeof useScrollSync>['bodyRef'];
+    GridHeaders: ReturnType<typeof useScrollSync>['GridHeaders'];
+    GridBodies: ReturnType<typeof useScrollSync>['GridBodies'];
+    ScrollBars: ReturnType<typeof useScrollSync>['ScrollBars'];
+  };
 }
 
-const useGrids = (
+const useGrids: X['useGridType'] = (
   tableCount: number,
   {
     limit = 20,
@@ -29,10 +46,10 @@ const useGrids = (
     loadMore,
     data,
     virtualized = true,
-  }: IProps
+  }
 ) => {
   const heightProps = useHeight(tableCount);
-  const { onScroll, visible } = useVirtualization({
+  const { onScroll, visible } = useVerticalScroll({
     loadMore,
     loadMoreOffset,
     positionCache: heightProps.positionCache.current,
@@ -65,10 +82,10 @@ const useGrids = (
     (tableIndex) =>
       (
         func: (
-          row: any,
+          row: ArrayElement<typeof data>,
           style: React.CSSProperties,
           index: number,
-          ref?: any
+          ref?: React.RefObject<any>
         ) => React.ReactNode
       ) =>
         rowRendererHelper({
@@ -107,3 +124,4 @@ const useGrids = (
 };
 
 export default useGrids;
+//

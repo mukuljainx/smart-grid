@@ -1,9 +1,9 @@
 import * as React from 'react';
-import { IGridProps } from './useGrid';
+import { IGridProps } from '../index';
 
 interface IProps
   extends Pick<
-    IGridProps,
+    IGridProps<any>,
     'virtualized' | 'buffer' | 'rowHeight' | 'limit' | 'data' | 'dynamicHeight'
   > {
   visible: number;

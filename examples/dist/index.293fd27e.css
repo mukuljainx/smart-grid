@@ -30,13 +30,6 @@ body,
   scrollbar-width: none;
 }
 
-.table-wrapper {
-  overflow-x: auto;
-  width: 100%;
-  height: 100%;
-  display: flex;
-}
-
 .ellipsis {
   white-space: nowrap;
   overflow: hidden;
@@ -47,10 +40,25 @@ body,
   width: 100%;
 }
 
+.table-wrapper {
+  overflow-x: auto;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  overflow: hidden;
+}
+
+p {
+  text-align: left;
+}
+
 .table {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  overflow: hidden;
+  flex-grow: 2;
   border: 1px solid;
 }
 

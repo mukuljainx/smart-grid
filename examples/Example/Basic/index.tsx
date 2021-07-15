@@ -43,7 +43,7 @@ const Table = ({ rowHeight, buffer, limit, virtualized = true }: IProps) => {
     [state.loading]
   );
 
-  const { onScroll, rowRenderer, tableHeight } = useGrid({
+  const { onScroll, rowRenderer } = useGrid({
     data: state.loading ? state.data.concat([null, null]) : state.data,
     rowHeight: rowHeight || 39,
     buffer,

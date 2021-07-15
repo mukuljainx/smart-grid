@@ -20558,39 +20558,515 @@ exports.default = App;
   window.$RefreshReg$ = prevRefreshReg;
   window.$RefreshSig$ = prevRefreshSig;
 }
-},{"react":"1UBbG","./index.css":"lDuDM","@parcel/transformer-js/src/esmodule-helpers.js":"obaoz","../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"dzy2P","./DynamicHeight":"aXW3T"}],"lDuDM":[function() {},{}],"obaoz":[function(require,module,exports) {
-exports.interopDefault = function(a) {
-    return a && a.__esModule ? a : {
-        default: a
+},{"react":"1UBbG","./index.css":"lDuDM","./DynamicHeight":"aXW3T","@parcel/transformer-js/src/esmodule-helpers.js":"obaoz","../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"dzy2P"}],"lDuDM":[function() {},{}],"aXW3T":[function(require,module,exports) {
+var helpers = require("../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
+var prevRefreshReg = window.$RefreshReg$;
+var prevRefreshSig = window.$RefreshSig$;
+helpers.prelude(module);
+
+try {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _react = require("react");
+// import { useGrid } from '@crafts/smart-grid';
+var _grid = require("../../grid");
+var _users = require("../users");
+var _usersDefault = parcelHelpers.interopDefault(_users);
+var _dynamicCss = require("./dynamic.css");
+var _lodashEs = require("lodash-es");
+const noteArray = [
+    'Mountain',
+    'Big',
+    'Break',
+    'Bike',
+    'Rocket',
+    'New',
+    'Hello',
+    'Sea',
+    'Can',
+    'Fly',
+    'Bird',
+    'Code',
+    'Bye', 
+];
+const getRandomNote = ()=>_lodashEs.sampleSize(noteArray, _lodashEs.random(1, 5)).join(' ')
+;
+const generateData = (offset = 0)=>_usersDefault.default.slice(offset, offset + 100).map((row)=>({
+            ...row,
+            note: getRandomNote()
+        })
+    )
+;
+const api = (offset)=>new Promise((res)=>{
+        setTimeout(()=>{
+            res(generateData(offset));
+        }, 1200);
+    })
+;
+const DynamicHeight = ({ rowHeight , buffer , limit , virtualized =true  })=>{
+    const [state, setState] = _react.useState({
+        data: generateData(),
+        loading: false
+    });
+    const offset = _react.useRef(0);
+    const getData = _react.useCallback((sp)=>{
+        if (state.loading || offset.current >= 1000) return;
+        setState((s)=>({
+                ...s,
+                loading: true
+            })
+        );
+        offset.current += 100;
+        api(offset.current).then((newD)=>{
+            // setData((d) => [...d, ...newD]);
+            setState((s)=>({
+                    data: [
+                        ...s.data,
+                        ...newD
+                    ],
+                    loading: false
+                })
+            );
+        });
+    }, [
+        state.loading
+    ]);
+    const { onScroll , rowRenderer , tableHeight , tableRef , actions  } = _grid.useGrid({
+        data: state.loading ? state.data.concat([
+            null,
+            null
+        ]) : state.data,
+        rowHeight: rowHeight || 39,
+        buffer,
+        limit,
+        loadMore: getData,
+        virtualized,
+        dynamicHeight: true
+    });
+    const randomizeNote = _react.useCallback((event)=>{
+        const id = parseInt(event.target.getAttribute('data-button-id'), 10);
+        setState((s)=>({
+                loading: false,
+                data: s.data.map((row, i)=>i === id ? {
+                        ...row,
+                        note: getRandomNote()
+                    } : row
+                )
+            })
+        );
+        actions.clear(id);
+    }, []);
+    return(/*#__PURE__*/ _react.createElement("div", {
+        className: "table-wrapper",
+        __source: {
+            fileName: "/Users/i0424/react/smart-grid/examples/example/DynamicHeight/index.tsx",
+            lineNumber: 102
+        },
+        __self: undefined
+    }, /*#__PURE__*/ _react.createElement("p", {
+        __source: {
+            fileName: "/Users/i0424/react/smart-grid/examples/example/DynamicHeight/index.tsx",
+            lineNumber: 103
+        },
+        __self: undefined
+    }, "This calculates height for each row using refs and if any cell height changes due any reason like here on click of randomize, you can trigger a re-calculation of height using actions from use Grid. Like actions.clear(rowIndex);"), /*#__PURE__*/ _react.createElement("div", {
+        className: "table",
+        role: "table",
+        __source: {
+            fileName: "/Users/i0424/react/smart-grid/examples/example/DynamicHeight/index.tsx",
+            lineNumber: 109
+        },
+        __self: undefined
+    }, /*#__PURE__*/ _react.createElement("div", {
+        className: "table-header",
+        role: "row",
+        __source: {
+            fileName: "/Users/i0424/react/smart-grid/examples/example/DynamicHeight/index.tsx",
+            lineNumber: 110
+        },
+        __self: undefined
+    }, /*#__PURE__*/ _react.createElement("div", {
+        className: "table-header-cell",
+        role: "cell",
+        __source: {
+            fileName: "/Users/i0424/react/smart-grid/examples/example/DynamicHeight/index.tsx",
+            lineNumber: 111
+        },
+        __self: undefined
+    }, "First Name"), /*#__PURE__*/ _react.createElement("div", {
+        className: "table-header-cell",
+        role: "cell",
+        __source: {
+            fileName: "/Users/i0424/react/smart-grid/examples/example/DynamicHeight/index.tsx",
+            lineNumber: 114
+        },
+        __self: undefined
+    }, "Last Name"), /*#__PURE__*/ _react.createElement("div", {
+        className: "table-header-cell",
+        role: "cell",
+        __source: {
+            fileName: "/Users/i0424/react/smart-grid/examples/example/DynamicHeight/index.tsx",
+            lineNumber: 117
+        },
+        __self: undefined
+    }, "Age"), /*#__PURE__*/ _react.createElement("div", {
+        className: "table-header-cell",
+        role: "cell",
+        __source: {
+            fileName: "/Users/i0424/react/smart-grid/examples/example/DynamicHeight/index.tsx",
+            lineNumber: 120
+        },
+        __self: undefined
+    }, "Email"), /*#__PURE__*/ _react.createElement("div", {
+        className: "table-header-cell",
+        role: "cell",
+        __source: {
+            fileName: "/Users/i0424/react/smart-grid/examples/example/DynamicHeight/index.tsx",
+            lineNumber: 123
+        },
+        __self: undefined
+    }, "Note"), /*#__PURE__*/ _react.createElement("div", {
+        className: "table-header-cell",
+        role: "cell",
+        __source: {
+            fileName: "/Users/i0424/react/smart-grid/examples/example/DynamicHeight/index.tsx",
+            lineNumber: 126
+        },
+        __self: undefined
+    }, "Action")), /*#__PURE__*/ _react.createElement("div", {
+        className: "table-body-wrapper",
+        ref: tableRef,
+        onScroll: onScroll,
+        __source: {
+            fileName: "/Users/i0424/react/smart-grid/examples/example/DynamicHeight/index.tsx",
+            lineNumber: 131
+        },
+        __self: undefined
+    }, /*#__PURE__*/ _react.createElement("div", {
+        className: "table-body",
+        style: {
+            height: tableHeight
+        },
+        __source: {
+            fileName: "/Users/i0424/react/smart-grid/examples/example/DynamicHeight/index.tsx",
+            lineNumber: 132
+        },
+        __self: undefined
+    }, rowRenderer((row, style, index, ref)=>row ? /*#__PURE__*/ _react.createElement("div", {
+            role: "row",
+            ref: ref,
+            className: "table-row",
+            "data-testid": `table-row-${index}`,
+            style: style,
+            key: index,
+            __source: {
+                fileName: "/Users/i0424/react/smart-grid/examples/example/DynamicHeight/index.tsx",
+                lineNumber: 135
+            },
+            __self: undefined
+        }, /*#__PURE__*/ _react.createElement("div", {
+            className: "table-row-cell ellipsis",
+            role: "cell",
+            __source: {
+                fileName: "/Users/i0424/react/smart-grid/examples/example/DynamicHeight/index.tsx",
+                lineNumber: 143
+            },
+            __self: undefined
+        }, row.firstName), /*#__PURE__*/ _react.createElement("div", {
+            className: "table-row-cell ellipsis",
+            role: "cell",
+            __source: {
+                fileName: "/Users/i0424/react/smart-grid/examples/example/DynamicHeight/index.tsx",
+                lineNumber: 146
+            },
+            __self: undefined
+        }, row.lastName), /*#__PURE__*/ _react.createElement("div", {
+            className: "table-row-cell ellipsis",
+            role: "cell",
+            __source: {
+                fileName: "/Users/i0424/react/smart-grid/examples/example/DynamicHeight/index.tsx",
+                lineNumber: 149
+            },
+            __self: undefined
+        }, row.age), /*#__PURE__*/ _react.createElement("div", {
+            className: "table-row-cell ellipsis",
+            role: "cell",
+            __source: {
+                fileName: "/Users/i0424/react/smart-grid/examples/example/DynamicHeight/index.tsx",
+                lineNumber: 152
+            },
+            __self: undefined
+        }, row.email), /*#__PURE__*/ _react.createElement("div", {
+            className: "table-row-cell",
+            role: "cell",
+            __source: {
+                fileName: "/Users/i0424/react/smart-grid/examples/example/DynamicHeight/index.tsx",
+                lineNumber: 155
+            },
+            __self: undefined
+        }, row.note), /*#__PURE__*/ _react.createElement("div", {
+            className: "table-row-cell",
+            role: "cell",
+            __source: {
+                fileName: "/Users/i0424/react/smart-grid/examples/example/DynamicHeight/index.tsx",
+                lineNumber: 158
+            },
+            __self: undefined
+        }, /*#__PURE__*/ _react.createElement("button", {
+            "data-button-id": index,
+            onClick: randomizeNote,
+            __source: {
+                fileName: "/Users/i0424/react/smart-grid/examples/example/DynamicHeight/index.tsx",
+                lineNumber: 159
+            },
+            __self: undefined
+        }, "Random"))) : /*#__PURE__*/ _react.createElement("div", {
+            ref: ref,
+            className: "table-row loading",
+            "data-testid": `table-row-${index}`,
+            style: style,
+            key: index,
+            __source: {
+                fileName: "/Users/i0424/react/smart-grid/examples/example/DynamicHeight/index.tsx",
+                lineNumber: 165
+            },
+            __self: undefined
+        }, /*#__PURE__*/ _react.createElement("div", {
+            className: "table-row-cell",
+            role: "cell",
+            __source: {
+                fileName: "/Users/i0424/react/smart-grid/examples/example/DynamicHeight/index.tsx",
+                lineNumber: 172
+            },
+            __self: undefined
+        }, "Loading"))
+    ))))));
+};
+exports.default = DynamicHeight;
+
+  helpers.postlude(module);
+} finally {
+  window.$RefreshReg$ = prevRefreshReg;
+  window.$RefreshSig$ = prevRefreshSig;
+}
+},{"react":"1UBbG","../../grid":"8cSRS","../users":"5LIzC","./dynamic.css":"8ZR7a","lodash-es":"2zAOn","@parcel/transformer-js/src/esmodule-helpers.js":"obaoz","../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"dzy2P"}],"8cSRS":[function(require,module,exports) {
+"use strict";
+var __importDefault = this && this.__importDefault || function(mod) {
+    return mod && mod.__esModule ? mod : {
+        "default": mod
     };
 };
-exports.defineInteropFlag = function(a) {
-    Object.defineProperty(a, '__esModule', {
-        value: true
-    });
-};
-exports.exportAll = function(source, dest) {
-    Object.keys(source).forEach(function(key) {
-        if (key === 'default' || key === '__esModule') return;
-        // Skip duplicate re-exports when they have the same value.
-        if (key in dest && dest[key] === source[key]) return;
-        Object.defineProperty(dest, key, {
-            enumerable: true,
-            get: function() {
-                return source[key];
-            }
-        });
-    });
-    return dest;
-};
-exports.export = function(dest, destName, get) {
-    Object.defineProperty(dest, destName, {
-        enumerable: true,
-        get: get
-    });
-};
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.HiddenScrollWrapper = exports.useGrids = exports.useGrid = void 0;
+var useGrid_1 = __importDefault(require("./hooks/useGrid"));
+exports.useGrid = useGrid_1.default;
+var useGrids_1 = __importDefault(require("./hooks/useGrids"));
+exports.useGrids = useGrids_1.default;
+var HiddenScrollWrapper_1 = __importDefault(require("./atoms/HiddenScrollWrapper"));
+exports.HiddenScrollWrapper = HiddenScrollWrapper_1.default;
 
-},{}],"dzy2P":[function(require,module,exports) {
+},{"./hooks/useGrid":"fpNXY","./hooks/useGrids":"fp0Wm","./atoms/HiddenScrollWrapper":"cTl0p"}],"fpNXY":[function(require,module,exports) {
+var helpers = require("../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
+var prevRefreshReg = window.$RefreshReg$;
+var prevRefreshSig = window.$RefreshSig$;
+helpers.prelude(module);
+
+try {
+"use strict";
+var __createBinding = this && this.__createBinding || (Object.create ? function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, {
+        enumerable: true,
+        get: function() {
+            return m[k];
+        }
+    });
+} : function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+});
+var __setModuleDefault = this && this.__setModuleDefault || (Object.create ? function(o, v) {
+    Object.defineProperty(o, "default", {
+        enumerable: true,
+        value: v
+    });
+} : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = this && this.__importStar || function(mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {
+    };
+    if (mod != null) for(var k in mod)if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __importDefault = this && this.__importDefault || function(mod) {
+    return mod && mod.__esModule ? mod : {
+        "default": mod
+    };
+};
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+var React = __importStar(require("react"));
+var useVerticalScroll_1 = __importDefault(require("./useVerticalScroll"));
+var useHeight_1 = __importDefault(require("./useHeight"));
+var useActions_1 = __importDefault(require("./useActions"));
+var rowRendererHelper_1 = __importDefault(require("./rowRendererHelper"));
+var useGrid = function(_a) {
+    var _b = _a.limit, limit = _b === void 0 ? 20 : _b, _c = _a.buffer, buffer = _c === void 0 ? 20 : _c, rowHeight = _a.rowHeight, data = _a.data, dynamicHeight = _a.dynamicHeight, _d = _a.loadMoreOffset, loadMoreOffset = _d === void 0 ? Infinity : _d, loadMore = _a.loadMore, _e = _a.virtualized, virtualized = _e === void 0 ? true : _e;
+    var tableRef = React.useRef();
+    var heightProps = useHeight_1.default();
+    var _f = useVerticalScroll_1.default({
+        loadMore: loadMore,
+        loadMoreOffset: loadMoreOffset,
+        positionCache: heightProps.positionCache.current,
+        rowHeight: rowHeight,
+        dynamicHeight: dynamicHeight,
+        totalCount: data.length,
+        virtualized: virtualized
+    }), onScroll = _f.onScroll, visible = _f.visible;
+    var actions = useActions_1.default({
+        positionCache: heightProps.positionCache,
+        tableRef: tableRef,
+        heightCache: heightProps.heightCache,
+        lastRowPosition: heightProps.lastRowPosition,
+        clearAfter: heightProps.clearAfter,
+        reRender: heightProps.reRender
+    });
+    var tableHeight = heightProps.tableHeight.current || data.length * rowHeight;
+    var tableIndex = 0;
+    var rowRenderer = React.useCallback(function(func) {
+        return rowRendererHelper_1.default({
+            rowFunc: func,
+            visible: visible,
+            tableIndex: tableIndex,
+            rowHeight: rowHeight,
+            limit: limit,
+            buffer: buffer,
+            virtualized: virtualized,
+            dynamicHeight: dynamicHeight,
+            data: data,
+            heightCache: heightProps.heightCache,
+            heightToBeCalculated: heightProps.heightToBeCalculated,
+            lastRowPosition: heightProps.lastRowPosition,
+            positionCache: heightProps.positionCache,
+            rowRefs: heightProps.rowRefs
+        });
+    }, [
+        buffer,
+        limit,
+        data,
+        visible,
+        rowHeight,
+        dynamicHeight
+    ]);
+    return {
+        onScroll: onScroll,
+        rowRenderer: rowRenderer,
+        tableHeight: tableHeight,
+        tableRef: tableRef,
+        actions: actions
+    };
+};
+exports.default = useGrid;
+
+  helpers.postlude(module);
+} finally {
+  window.$RefreshReg$ = prevRefreshReg;
+  window.$RefreshSig$ = prevRefreshSig;
+}
+},{"react":"1UBbG","./useVerticalScroll":"a3Asj","./useHeight":"gtk5S","./useActions":"cnTaE","./rowRendererHelper":"hkgdw","../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"dzy2P"}],"a3Asj":[function(require,module,exports) {
+var helpers = require("../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
+var prevRefreshReg = window.$RefreshReg$;
+var prevRefreshSig = window.$RefreshSig$;
+helpers.prelude(module);
+
+try {
+"use strict";
+var __createBinding = this && this.__createBinding || (Object.create ? function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, {
+        enumerable: true,
+        get: function() {
+            return m[k];
+        }
+    });
+} : function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+});
+var __setModuleDefault = this && this.__setModuleDefault || (Object.create ? function(o, v) {
+    Object.defineProperty(o, "default", {
+        enumerable: true,
+        value: v
+    });
+} : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = this && this.__importStar || function(mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {
+    };
+    if (mod != null) for(var k in mod)if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+var react_1 = __importStar(require("react"));
+var useVerticalScroll = function(_a) {
+    var totalCount = _a.totalCount, _b = _a.loadMoreOffset, loadMoreOffset = _b === void 0 ? Infinity : _b, loadMore = _a.loadMore, dynamicHeight = _a.dynamicHeight, positionCache = _a.positionCache, rowHeight = _a.rowHeight, virtualized = _a.virtualized;
+    var _c = react_1.useState(0), visible = _c[0], setVisible = _c[1];
+    var scrollPosition = react_1.useRef(0);
+    var getTopRowIndex = react_1.default.useCallback(function(scrollTop) {
+        if (!dynamicHeight) return Math.round(scrollTop / rowHeight);
+        if (dynamicHeight) {
+            if (positionCache.length === 0) return 0;
+            var index = positionCache.findIndex(function(position) {
+                return position > scrollTop;
+            });
+            return index === -1 ? 0 : Math.max(0, index);
+        }
+        return 0;
+    }, [
+        dynamicHeight,
+        rowHeight
+    ]);
+    var onScroll = react_1.useCallback(function(event) {
+        if (event.currentTarget !== event.target) return;
+        var table = event.target;
+        var scrollTop = table.scrollTop;
+        var tableHeight = table.clientHeight;
+        var sp = getTopRowIndex(scrollTop);
+        var loadMoreOffsetFuse = totalCount - tableHeight / rowHeight - 3;
+        if (loadMore && sp >= Math.min(loadMoreOffsetFuse, loadMoreOffset)) loadMore(sp);
+        if (scrollPosition.current !== sp && virtualized) {
+            scrollPosition.current = sp;
+            setVisible(sp);
+        }
+    }, [
+        setVisible,
+        getTopRowIndex,
+        totalCount
+    ]);
+    return {
+        onScroll: onScroll,
+        visible: visible
+    };
+};
+exports.default = useVerticalScroll;
+
+  helpers.postlude(module);
+} finally {
+  window.$RefreshReg$ = prevRefreshReg;
+  window.$RefreshSig$ = prevRefreshSig;
+}
+},{"react":"1UBbG","../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"dzy2P"}],"dzy2P":[function(require,module,exports) {
 "use strict";
 var Refresh = require('react-refresh/runtime');
 function debounce(func, delay) {
@@ -21177,509 +21653,7 @@ module.exports = require('./cjs/react-refresh-runtime.development.js');
     exports.setSignature = setSignature;
 })();
 
-},{}],"aXW3T":[function(require,module,exports) {
-var helpers = require("../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
-var prevRefreshReg = window.$RefreshReg$;
-var prevRefreshSig = window.$RefreshSig$;
-helpers.prelude(module);
-
-try {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-var _react = require("react");
-// import { useGrid } from '@crafts/smart-grid';
-var _grid = require("../../grid");
-var _users = require("../users");
-var _usersDefault = parcelHelpers.interopDefault(_users);
-var _dynamicCss = require("./dynamic.css");
-var _lodashEs = require("lodash-es");
-const noteArray = [
-    'Mountain',
-    'Big',
-    'Break',
-    'Bike',
-    'Rocket',
-    'New',
-    'Hello',
-    'Sea',
-    'Can',
-    'Fly',
-    'Bird',
-    'Code',
-    'Bye', 
-];
-const getRandomNote = ()=>_lodashEs.sampleSize(noteArray, _lodashEs.random(1, 5)).join(' ')
-;
-const generateData = (offset = 0)=>_usersDefault.default.slice(offset, offset + 100).map((row)=>({
-            ...row,
-            note: getRandomNote()
-        })
-    )
-;
-const api = (offset)=>new Promise((res)=>{
-        setTimeout(()=>{
-            res(generateData(offset));
-        }, 1200);
-    })
-;
-const DynamicHeight = ({ rowHeight , buffer , limit , virtualized =true  })=>{
-    const [state, setState] = _react.useState({
-        data: generateData(),
-        loading: false
-    });
-    const offset = _react.useRef(0);
-    const getData = _react.useCallback((sp)=>{
-        if (state.loading || offset.current >= 1000) return;
-        setState((s)=>({
-                ...s,
-                loading: true
-            })
-        );
-        offset.current += 100;
-        api(offset.current).then((newD)=>{
-            // setData((d) => [...d, ...newD]);
-            setState((s)=>({
-                    data: [
-                        ...s.data,
-                        ...newD
-                    ],
-                    loading: false
-                })
-            );
-        });
-    }, [
-        state.loading
-    ]);
-    const { onScroll , rowRenderer , tableHeight , tableRef , actions  } = _grid.useGrid({
-        data: state.loading ? state.data.concat([
-            null,
-            null
-        ]) : state.data,
-        rowHeight: rowHeight || 39,
-        buffer,
-        limit,
-        loadMore: getData,
-        virtualized,
-        dynamicHeight: true
-    });
-    const randomizeNote = _react.useCallback((event)=>{
-        const id = parseInt(event.target.getAttribute('data-button-id'), 10);
-        setState((s)=>({
-                loading: false,
-                data: s.data.map((row, i)=>i === id ? {
-                        ...row,
-                        note: getRandomNote()
-                    } : row
-                )
-            })
-        );
-        actions.clear(id);
-    }, []);
-    return(/*#__PURE__*/ _react.createElement("div", {
-        className: "table-wrapper",
-        __source: {
-            fileName: "/Users/i0424/react/smart-grid/examples/example/DynamicHeight/index.tsx",
-            lineNumber: 102
-        },
-        __self: undefined
-    }, /*#__PURE__*/ _react.createElement("div", {
-        className: "table",
-        role: "table",
-        __source: {
-            fileName: "/Users/i0424/react/smart-grid/examples/example/DynamicHeight/index.tsx",
-            lineNumber: 103
-        },
-        __self: undefined
-    }, /*#__PURE__*/ _react.createElement("div", {
-        className: "table-header",
-        role: "row",
-        __source: {
-            fileName: "/Users/i0424/react/smart-grid/examples/example/DynamicHeight/index.tsx",
-            lineNumber: 104
-        },
-        __self: undefined
-    }, /*#__PURE__*/ _react.createElement("div", {
-        className: "table-header-cell",
-        role: "cell",
-        __source: {
-            fileName: "/Users/i0424/react/smart-grid/examples/example/DynamicHeight/index.tsx",
-            lineNumber: 105
-        },
-        __self: undefined
-    }, "First Name"), /*#__PURE__*/ _react.createElement("div", {
-        className: "table-header-cell",
-        role: "cell",
-        __source: {
-            fileName: "/Users/i0424/react/smart-grid/examples/example/DynamicHeight/index.tsx",
-            lineNumber: 108
-        },
-        __self: undefined
-    }, "Last Name"), /*#__PURE__*/ _react.createElement("div", {
-        className: "table-header-cell",
-        role: "cell",
-        __source: {
-            fileName: "/Users/i0424/react/smart-grid/examples/example/DynamicHeight/index.tsx",
-            lineNumber: 111
-        },
-        __self: undefined
-    }, "Age"), /*#__PURE__*/ _react.createElement("div", {
-        className: "table-header-cell",
-        role: "cell",
-        __source: {
-            fileName: "/Users/i0424/react/smart-grid/examples/example/DynamicHeight/index.tsx",
-            lineNumber: 114
-        },
-        __self: undefined
-    }, "Email"), /*#__PURE__*/ _react.createElement("div", {
-        className: "table-header-cell",
-        role: "cell",
-        __source: {
-            fileName: "/Users/i0424/react/smart-grid/examples/example/DynamicHeight/index.tsx",
-            lineNumber: 117
-        },
-        __self: undefined
-    }, "Note"), /*#__PURE__*/ _react.createElement("div", {
-        className: "table-header-cell",
-        role: "cell",
-        __source: {
-            fileName: "/Users/i0424/react/smart-grid/examples/example/DynamicHeight/index.tsx",
-            lineNumber: 120
-        },
-        __self: undefined
-    }, "Action")), /*#__PURE__*/ _react.createElement("div", {
-        className: "table-body-wrapper",
-        ref: tableRef,
-        onScroll: onScroll,
-        __source: {
-            fileName: "/Users/i0424/react/smart-grid/examples/example/DynamicHeight/index.tsx",
-            lineNumber: 125
-        },
-        __self: undefined
-    }, /*#__PURE__*/ _react.createElement("div", {
-        className: "table-body",
-        style: {
-            height: tableHeight
-        },
-        __source: {
-            fileName: "/Users/i0424/react/smart-grid/examples/example/DynamicHeight/index.tsx",
-            lineNumber: 126
-        },
-        __self: undefined
-    }, rowRenderer((row, style, index, ref)=>row ? /*#__PURE__*/ _react.createElement("div", {
-            role: "row",
-            ref: ref,
-            className: "table-row",
-            "data-testid": `table-row-${index}`,
-            style: style,
-            key: index,
-            __source: {
-                fileName: "/Users/i0424/react/smart-grid/examples/example/DynamicHeight/index.tsx",
-                lineNumber: 129
-            },
-            __self: undefined
-        }, /*#__PURE__*/ _react.createElement("div", {
-            className: "table-row-cell ellipsis",
-            role: "cell",
-            __source: {
-                fileName: "/Users/i0424/react/smart-grid/examples/example/DynamicHeight/index.tsx",
-                lineNumber: 137
-            },
-            __self: undefined
-        }, row.firstName), /*#__PURE__*/ _react.createElement("div", {
-            className: "table-row-cell ellipsis",
-            role: "cell",
-            __source: {
-                fileName: "/Users/i0424/react/smart-grid/examples/example/DynamicHeight/index.tsx",
-                lineNumber: 140
-            },
-            __self: undefined
-        }, row.lastName), /*#__PURE__*/ _react.createElement("div", {
-            className: "table-row-cell ellipsis",
-            role: "cell",
-            __source: {
-                fileName: "/Users/i0424/react/smart-grid/examples/example/DynamicHeight/index.tsx",
-                lineNumber: 143
-            },
-            __self: undefined
-        }, row.age), /*#__PURE__*/ _react.createElement("div", {
-            className: "table-row-cell ellipsis",
-            role: "cell",
-            __source: {
-                fileName: "/Users/i0424/react/smart-grid/examples/example/DynamicHeight/index.tsx",
-                lineNumber: 146
-            },
-            __self: undefined
-        }, row.email), /*#__PURE__*/ _react.createElement("div", {
-            className: "table-row-cell",
-            role: "cell",
-            __source: {
-                fileName: "/Users/i0424/react/smart-grid/examples/example/DynamicHeight/index.tsx",
-                lineNumber: 149
-            },
-            __self: undefined
-        }, row.note), /*#__PURE__*/ _react.createElement("div", {
-            className: "table-row-cell",
-            role: "cell",
-            __source: {
-                fileName: "/Users/i0424/react/smart-grid/examples/example/DynamicHeight/index.tsx",
-                lineNumber: 152
-            },
-            __self: undefined
-        }, /*#__PURE__*/ _react.createElement("button", {
-            "data-button-id": index,
-            onClick: randomizeNote,
-            __source: {
-                fileName: "/Users/i0424/react/smart-grid/examples/example/DynamicHeight/index.tsx",
-                lineNumber: 153
-            },
-            __self: undefined
-        }, "Random"))) : /*#__PURE__*/ _react.createElement("div", {
-            ref: ref,
-            className: "table-row loading",
-            "data-testid": `table-row-${index}`,
-            style: style,
-            key: index,
-            __source: {
-                fileName: "/Users/i0424/react/smart-grid/examples/example/DynamicHeight/index.tsx",
-                lineNumber: 159
-            },
-            __self: undefined
-        }, /*#__PURE__*/ _react.createElement("div", {
-            className: "table-row-cell",
-            role: "cell",
-            __source: {
-                fileName: "/Users/i0424/react/smart-grid/examples/example/DynamicHeight/index.tsx",
-                lineNumber: 166
-            },
-            __self: undefined
-        }, "Loading"))
-    ))))));
-};
-exports.default = DynamicHeight;
-
-  helpers.postlude(module);
-} finally {
-  window.$RefreshReg$ = prevRefreshReg;
-  window.$RefreshSig$ = prevRefreshSig;
-}
-},{"react":"1UBbG","../../grid":"8cSRS","../users":"5LIzC","./dynamic.css":"8ZR7a","lodash-es":"2zAOn","@parcel/transformer-js/src/esmodule-helpers.js":"obaoz","../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"dzy2P"}],"8cSRS":[function(require,module,exports) {
-"use strict";
-var __importDefault = this && this.__importDefault || function(mod) {
-    return mod && mod.__esModule ? mod : {
-        "default": mod
-    };
-};
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.HiddenScrollWrapper = exports.useGrids = exports.useGrid = void 0;
-var useGrid_1 = __importDefault(require("./hooks/useGrid"));
-exports.useGrid = useGrid_1.default;
-var useGrids_1 = __importDefault(require("./hooks/useGrids"));
-exports.useGrids = useGrids_1.default;
-var HiddenScrollWrapper_1 = __importDefault(require("./atoms/HiddenScrollWrapper"));
-exports.HiddenScrollWrapper = HiddenScrollWrapper_1.default;
-
-},{"./hooks/useGrid":"fpNXY","./hooks/useGrids":"fp0Wm","./atoms/HiddenScrollWrapper":"cTl0p"}],"fpNXY":[function(require,module,exports) {
-var helpers = require("../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
-var prevRefreshReg = window.$RefreshReg$;
-var prevRefreshSig = window.$RefreshSig$;
-helpers.prelude(module);
-
-try {
-"use strict";
-var __createBinding = this && this.__createBinding || (Object.create ? function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, {
-        enumerable: true,
-        get: function() {
-            return m[k];
-        }
-    });
-} : function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-});
-var __setModuleDefault = this && this.__setModuleDefault || (Object.create ? function(o, v) {
-    Object.defineProperty(o, "default", {
-        enumerable: true,
-        value: v
-    });
-} : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = this && this.__importStar || function(mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {
-    };
-    if (mod != null) for(var k in mod)if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
-var __importDefault = this && this.__importDefault || function(mod) {
-    return mod && mod.__esModule ? mod : {
-        "default": mod
-    };
-};
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-var React = __importStar(require("react"));
-var useVerticalScroll_1 = __importDefault(require("./useVerticalScroll"));
-var useHeight_1 = __importDefault(require("./useHeight"));
-var useActions_1 = __importDefault(require("./useActions"));
-var rowRendererHelper_1 = __importDefault(require("./rowRendererHelper"));
-var useGrid = function(_a) {
-    var _b = _a.limit, limit = _b === void 0 ? 20 : _b, _c = _a.buffer, buffer = _c === void 0 ? 20 : _c, rowHeight = _a.rowHeight, data = _a.data, dynamicHeight = _a.dynamicHeight, _d = _a.loadMoreOffset, loadMoreOffset = _d === void 0 ? Infinity : _d, loadMore = _a.loadMore, _e = _a.virtualized, virtualized = _e === void 0 ? true : _e;
-    var tableRef = React.useRef();
-    var heightProps = useHeight_1.default();
-    var _f = useVerticalScroll_1.default({
-        loadMore: loadMore,
-        loadMoreOffset: loadMoreOffset,
-        positionCache: heightProps.positionCache.current,
-        rowHeight: rowHeight,
-        dynamicHeight: dynamicHeight,
-        totalCount: data.length,
-        virtualized: virtualized
-    }), onScroll = _f.onScroll, visible = _f.visible;
-    var actions = useActions_1.default({
-        positionCache: heightProps.positionCache,
-        tableRef: tableRef,
-        heightCache: heightProps.heightCache,
-        lastRowPosition: heightProps.lastRowPosition,
-        clearAfter: heightProps.clearAfter,
-        reRender: heightProps.reRender
-    });
-    var tableHeight = heightProps.tableHeight.current || data.length * rowHeight;
-    var tableIndex = 0;
-    var rowRenderer = React.useCallback(function(func) {
-        return rowRendererHelper_1.default({
-            rowFunc: func,
-            visible: visible,
-            tableIndex: tableIndex,
-            rowHeight: rowHeight,
-            limit: limit,
-            buffer: buffer,
-            virtualized: virtualized,
-            dynamicHeight: dynamicHeight,
-            data: data,
-            heightCache: heightProps.heightCache,
-            heightToBeCalculated: heightProps.heightToBeCalculated,
-            lastRowPosition: heightProps.lastRowPosition,
-            positionCache: heightProps.positionCache,
-            rowRefs: heightProps.rowRefs
-        });
-    }, [
-        buffer,
-        limit,
-        data,
-        visible,
-        rowHeight,
-        dynamicHeight
-    ]);
-    return {
-        onScroll: onScroll,
-        rowRenderer: rowRenderer,
-        tableHeight: tableHeight,
-        tableRef: tableRef,
-        actions: actions
-    };
-};
-exports.default = useGrid;
-
-  helpers.postlude(module);
-} finally {
-  window.$RefreshReg$ = prevRefreshReg;
-  window.$RefreshSig$ = prevRefreshSig;
-}
-},{"react":"1UBbG","./useVerticalScroll":"a3Asj","./useHeight":"gtk5S","./rowRendererHelper":"hkgdw","../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"dzy2P","./useActions":"cnTaE"}],"a3Asj":[function(require,module,exports) {
-var helpers = require("../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
-var prevRefreshReg = window.$RefreshReg$;
-var prevRefreshSig = window.$RefreshSig$;
-helpers.prelude(module);
-
-try {
-"use strict";
-var __createBinding = this && this.__createBinding || (Object.create ? function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, {
-        enumerable: true,
-        get: function() {
-            return m[k];
-        }
-    });
-} : function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-});
-var __setModuleDefault = this && this.__setModuleDefault || (Object.create ? function(o, v) {
-    Object.defineProperty(o, "default", {
-        enumerable: true,
-        value: v
-    });
-} : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = this && this.__importStar || function(mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {
-    };
-    if (mod != null) for(var k in mod)if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-var react_1 = __importStar(require("react"));
-var useVerticalScroll = function(_a) {
-    var totalCount = _a.totalCount, _b = _a.loadMoreOffset, loadMoreOffset = _b === void 0 ? Infinity : _b, loadMore = _a.loadMore, dynamicHeight = _a.dynamicHeight, positionCache = _a.positionCache, rowHeight = _a.rowHeight, virtualized = _a.virtualized;
-    var _c = react_1.useState(0), visible = _c[0], setVisible = _c[1];
-    var scrollPosition = react_1.useRef(0);
-    var getTopRowIndex = react_1.default.useCallback(function(scrollTop) {
-        if (!dynamicHeight) return Math.round(scrollTop / rowHeight);
-        if (dynamicHeight) {
-            if (positionCache.length === 0) return 0;
-            var index = positionCache.findIndex(function(position) {
-                return position > scrollTop;
-            });
-            return index === -1 ? 0 : Math.max(0, index);
-        }
-        return 0;
-    }, [
-        dynamicHeight,
-        rowHeight
-    ]);
-    var onScroll = react_1.useCallback(function(event) {
-        if (event.currentTarget !== event.target) return;
-        var table = event.target;
-        var scrollTop = table.scrollTop;
-        var tableHeight = table.clientHeight;
-        var sp = getTopRowIndex(scrollTop);
-        var loadMoreOffsetFuse = totalCount - tableHeight / rowHeight - 3;
-        if (loadMore && sp >= Math.min(loadMoreOffsetFuse, loadMoreOffset)) loadMore(sp);
-        if (scrollPosition.current !== sp && virtualized) {
-            scrollPosition.current = sp;
-            setVisible(sp);
-        }
-    }, [
-        setVisible,
-        getTopRowIndex,
-        totalCount
-    ]);
-    return {
-        onScroll: onScroll,
-        visible: visible
-    };
-};
-exports.default = useVerticalScroll;
-
-  helpers.postlude(module);
-} finally {
-  window.$RefreshReg$ = prevRefreshReg;
-  window.$RefreshSig$ = prevRefreshSig;
-}
-},{"react":"1UBbG","../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"dzy2P"}],"gtk5S":[function(require,module,exports) {
+},{}],"gtk5S":[function(require,module,exports) {
 var helpers = require("../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
 var prevRefreshReg = window.$RefreshReg$;
 var prevRefreshSig = window.$RefreshSig$;
@@ -21788,7 +21762,76 @@ exports.get2DArray = function(count) {
     return arr;
 };
 
-},{}],"hkgdw":[function(require,module,exports) {
+},{}],"cnTaE":[function(require,module,exports) {
+var helpers = require("../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
+var prevRefreshReg = window.$RefreshReg$;
+var prevRefreshSig = window.$RefreshSig$;
+helpers.prelude(module);
+
+try {
+"use strict";
+var __createBinding = this && this.__createBinding || (Object.create ? function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, {
+        enumerable: true,
+        get: function() {
+            return m[k];
+        }
+    });
+} : function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+});
+var __setModuleDefault = this && this.__setModuleDefault || (Object.create ? function(o, v) {
+    Object.defineProperty(o, "default", {
+        enumerable: true,
+        value: v
+    });
+} : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = this && this.__importStar || function(mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {
+    };
+    if (mod != null) for(var k in mod)if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+var React = __importStar(require("react"));
+var useActions = function(_a) {
+    var positionCache = _a.positionCache, tableRef = _a.tableRef, clearAfter = _a.clearAfter, reRender = _a.reRender;
+    var scrollToRow = React.useCallback(function(row) {
+        tableRef.current.scrollTop = positionCache.current[row];
+    }, []);
+    var getRowPosition = React.useCallback(function(row) {
+        return positionCache.current[row];
+    }, []);
+    var clear = function(index) {
+        var table = tableRef.current;
+        var rowPosition = getRowPosition(index);
+        clearAfter(index - 1);
+        debugger;
+        if (rowPosition >= table.scrollTop && rowPosition <= table.scrollTop + table.clientHeight) return reRender();
+        scrollToRow(index - 1);
+    };
+    return {
+        scrollToRow: scrollToRow,
+        clear: clear,
+        getRowPosition: getRowPosition
+    };
+};
+exports.default = useActions;
+
+  helpers.postlude(module);
+} finally {
+  window.$RefreshReg$ = prevRefreshReg;
+  window.$RefreshSig$ = prevRefreshSig;
+}
+},{"react":"1UBbG","../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"dzy2P"}],"hkgdw":[function(require,module,exports) {
 var helpers = require("../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
 var prevRefreshReg = window.$RefreshReg$;
 var prevRefreshSig = window.$RefreshSig$;
@@ -21867,75 +21910,6 @@ var func = function(_a) {
     return rowsUI;
 };
 exports.default = func;
-
-  helpers.postlude(module);
-} finally {
-  window.$RefreshReg$ = prevRefreshReg;
-  window.$RefreshSig$ = prevRefreshSig;
-}
-},{"react":"1UBbG","../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"dzy2P"}],"cnTaE":[function(require,module,exports) {
-var helpers = require("../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
-var prevRefreshReg = window.$RefreshReg$;
-var prevRefreshSig = window.$RefreshSig$;
-helpers.prelude(module);
-
-try {
-"use strict";
-var __createBinding = this && this.__createBinding || (Object.create ? function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, {
-        enumerable: true,
-        get: function() {
-            return m[k];
-        }
-    });
-} : function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-});
-var __setModuleDefault = this && this.__setModuleDefault || (Object.create ? function(o, v) {
-    Object.defineProperty(o, "default", {
-        enumerable: true,
-        value: v
-    });
-} : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = this && this.__importStar || function(mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {
-    };
-    if (mod != null) for(var k in mod)if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-var React = __importStar(require("react"));
-var useActions = function(_a) {
-    var positionCache = _a.positionCache, tableRef = _a.tableRef, clearAfter = _a.clearAfter, reRender = _a.reRender;
-    var scrollToRow = React.useCallback(function(row) {
-        tableRef.current.scrollTop = positionCache.current[row];
-    }, []);
-    var getRowPosition = React.useCallback(function(row) {
-        return positionCache.current[row];
-    }, []);
-    var clear = function(index) {
-        var table = tableRef.current;
-        var rowPosition = getRowPosition(index);
-        clearAfter(index - 1);
-        debugger;
-        if (rowPosition >= table.scrollTop && rowPosition <= table.scrollTop + table.clientHeight) return reRender();
-        scrollToRow(index - 1);
-    };
-    return {
-        scrollToRow: scrollToRow,
-        clear: clear,
-        getRowPosition: getRowPosition
-    };
-};
-exports.default = useActions;
 
   helpers.postlude(module);
 } finally {
@@ -22067,7 +22041,7 @@ exports.default = useGrids;
   window.$RefreshReg$ = prevRefreshReg;
   window.$RefreshSig$ = prevRefreshSig;
 }
-},{"react":"1UBbG","./useVerticalScroll":"a3Asj","./useHeight":"gtk5S","../util":"84vjg","./useScrollSync":"563UO","./useActions":"cnTaE","./rowRendererHelper":"hkgdw","../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"dzy2P"}],"563UO":[function(require,module,exports) {
+},{"react":"1UBbG","./useHeight":"gtk5S","../util":"84vjg","./useScrollSync":"563UO","./useActions":"cnTaE","./rowRendererHelper":"hkgdw","../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"dzy2P","./useVerticalScroll":"a3Asj"}],"563UO":[function(require,module,exports) {
 var helpers = require("../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
 var prevRefreshReg = window.$RefreshReg$;
 var prevRefreshSig = window.$RefreshSig$;
@@ -32347,7 +32321,39 @@ exports.default = [
     }, 
 ];
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"obaoz"}],"8ZR7a":[function() {},{}],"2zAOn":[function(require,module,exports) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"obaoz"}],"obaoz":[function(require,module,exports) {
+exports.interopDefault = function(a) {
+    return a && a.__esModule ? a : {
+        default: a
+    };
+};
+exports.defineInteropFlag = function(a) {
+    Object.defineProperty(a, '__esModule', {
+        value: true
+    });
+};
+exports.exportAll = function(source, dest) {
+    Object.keys(source).forEach(function(key) {
+        if (key === 'default' || key === '__esModule') return;
+        // Skip duplicate re-exports when they have the same value.
+        if (key in dest && dest[key] === source[key]) return;
+        Object.defineProperty(dest, key, {
+            enumerable: true,
+            get: function() {
+                return source[key];
+            }
+        });
+    });
+    return dest;
+};
+exports.export = function(dest, destName, get) {
+    Object.defineProperty(dest, destName, {
+        enumerable: true,
+        get: get
+    });
+};
+
+},{}],"8ZR7a":[function() {},{}],"2zAOn":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 /**
