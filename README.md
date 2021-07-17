@@ -1,25 +1,66 @@
-## Smart Grid
+# Smart Grid
 
-### Development
+## Features
+
+- 🪄 Virtualization
+- 🎲 Dynamic Height
+- 📌 Pinning
+- ∞ Infinite Scroll
+- 🛠 Highly configurable
+- 💪 TypeScript
+- ⚛ [Pretty small](https://bundlephobia.com/package/@crafts/smart-grid@latest)
+- 🚀 Faster and lighter than V1
+- 🎁 Out of the box Grid, just provide schema and data (releasing soon)
+- 🤝 Backward compatibility (TBA)
+- and much more 🔥
+
+## Usage
 
 `npm i && npm start`
 
-### Folder structure
+```jsx
+const { onScroll, rowRenderer } = useGrid({
+  data: state.loading ? state.data.concat([null, null]) : state.data,
+  rowHeight: rowHeight || 39,
+  buffer,
+  limit,
+  loadMore: getData,
+  virtualized,
+});
+```
+
+For complete Documentation please visit: https://smartgrid.mukulja.in/
+
+## Development Guide
+
+This project has been divided in 3 parts,
+
+1. Main package: `src`.
+2. Documentation: `docs`.
+3. Examples: `examples`, it contains various examples.
+
+### Running main package watch mode
+
+`npm i && npm start`
+
+This will build files in watch mode at `examples/grid`
+
+### Running dev server
+
+To develope choose a type of example or copy any example and you can start there.
 
 ```bash
-├── Example
-│   ├── index.tsx (root file for development)
-│   ├── Table.tsx (Table sample using hooks)
-│   ├── styles.scss
-│   ├── colors.ts
-│   └── users.ts
-├── Grid
-│   └── hooks
-│       ├── useVirtualization.test.js
-│       └── useVirtualization.ts
-├── global.d.ts
-├── index.html
-├── index.scss
-├── index.tsx
-└── logo.svg
+cd examples/example-name
+npm i
+npm start
+```
+
+For development purpose you can import smart grid apis from `examples/grid`.
+
+### Docs
+
+```bash
+cd docs
+npm i
+npm start
 ```
