@@ -22,3 +22,7 @@
       link: /example/use-grids-pinned-column
     - label: Dynamic height
       link: /example/dynamic-height
+- label: More
+  items:
+    - label: FAQ
+      link: /faq

@@ -4,7 +4,7 @@ module.exports = {
     defaultTitle: `Smart Grid`,
     siteTitleShort: `Smart Grid`,
     siteDescription: `Light weight highly customizable table hooks.`,
-    siteUrl: `https://rocketdocs.netlify.app`,
+    siteUrl: `https://smartgrid.mukulja.in`,
     siteAuthor: `@mukuljainx`,
     siteImage: `/banner.png`,
     siteLanguage: `en`,
@@ -18,7 +18,7 @@ module.exports = {
       options: {
         configPath: `src/config`,
         docsPath: `src/docs`,
-        repositoryUrl: `https://github.com/rocketseat/gatsby-themes`,
+        repositoryUrl: `https://github.com/mukuljainx/smart-grid/tree/2.x.x`,
         baseDir: `examples/gatsby-theme-docs`,
       },
     },
@@ -44,7 +44,7 @@ module.exports = {
     {
       resolve: `gatsby-plugin-canonical-urls`,
       options: {
-        siteUrl: `https://rocketdocs.netlify.app`,
+        siteUrl: `https://smartgrid.mukulja.in`,
       },
     },
     `gatsby-plugin-offline`,

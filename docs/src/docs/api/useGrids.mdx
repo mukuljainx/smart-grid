@@ -81,6 +81,17 @@ There might be 3rd way too, this is power of React Hooks and Smart Grid, do it i
 Still confused with 1st approach? Don't worry it is confusing, check the example below on CodeSandbox, that will definitely help.
 Example with 2nd approach will be added soon.
 
+### Performance
+
+Obviously the performance will not be same as `useGrid`, only little lower, as there will multiple `rowRenderer` (for each sub table) call and then horizontal syncs.
+Horizontal syncs doesn't matter much as they always have limited scope and it doesn't occur along with vertical.
+
+Multiple `rowRenderer` cannot be avoided, the thing is here it is happening in front of you, this can
+be hidden from developer by taking a schema, but at some point there will be multiple calls. Same
+happened with V1.0.0 just behind the scene.
+
+Don't worry it has been battle tested with very UI intensive rows at [InnovAccer](http://innovaccer.com/).
+
 ## Example
 
 Loading may take a while: [open in CodeSandbox](https://codesandbox.io/s/github/mukuljainx/smart-grid/tree/2.x.x/examples/PinnedTable)

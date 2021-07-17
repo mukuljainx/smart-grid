@@ -1,30 +1,36 @@
 ---
 title: Frequently Asked Questions
-description: Frequently asked questions about the theme.
+description: Frequently asked questions about the package.
 disableTableOfContents: true
 ---
 
-## Will be included search or dark mode?
+## Why the vertical scroll bar is not always visible?
 
-This theme is a great and complete option to build simple documentation websites.
-We don't plan anymore to include search, dark mode or i18n to the project.
+This is how HTML works, the body got it's own height and vertical scrolling, you can make it
+visible by applying to body
 
-Remember that if necessary, you can change colors and include a default
-dark theme. To do so, check this [doc](/usage/shadowing#changing-theme-colors).
+```css
+width: 100%;
+overflow-x: auto;
+```
 
-## How can I deploy my website?
+but this will make header out of sync which again can achieved by having a custom scroll handler
+attached to body, something like
 
-To deploy this project, we recommend you take a look at this extensive documentation
-hosted on [Gatsby website](https://www.gatsbyjs.com/docs/deploying-and-hosting/). It
-includes deploy tutorials for many services, like [Vercel](https://vercel.com/),
-[Netlify](https://www.netlify.com/), [GitHub Pages](https://pages.github.com/) and others.
+```jsx
+<tbody onScroll={(event) => {
+    // sync header position
+    headerRef.current.scrollLeft = event.target.scrollLeft;
+    // call the useGrid onScroll handler
+    onScroll(event);
+}}>
+    ...
+</tbody
 
-## What are good examples of the theme usage?
+```
 
-- [Unform](https://unform.dev?utm_source=rocketseat_theme_docs)
-- [Botmation](https://botmation.dev)
-- [use-shopping-cart](https://useshoppingcart.com/)
-- [golangci-lint](https://golangci-lint.run/)
-- [Use Pandas](https://www.usepandas.com/)
+a scroll handler should be also attached to header but **useGrids** `onScroll`, should not be called from there,
+as `scrollTop` will zero for header element and that will scroll the table to top!
 
-ps: are you using this project? Submit a PR to add it to the [list](https://github.com/Rocketseat/gatsby-themes/blob/main/examples/gatsby-theme-docs/src/docs/faq.mdx#what-are-good-examples-of-the-theme-usage).
+Don't worry this will not hamper the performance as both scroll can't be called together and horizontal scrollbar
+will always have a limited scope.
