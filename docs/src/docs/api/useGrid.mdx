@@ -1,0 +1,56 @@
+---
+title: Use Grid
+description: The Grid API
+---
+
+`useGrid` is the primary hook to create any grid. It takes an object as input which can be consist of
+
+| Props          | Description                                                                                                                                                                                                                      | Required | Default  | Type                    |
+| -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | -------- | ----------------------- |
+| virtualized    | If true only visible rows and buffer rows exists in DOM, to improve performance if there a lot of rows. This is true by default but should be set false if even the maximum possible rows are not causing any performance issue. | false    | true     | boolean                 |
+| rowHeight      | Height of row, incase of dynamic row height, this will be treated as minimum height.                                                                                                                                             | true     | -        | number                  |
+| dynamicHeight  | This will leave the row height calculation to the hook.                                                                                                                                                                          | false    | false    | boolean                 |
+| limit          | The number of rows rendered after first visible row, ignored if virtualized is false.                                                                                                                                            | false    | 20       | number                  |
+| buffer         | rows rendered before the first visible row and after the limit, ignored if virtualized is false.                                                                                                                                 | false    | 20       | number                  |
+| loadMore       | function triggered when we are about to hit the last row, this allows user to lookup for any more data available.                                                                                                                | false    | -        | ( sp : number ) => void |
+| loadMoreOffset | number of rows from bottom when loadMore should be triggered                                                                                                                                                                     | false    | Infinity | number                  |
+
+## Usage
+
+```jsx
+const { onScroll, rowRenderer, tableHeight, tableRef, actions } = useGrid({
+  data: state.loading ? state.data.concat([null, null]) : state.data,
+  rowHeight: rowHeight || 39,
+  buffer,
+  limit,
+  loadMore: getData,
+  virtualized,
+});
+```
+
+The hooks return couple of useful handles and calculated properties let's go through each of it
+
+| Props       | Description                                                                                                                                                                                                                  | Required |
+| ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- |
+| onScroll    | Scroll handler to attached with scroll able body of table.                                                                                                                                                                   | true     |
+| rowRenderer | It's a function which expects a function to return a React.Node (the row), it provides (row,style,index,ref) where row is data[index]. For more checkout.                                                                    | true     |
+| tableHeight | Total height of table, in case of virtualized table height is dynamic especially in case of dynamic row height, this property is exposed so you can apply on scroll able part to have proper height.                         | false    |
+| tableRef    | ref to be attached to scroll able part. Required for actions.                                                                                                                                                                | false    |
+| actions     | actions is collection of useful methods like scrollToRow, getRowPosition & clear. The first two are self explanatory, clear is to be used when row of height changes, clear that index so table can re-calculate everything. | false    |
+
+### rowRenderer
+
+If you have used `react-spring` this pattern will be familiar, to render each row, `useGrid` provides a function `rowRenderer`
+which expects a function in return and provides 4 params **row, style, index, ref**.
+
+- row: row data for that particular row, basically `data[index]`.
+- style: style required table to work properly.
+- index: index of that row.
+- ref: ref to be passed on that row (top level) without this dynamic height grid will not work as
+  there will no access to row's DOM Element to calculate height
+
+## Example
+
+Loading may take a while: [open in CodeSandbox](https://codesandbox.io/s/github/mukuljainx/smart-grid/tree/2.x.x/examples/Example/Basic)
+
+https://codesandbox.io/s/github/mukuljainx/smart-grid/tree/2.x.x/examples/Example/Basic

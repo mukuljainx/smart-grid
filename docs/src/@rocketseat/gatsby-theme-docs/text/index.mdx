@@ -1,21 +1,105 @@
 # Introduction
 
-Rocket Docs is a complete and awesome Gatsby Theme for documentation websites. We've
-developed it to be easy to use and customize. Forget about other
-things and focus on what matters: **writing docs.**
+Smart grid is light weight simple and ready to use hooks to build any kind of grid/table! As it
+exposes everything to developer its up to developer what gird will consist of and how things will function.
+No more relying on libraries to provide any custom feature apart from core functionality.
 
-## Features
+```jsx
+const { onScroll, rowRenderer } = useGrid({
+  data: state.loading ? state.data.concat([null, null]) : state.data,
+  rowHeight: rowHeight || 39,
+  buffer,
+  limit,
+  loadMore: getData,
+  virtualized,
+});
 
-- ⚛️ Ready for Gatsby v3;
-- 📝 MDX for docs;
-- 🛣 Yaml-based sidebar navigation;
-- 📱 Responsive and mobile friendly;
-- 🖥 Code highlighting with [prism-react-renderer](https://github.com/FormidableLabs/prism-react-renderer) and [react-live](https://github.com/FormidableLabs/react-live) support;
-- 🥇 SEO (Sitemap, schema.org data, Open Graph and Twitter tags).
-- 📈 Google Analytics support;
-- 📄 Custom docs schema;
-- 🖱 Table of Contents;
-- ⚡️ Offline Support & WebApp Manifest;
+return (
+  <table role="table">
+    <thead>
+      <tr role="row">
+        <th role="cell" colSpan={4}></th>
+        <th role="cell" colSpan={3}>
+          Car
+        </th>
+      </tr>
+      <tr role="row">
+        <th colSpan={1} role="cell">
+          First Name
+        </th>
+        <th colSpan={1} role="cell">
+          Last Name
+        </th>
+        <th colSpan={1} role="cell">
+          Age
+        </th>
+        <th colSpan={1} role="cell">
+          Email
+        </th>
+        <th colSpan={1} role="cell">
+          Make
+        </th>
+        <th colSpan={1} role="cell">
+          Model
+        </th>
+        <th colSpan={1} role="cell">
+          Year
+        </th>
+      </tr>
+    </thead>
+    <tbody role="rowgroup" onScroll={onScroll}>
+      {rowRenderer((row, style, index, ref) =>
+        row ? (
+          <tr
+            role="row"
+            ref={ref}
+            className="table-row"
+            data-testid={`table-row-${index}`}
+            style={style}
+            key={index}
+          >
+            <td role="cell">{row.firstName}</td>
+            <td role="cell">{row.lastName}</td>
+            <td role="cell">{row.age}</td>
+            <td role="cell">{row.email}</td>
+            <td role="cell">{row.carMake}</td>
+            <td role="cell">{row.carModel}</td>
+            <td role="cell">{row.carYear}</td>
+          </tr>
+        ) : (
+          <tr
+            ref={ref}
+            className="table-row loading"
+            data-testid={`table-row-${index}`}
+            style={style}
+            key={index}
+          >
+            <td role="cell">Loading</td>
+          </tr>
+        )
+      )}
+    </tbody>
+  </table>
+);
+```
+
+Yup that's it! 🚀
+
+It gets even better, the two hooks `useGrid` and `useGrids` are just stitching of few internal
+hooks which are exposed too 🎉! Though most use cases should be covered with `useGrid` and `useGrids`
+you can hack the core to solve a totally unique use case.
+
+# Features
+
+- 🪄 Virtualization
+- 🎲 Dynamic Height
+- 📌 Pinning
+- ∞ Infinite Scroll
+- 🛠 Highly configurable
+- 💪 TypeScript
+- ⚛ Pretty small
+- 🎁 Out of the box Grid, just provide schema and data (releasing soon)
+- 🤝 Backward compatibility (TBA)
 - and much more 🔥
 
 <br />

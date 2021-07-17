@@ -4,17 +4,21 @@
   link: '/'
 - label: 'Getting started'
   link: '/getting-started'
-- label: Usage
+- label: API
   items:
-    - label: 'Creating docs'
-      link: '/usage/creating-docs'
-    - label: 'Navigation'
-      link: '/usage/navigation'
-    - label: 'Shadowing'
-      link: '/usage/shadowing'
-- label: More
+    - label: useGrid
+      link: /api/useGrid
+    - label: useGrids
+      link: /api/useGrids
+    - label: core
+      link: /api/core
+- label: Examples
   items:
-    - label: FAQ
-      link: /faq
-    - label: 'Github'
-      link: https://github.com/rocketseat/gatsby-themes
+    - label: Basic
+      link: /example/basic
+    - label: Basic without virtualization
+      link: /example/basic-without-virtualization
+    - label: 'useGrids: Pinned Column'
+      link: /example/use-grids-pinned-column
+    - label: Dynamic height
+      link: /example/dynamic-height

@@ -1,0 +1,33 @@
+---
+title: Core
+description: The Core APIs
+---
+
+Though might never need to use them, they are exposed as core.
+
+```js
+import { core } from '@crafts/smart-grid';
+
+core.useVerticalScroll;
+core.useHeight;
+core.useScrollSync;
+core.useActions;
+```
+
+`useGrid` and `useGrids` is nothing but combination of these hooks working together.
+
+### useVerticalScroll
+
+`useVerticalScroll` provides two things `onScroll` and `visible`, `visible` is the index of first visible row.
+
+### useHeight
+
+`useHeight` maintains the height and position of each row and table.
+
+### useScrollSync
+
+`useScrollSync` to maintain scroll sync between header, footer and body in case of `useGrids`
+
+### useActions
+
+`useActions` collection useful of actions like scrollToRow, clear, getRowPosition.
