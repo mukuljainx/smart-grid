@@ -29,6 +29,7 @@ interface X {
     horizontalSync: ReturnType<typeof useScrollSync>['horizontalSync'];
     headerRef: ReturnType<typeof useScrollSync>['headerRef'];
     bodyRef: ReturnType<typeof useScrollSync>['bodyRef'];
+    footRef: ReturnType<typeof useScrollSync>['footRef'];
     GridHeaders: ReturnType<typeof useScrollSync>['GridHeaders'];
     GridBodies: ReturnType<typeof useScrollSync>['GridBodies'];
     ScrollBars: ReturnType<typeof useScrollSync>['ScrollBars'];
@@ -65,6 +66,7 @@ const useGrids: X['useGridType'] = (
     GridHeaders,
     GridBodies,
     ScrollBars,
+    footRef,
   } = useScrollSync(tableCount);
   const tableRef = React.useRef();
   const actions = useActions({
@@ -120,6 +122,7 @@ const useGrids: X['useGridType'] = (
     GridHeaders,
     GridBodies,
     ScrollBars,
+    footRef,
   };
 };
 
