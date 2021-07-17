@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-interface IProps {
+export interface IProps {
   positionCache: React.MutableRefObject<number[]>;
   heightCache: React.MutableRefObject<number[]>;
   lastRowPosition: React.MutableRefObject<number>;

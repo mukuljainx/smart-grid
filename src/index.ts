@@ -1,18 +1,26 @@
+import { ArrayElement, IGridProps } from './interface';
 import useGrid from './hooks/useGrid';
 import useGrids from './hooks/useGrids';
 import HiddenScrollWrapper from './atoms/HiddenScrollWrapper';
+import useScrollSync from './hooks/useScrollSync';
+import useVerticalScroll from './hooks/useVerticalScroll';
+import useHeight from './hooks/useHeight';
+import useActions from './hooks/useActions';
+import rowRendererHelper from './hooks/rowRendererHelper';
 
-type ArrayElement<A> = A extends readonly (infer T)[] ? T : never;
-interface IGridProps<T> {
-  limit?: number;
-  buffer?: number;
-  dynamicHeight?: boolean;
-  // minimum height in case of dynamicHeight
-  rowHeight: number;
-  data: T[];
-  loadMore?: (sp: number) => void;
-  loadMoreOffset?: number;
-  virtualized?: boolean;
-}
+const core = {
+  useVerticalScroll,
+  useHeight,
+  useActions,
+  rowRendererHelper,
+  useScrollSync,
+};
 
-export { useGrid, useGrids, HiddenScrollWrapper, IGridProps, ArrayElement };
+export {
+  IGridProps,
+  ArrayElement,
+  useGrid,
+  useGrids,
+  HiddenScrollWrapper,
+  core,
+};

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { IGridProps } from '../index';
 
-interface IProps
+export interface IProps
   extends Pick<
     IGridProps<any>,
     'virtualized' | 'buffer' | 'rowHeight' | 'limit' | 'data' | 'dynamicHeight'

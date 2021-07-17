@@ -1,6 +1,6 @@
-import React, { createRef, useCallback, useRef, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 
-interface IProps {
+export interface IProps {
   dynamicHeight?: boolean;
   rowHeight: number;
   totalCount: number;
