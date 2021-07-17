@@ -28,11 +28,14 @@ p {
   overflow: hidden;
   flex-grow: 2;
   border: 1px solid;
+  width: 100%;
+  overflow-x: auto;
 }
 
 .table-header {
   display: flex;
   border-bottom: 1px solid;
+  width: 600px;
 }
 
 .table-header-cell {
@@ -43,6 +46,7 @@ p {
 
 .table-body-wrapper {
   overflow-y: auto;
+  width: 600px;
 }
 
 .table-body {

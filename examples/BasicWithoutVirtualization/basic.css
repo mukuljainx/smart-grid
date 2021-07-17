@@ -10,7 +10,9 @@ table {
   display: flex;
   flex-direction: column;
   height: 100%;
-  /* width: 1002px; */
+  width: 100%;
+  border: 1px solid black;
+  overflow: auto;
   border: 1px solid black;
 }
 
@@ -27,7 +29,6 @@ tbody {
   flex-grow: 2;
   overflow-y: auto;
   overflow-x: hidden;
-  position: relative;
 }
 
 th,
