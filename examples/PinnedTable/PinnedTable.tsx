@@ -140,9 +140,10 @@ const Table = ({ rowHeight, buffer, limit }: IProps) => {
             // border: '1px solid red',
           }}
         >
-          {rowRenderers.map((rowRenderer, i) => {
+          {schema.body.map((_, i) => {
             const GridBody = GridBodies[i];
             const Body = schema.body[i];
+            const rowRenderer = rowRenderers[i];
             return (
               <GridBody
                 className="table-body-wrapper"

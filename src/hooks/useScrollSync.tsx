@@ -50,36 +50,42 @@ const useScrollSync = (tableCount: number) => {
     []
   );
 
-  const horizontalSync = tableArray.map((_, i) => onScroll(i));
-  const GridHeaders: React.FC<HeaderProps>[] = horizontalSync.map(
-    (handleScroll, i) => (props) =>
-      (
+  const horizontalSync = React.useMemo(
+    () => tableArray.map((_, i) => onScroll(i)),
+    []
+  );
+  const GridHeaders: React.FC<HeaderProps>[] = React.useMemo(
+    () =>
+      horizontalSync.map((handleScroll, i) => (props) => (
         <HiddenScrollWrapper
           {...props}
           ref={headerRef.current[i] as any}
           onScroll={handleScroll}
         />
-      )
+      )),
+    []
   );
-  const GridBodies: React.FC<HeaderProps>[] = horizontalSync.map(
-    (handleScroll, i) => (props) =>
-      (
+  const GridBodies: React.FC<HeaderProps>[] = React.useMemo(
+    () =>
+      horizontalSync.map((handleScroll, i) => (props) => (
         <HiddenScrollWrapper
           {...props}
           ref={bodyRef.current[i] as any}
           onScroll={handleScroll}
         />
-      )
+      )),
+    []
   );
-  const ScrollBars: React.FC<HeaderProps>[] = horizontalSync.map(
-    (handleScroll, i) => (props) =>
-      (
+  const ScrollBars: React.FC<HeaderProps>[] = React.useMemo(
+    () =>
+      horizontalSync.map((handleScroll, i) => (props) => (
         <ScrollBar
           {...props}
           ref={footRef.current[i] as any}
           onScroll={handleScroll}
         />
-      )
+      )),
+    []
   );
 
   return {

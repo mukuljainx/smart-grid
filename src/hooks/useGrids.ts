@@ -1,4 +1,4 @@
-import React, { createRef, useCallback, useRef, useState } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import useVerticalScroll from './useVerticalScroll';
 import useHeight from './useHeight';
 import { get2DArray } from '../util';
@@ -108,7 +108,10 @@ const useGrids: X['useGridType'] = (
         }),
     [buffer, limit, data, visible, rowHeight, dynamicHeight]
   );
-  const rowRenderers = get2DArray(tableCount).map((_, i) => rowRenderer(i));
+
+  const rowRenderers = useMemo(() => {
+    return get2DArray(tableCount).map((_, i) => rowRenderer(i));
+  }, [rowRenderer]);
 
   return {
     onScroll,

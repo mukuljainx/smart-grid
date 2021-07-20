@@ -21,7 +21,7 @@
   ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "tsc -m commonjs --outDir examples/grid -p tsconfig.json -w",
+    "start": "tsc -m commonjs --outDir examples/$npm_config_example/grid -p tsconfig.json -w",
     "build": "rm -rf dist && npm run build:cjs && npm run build:esnext && npm run build:css",
     "css": "npm run css:compile && npm run css:prefix && npm run css:end",
     "css:compile": "sass src:dist/cjs && sass src:dist/esm",
@@ -30,7 +30,7 @@
     "build:cjs": "tsc -m commonjs --outDir dist/cjs -p tsconfig.json",
     "build:esnext": "tsc -m esnext --outDir dist/esm -p tsconfig.json",
     "build:css": "copyfiles src/**/*.css  dist/cjs -u=1 && copyfiles src/**/*.css  dist/esm -u=1",
-    "dev:css": "copyfiles src/**/*.css  examples/grid/ -u=1",
+    "dev:css": "copyfiles src/**/*.css  examples/$npm_config_example/grid/ -u=1",
     "build:docs": "cd ./docs && npm run build"
   },
   "author": {
