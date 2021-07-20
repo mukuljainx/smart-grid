@@ -7,7 +7,7 @@ import './pinned.css';
 const generateData = (offset = 0) => users.slice(offset, offset + 100);
 
 const api = (offset: number) =>
-  new Promise<any>((res) => {
+  new Promise<ReturnType<typeof generateData>>((res) => {
     setTimeout(() => {
       res(generateData(offset));
     }, 800);
@@ -50,7 +50,6 @@ const schema = {
       </>
     ),
     () => <div className="table-header-cell grid-3">ID</div>,
-    ,
   ],
   body: [
     (row) => <div className="table-row-cell grid-1">{row.id}</div>,
@@ -73,20 +72,17 @@ const Table = ({ rowHeight, buffer, limit }: IProps) => {
   const [data, setData] = React.useState(generateData());
   // const [loading, setLoading] = React.useState(false);
   const loading = React.useRef(false);
-  const getData = React.useCallback(
-    (sp: number) => {
-      if (loading.current) {
-        return;
-      }
-      loading.current = true;
-      offset.current += 100;
-      api(offset.current).then((newD) => {
-        setData((d) => [...d, ...newD]);
-        loading.current = false;
-      });
-    },
-    [loading]
-  );
+  const getData = React.useCallback(() => {
+    if (loading.current) {
+      return;
+    }
+    loading.current = true;
+    offset.current += 100;
+    api(offset.current).then((newD) => {
+      setData((d) => [...d, ...newD]);
+      loading.current = false;
+    });
+  }, [loading]);
   const {
     onScroll,
     rowRenderers,
@@ -170,7 +166,7 @@ const Table = ({ rowHeight, buffer, limit }: IProps) => {
                         ref={ref}
                         className="table-row"
                         data-testid={`table-row-${index}`}
-                        style={style}
+                        style={style as React.CSSProperties}
                         key={index}
                       >
                         <Body {...row} />
@@ -180,7 +176,12 @@ const Table = ({ rowHeight, buffer, limit }: IProps) => {
                         ref={ref}
                         className="table-row"
                         data-testid={`table-row-${index}`}
-                        style={{ ...style, width: styles['header'][i].width }}
+                        style={
+                          {
+                            ...style,
+                            width: styles['header'][i].width,
+                          } as React.CSSProperties
+                        }
                         key={index}
                       >
                         <div

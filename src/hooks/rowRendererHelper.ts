@@ -3,14 +3,17 @@ import { IGridProps } from '../index';
 
 export interface IProps
   extends Pick<
+    // eslint-disable-next-line
     IGridProps<any>,
     'virtualized' | 'buffer' | 'rowHeight' | 'limit' | 'data' | 'dynamicHeight'
   > {
   visible: number;
   tableIndex: number;
+  // eslint-disable-next-line
   rowFunc: any;
   heightToBeCalculated: { current: number[] };
   heightCache: { current: number[] };
+  // eslint-disable-next-line
   rowRefs: { current: any[] };
   positionCache: { current: number[] };
   lastRowPosition: { current: number };
@@ -37,7 +40,7 @@ const func = ({
     ? Math.min(visible + limit + buffer, data.length)
     : data.length;
 
-  let rowsUI: React.ReactNode[] = [];
+  const rowsUI: React.ReactNode[] = [];
 
   heightToBeCalculated.current = [];
   if (dynamicHeight) {

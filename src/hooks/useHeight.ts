@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 import { get2DArray } from '../util';
 
 const useHeight = (count = 1) => {
-  const [_, setRenderCount] = useState(0);
+  const [, setRenderCount] = useState(0);
   const heightCache = useRef<number[]>([]);
   const heightToBeCalculated = useRef<number[]>([]);
   const positionCache = useRef<number[]>([]);
@@ -15,6 +15,8 @@ const useHeight = (count = 1) => {
     positionCache.current.length = index + 1;
   }, []);
 
+  // we want this hook to render on each cycle so no dependency
+  // eslint-disable-next-line
   React.useEffect(() => {
     if (heightToBeCalculated.current.length) {
       heightToBeCalculated.current.forEach((i) => {

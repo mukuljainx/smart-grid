@@ -40,7 +40,7 @@ const useVerticalScroll = ({
 
       return 0;
     },
-    [dynamicHeight, rowHeight]
+    [dynamicHeight, rowHeight, positionCache]
   );
 
   const onScroll = useCallback(
@@ -66,7 +66,15 @@ const useVerticalScroll = ({
         setVisible(sp);
       }
     },
-    [setVisible, getTopRowIndex, totalCount]
+    [
+      setVisible,
+      getTopRowIndex,
+      totalCount,
+      rowHeight,
+      virtualized,
+      loadMore,
+      loadMoreOffset,
+    ]
   );
 
   return { onScroll, visible };

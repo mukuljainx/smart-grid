@@ -5,15 +5,15 @@ import ScrollBar from '../atoms/ScrollBar';
 import { get2DArray } from '../util';
 
 const useScrollSync = (tableCount: number) => {
-  const tableArray = get2DArray(tableCount);
+  const tableArray = React.useRef(get2DArray(tableCount));
   const headerRef = React.useRef<React.RefObject<HTMLElement>[]>(
-    tableArray.map((_) => React.createRef())
+    tableArray.current.map(() => React.createRef())
   );
   const bodyRef = React.useRef<React.RefObject<HTMLElement>[]>(
-    tableArray.map((_) => React.createRef())
+    tableArray.current.map(() => React.createRef())
   );
   const footRef = React.useRef<React.RefObject<HTMLElement>[]>(
-    tableArray.map((_) => React.createRef())
+    tableArray.current.map(() => React.createRef())
   );
 
   const onScroll = React.useCallback(
@@ -51,41 +51,44 @@ const useScrollSync = (tableCount: number) => {
   );
 
   const horizontalSync = React.useMemo(
-    () => tableArray.map((_, i) => onScroll(i)),
-    []
+    () => tableArray.current.map((_, i) => onScroll(i)),
+    [onScroll, tableArray]
   );
   const GridHeaders: React.FC<HeaderProps>[] = React.useMemo(
     () =>
       horizontalSync.map((handleScroll, i) => (props) => (
         <HiddenScrollWrapper
           {...props}
+          //eslint-disable-next-line
           ref={headerRef.current[i] as any}
           onScroll={handleScroll}
         />
       )),
-    []
+    [horizontalSync]
   );
   const GridBodies: React.FC<HeaderProps>[] = React.useMemo(
     () =>
       horizontalSync.map((handleScroll, i) => (props) => (
         <HiddenScrollWrapper
           {...props}
+          //eslint-disable-next-line
           ref={bodyRef.current[i] as any}
           onScroll={handleScroll}
         />
       )),
-    []
+    [horizontalSync]
   );
   const ScrollBars: React.FC<HeaderProps>[] = React.useMemo(
     () =>
       horizontalSync.map((handleScroll, i) => (props) => (
         <ScrollBar
           {...props}
+          //eslint-disable-next-line
           ref={footRef.current[i] as any}
           onScroll={handleScroll}
         />
       )),
-    []
+    [horizontalSync]
   );
 
   return {

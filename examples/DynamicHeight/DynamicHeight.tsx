@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useGrid } from '@crafts/smart-grid';
 import users from './users';
 import './dynamic.css';
-import { sampleSize, random, map } from 'lodash-es';
+import { sampleSize, random } from 'lodash-es';
 
 const noteArray = [
   'Mountain',
@@ -29,7 +29,7 @@ const generateData = (offset = 0) =>
   }));
 
 const api = (offset: number) =>
-  new Promise<any>((res) => {
+  new Promise<ReturnType<typeof generateData>>((res) => {
     setTimeout(() => {
       res(generateData(offset));
     }, 1200);
@@ -54,21 +54,18 @@ const DynamicHeight = ({
   });
   const offset = React.useRef(0);
 
-  const getData = React.useCallback(
-    (sp: number) => {
-      if (state.loading || offset.current >= 1000) {
-        return;
-      }
+  const getData = React.useCallback(() => {
+    if (state.loading || offset.current >= 1000) {
+      return;
+    }
 
-      setState((s) => ({ ...s, loading: true }));
-      offset.current += 100;
-      api(offset.current).then((newD) => {
-        // setData((d) => [...d, ...newD]);
-        setState((s) => ({ data: [...s.data, ...newD], loading: false }));
-      });
-    },
-    [state.loading]
-  );
+    setState((s) => ({ ...s, loading: true }));
+    offset.current += 100;
+    api(offset.current).then((newD) => {
+      // setData((d) => [...d, ...newD]);
+      setState((s) => ({ data: [...s.data, ...newD], loading: false }));
+    });
+  }, [state.loading]);
 
   const { onScroll, rowRenderer, tableHeight, tableRef, actions } = useGrid({
     data: state.loading ? state.data.concat([null, null]) : state.data,
@@ -94,7 +91,7 @@ const DynamicHeight = ({
       }));
       actions.clear(id);
     },
-    []
+    [actions]
   );
 
   return (

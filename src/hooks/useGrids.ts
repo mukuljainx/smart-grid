@@ -19,11 +19,13 @@ interface X {
           row: T,
           style: React.CSSProperties,
           index: number,
+          // eslint-disable-next-line
           ref?: React.RefObject<any>
         ) => React.ReactNode
       ) => React.ReactNode
     >;
     tableHeight: number;
+    // eslint-disable-next-line
     tableRef: React.RefObject<any>;
     actions: ReturnType<typeof useActions>;
     horizontalSync: ReturnType<typeof useScrollSync>['horizontalSync'];
@@ -77,7 +79,7 @@ const useGrids: X['useGridType'] = (
     clearAfter: heightProps.clearAfter,
     reRender: heightProps.reRender,
   });
-  let tableHeight: string | number =
+  const tableHeight: string | number =
     heightProps.tableHeight.current || data.length * rowHeight;
 
   const rowRenderer = useCallback(
@@ -87,6 +89,7 @@ const useGrids: X['useGridType'] = (
           row: ArrayElement<typeof data>,
           style: React.CSSProperties,
           index: number,
+          // eslint-disable-next-line
           ref?: React.RefObject<any>
         ) => React.ReactNode
       ) =>
@@ -106,12 +109,25 @@ const useGrids: X['useGridType'] = (
           positionCache: heightProps.positionCache,
           rowRefs: heightProps.rowRefs,
         }),
-    [buffer, limit, data, visible, rowHeight, dynamicHeight]
+    [
+      buffer,
+      limit,
+      data,
+      visible,
+      rowHeight,
+      dynamicHeight,
+      virtualized,
+      heightProps.heightCache,
+      heightProps.heightToBeCalculated,
+      heightProps.lastRowPosition,
+      heightProps.rowRefs,
+      heightProps.positionCache,
+    ]
   );
 
   const rowRenderers = useMemo(() => {
     return get2DArray(tableCount).map((_, i) => rowRenderer(i));
-  }, [rowRenderer]);
+  }, [rowRenderer, tableCount]);
 
   return {
     onScroll,
