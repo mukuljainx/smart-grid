@@ -39,7 +39,8 @@
     "dev:css": "copyfiles src/**/*.css  examples/$npm_config_example/grid/ -u=1",
     "build:docs": "cd ./docs && npm run build",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
-    "prettier": "prettier --write \"**/*.{js,jsx,ts,tsx,json}\""
+    "prettier": "prettier --write \"**/*.{js,jsx,ts,tsx,json}\"",
+    "preversion": "npm run build"
   },
   "pre-commit": [
     "prettier",
