@@ -100,3 +100,4 @@ yarn-error.log
 # Yarn Integrity file
 .yarn-integrity
 examples/**/*/grid
+examples/grid

@@ -31,7 +31,9 @@
     "build:esnext": "tsc -m esnext --outDir dist/esm -p tsconfig.json",
     "build:css": "copyfiles src/**/*.css  dist/cjs -u=1 && copyfiles src/**/*.css  dist/esm -u=1",
     "dev:css": "copyfiles src/**/*.css  examples/$npm_config_example/grid/ -u=1",
-    "build:docs": "cd ./docs && npm run build"
+    "build:docs": "cd ./docs && npm run build",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "prettier": "prettier --write \"**/*.{js,jsx,ts,tsx,json}\""
   },
   "author": {
     "name": "Mukul Jain",
@@ -42,16 +44,22 @@
   "devDependencies": {
     "@types/react": "^16.9.17",
     "@types/react-dom": "^16.9.4",
+    "@typescript-eslint/eslint-plugin": "^4.28.4",
+    "@typescript-eslint/parser": "^4.28.4",
     "autoprefixer": "^9.7.4",
     "copyfiles": "^2.4.1",
     "css-loader": "^3.4.2",
+    "eslint": "^7.31.0",
+    "eslint-plugin-react": "^7.24.0",
+    "eslint-plugin-react-hooks": "^4.2.0",
     "node-sass": "^4.13.1",
     "postcss-cli": "^7.1.0",
+    "prettier": "^2.3.2",
     "react": "^16.8.0",
     "react-dom": "^16.8.0",
     "replace-in-file": "^5.0.2",
     "sass": "^1.25.0",
-    "typescript": "^3.7.5"
+    "typescript": "^3.9.10"
   },
   "peerDependencies": {
     "react": "^16.8.0",
