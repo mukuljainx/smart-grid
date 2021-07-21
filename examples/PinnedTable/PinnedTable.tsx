@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { useGrids } from '@crafts/smart-grid';
+// import { useGrids } from '@crafts/smart-grid';
+import { useGrids } from './grid';
 import users from './users';
 
 import './pinned.css';
