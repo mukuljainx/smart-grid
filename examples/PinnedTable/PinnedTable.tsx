@@ -19,21 +19,11 @@ interface IProps {
   limit?: number;
 }
 
-const styles: Record<string, React.CSSProperties[]> = {
-  header: [
-    { width: 100, overflowX: 'auto', flexShrink: 0 },
-    { width: 700, overflowX: 'auto' },
-    { width: 100, overflowX: 'auto', flexShrink: 0 },
-  ],
-  bodyWrapper: [
-    {},
-    {
-      flexGrow: 2,
-    },
-    {},
-  ],
-  body: [{ width: 100 }, {}, { width: 100 }],
-};
+const styles: React.CSSProperties[] = [
+  { width: 100, flexShrink: 0 },
+  { flexGrow: 2 },
+  { width: 100, flexShrink: 0 },
+];
 
 const schema = {
   header: [
@@ -117,7 +107,11 @@ const Table = ({ rowHeight, buffer, limit }: IProps) => {
               <GridHeader
                 key={i}
                 className="table-header"
-                style={styles['header'][i]}
+                style={{
+                  width: styles[i].width,
+                  flexShrink: styles[i].flexShrink,
+                  overflow: 'auto',
+                }}
               >
                 <H />
               </GridHeader>
@@ -150,14 +144,14 @@ const Table = ({ rowHeight, buffer, limit }: IProps) => {
                   overflowX: 'auto',
                   overflowY: 'hidden',
                   height: tableHeight + (loading.current ? 2 * 39 : 0),
-                  ...styles['bodyWrapper'][i],
+                  flexGrow: styles[i].flexGrow,
                 }}
               >
                 <div
                   className="table-body"
                   style={{
                     position: 'relative',
-                    ...styles['body'][i],
+                    width: styles[i].width,
                   }}
                 >
                   {rowRenderer((row, style, index, ref) => {
@@ -179,7 +173,7 @@ const Table = ({ rowHeight, buffer, limit }: IProps) => {
                         style={
                           {
                             ...style,
-                            width: styles['header'][i].width,
+                            width: styles[i].width,
                           } as React.CSSProperties
                         }
                         key={index}
@@ -198,15 +192,19 @@ const Table = ({ rowHeight, buffer, limit }: IProps) => {
             );
           })}
         </div>
-        <div className="who-am-i">
+        <div className="footer">
           {ScrollBars.map((ScrollBar, i) => (
             <ScrollBar
               key={i}
-              style={{ overflowX: 'auto', flexShrink: i === 1 ? undefined : 0 }}
+              style={{
+                overflowX: 'auto',
+                flexGrow: styles[i].flexGrow,
+                flexShrink: styles[i].flexShrink,
+              }}
             >
               <div
                 style={{
-                  width: styles['header'][i].width,
+                  width: styles[i].width || 700,
                   height: '100%',
                 }}
               ></div>
