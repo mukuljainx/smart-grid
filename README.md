@@ -4,7 +4,7 @@
 
 - 🪄 Virtualization
 - 🎲 Dynamic Height
-- 📌 Pinning
+- 📌 [Pinned Columns (Synced Multi Grid)](https://smartgrid.mukulja.in/example/use-grids-pinned-column)
 - ∞ Infinite Scroll
 - 🛠 Highly configurable
 - 💪 TypeScript
